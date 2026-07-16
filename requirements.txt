@@ -1,0 +1,21 @@
+# Python 3.11 required (torch has no 3.14 wheels as of this writing).
+#   python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+
+# Core — experiment 01 (Toy Models of Superposition) needs only these three.
+torch>=2.2
+numpy>=1.26
+matplotlib>=3.8
+
+# Interpretability tooling — needed from Week 1 onward (TransformerLens experiments).
+transformer_lens>=2.0
+
+# Notebooks.
+jupyter>=1.0
+
+# Optional, added when you reach the SAE weeks (5-6). Uncomment then.
+# sae_lens>=3.0
+
+# ---
+# Versions this repo was last verified against (2026-07-16):
+#   torch==2.13.0  numpy==2.4.6  matplotlib==3.11.0
+#   transformer-lens==3.5.1  transformers==5.14.1  einops==0.8.2  jaxtyping==0.3.11
