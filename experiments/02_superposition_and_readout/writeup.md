@@ -49,13 +49,18 @@ Caption — with the same ReLU nonlinearity in every arm, only the mixed geometr
 
 | arm | XOR readout accuracy (across `S`) |
 |---|---|
-| monosemantic | **0.494 ± 0.005** at every sparsity — flat on the chance line |
+| monosemantic | **0.494 ± 0.005** at every sparsity — flat on the chance line (flat by construction — this arm's W does not depend on S; the finding is the level, not the flatness) |
 | random | 0.79 → 0.81 |
-| superposition | 0.78 → 0.81 (0.815 peak at S=0.9; a one-seed dip to 0.74 at S=0.7) |
+| superposition | 0.78 → 0.81 (0.815 peak at S=0.9; a dip to 0.74 at S=0.7 — see the note below) |
 
 The monosemantic anchor is exactly at chance regardless of sparsity, as the theorem says. Both mixed codes read the interaction at ~0.80. The probe train-minus-test gap on the mixed arms is **+0.002**, so the 0.80 is not overfitting.
 
-The interpretation is the one that matters for interpretability: **a monosemantic representation — the ideal an SAE pushes toward — carries a computational cost.** Disentangling to one-feature-per-unit maximizes enumerability but destroys a linear readout's ability to see feature interactions. Mixing is not just a storage compromise; it is what keeps nonlinear computation linearly legible downstream. That is Rigotti's mixed-selectivity argument, here with fully observable ground truth.
+The interpretation is the one that matters for interpretability: **an exactly monosemantic
+representation carries a computational cost.** One feature per unit maximizes enumerability and, in
+that exact limit, leaves a linear readout unable to see feature interactions at all. Mixing is not just
+a storage compromise; it is also what keeps a nonlinear interaction linearly legible downstream. That
+is Rigotti's mixed-selectivity argument, here with fully observable ground truth. This is a claim about
+representations, not about SAEs as a tool — see Caveats below.
 
 ## Result 2 (honest secondary) — the *learned* geometry has no reliable edge over random
 
@@ -74,12 +79,19 @@ Caption — the learned geometry has no reliable readout advantage over equal-no
 
 The differences hug zero; the 95% CIs include zero in essentially every cell. A 4-seed pilot had hinted at a small positive effect at high sparsity with background activity; at 8 seeds it washes out. **The honest conclusion is a null: the readout capacity comes from mixing-plus-nonlinearity itself, not from the particular geometry exp1 learns.** The headline (Result 1) does not depend on exp1 at all — random mixing suffices; exp1 simply supplies one storage-trained, ground-truth-known instance of a mixed code.
 
-(The `S = 0.7`, `dp = 0` dip in both figures is one seed whose autoencoder landed in a poor basin — the wide error bar shows it. Learned geometries carry training variance; random and monosemantic, being constructed, do not.)
+(The `S = 0.7`, `dp = 0` dip is a seed effect, and a broader one than a single outlier: the eight seeds
+split bimodally, five at 0.63–0.73 and three at 0.82. Those `S = 0.7` codes are also the least mixed in
+the sweep (16–19 of 20 features represented, the lowest off-diagonal Gram energy), but the two do not
+track each other seed by seed, so I report the split without claiming a cause. Learned geometries carry
+training variance; random and monosemantic, being constructed, do not.)
 
 ## Controls and checks
 
 - **Strong anchor.** XOR pairs are drawn only from features the monosemantic arm represents (`0..m-1`), so its chance accuracy is the theorem, not missing coverage.
-- **The "superposition" arm really is in superposition.** For the learned `W` at `m = 8`: features represented `= 17–20 > m = 8`, `Σ Dᵢ` is an effective-dimension upper bound that gets close to `m` only when the bottleneck is well used (7.9–8.0 here), and off-diagonal Gram energy rises from `0.085` (S=0, near-orthogonal) to `0.252` (S=0.99, dense interference). The label is earned, and the sparsity knob demonstrably controls interference.
+- **The "superposition" arm really is in superposition.** For the learned `W` at `m = 8`: features represented `= 16–20 > m = 8`, `Σ Dᵢ` is an effective-dimension upper bound that gets close to `m` only when the bottleneck is well used (7.9–8.0 here), and off-diagonal Gram energy goes from `0.085` at `S = 0` (near-orthogonal) to `0.252` at `S = 0.99`
+  (dense interference), though not monotonically — `S = 0.7` is the least mixed point in the sweep, at
+  `0.051`. The label is earned; sparsity moves interference across the range, but it is not a clean
+  monotone knob.
 - **Not overfit.** Probe train−test gap `+0.002` on the mixed arms.
 - **Nonlinearity held constant** across all three arms — the manipulated variable is geometry alone.
 
