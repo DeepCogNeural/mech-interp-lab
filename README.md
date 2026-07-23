@@ -2,6 +2,13 @@
 
 A public, reproducible lab notebook for testing mechanistic-interpretability ideas in small models with fully observable ground truth.
 
+## Experiment 02 — a monosemantic code cannot linearly read XOR; a mixed one can
+
+One line of interpretability work treats mixed (superposed) coding as something to undo; the
+mixed-selectivity literature in systems neuroscience treats the same geometry as what gives a linear
+readout the dimensionality it needs to compute. A toy model with fully observable ground truth lets me
+measure what the readout actually rewards.
+
 ![A linear readout of a monosemantic code stays at chance on XOR, while two mixed codes reach about 0.80 accuracy](experiments/02_superposition_and_readout/figures/01_monosemantic_cannot_read_xor.png)
 
 Caption — monosemantic: 0.494 ± 0.005, at chance; the two mixed arms: ~0.80; 8 seeds; the nonlinearity is fixed and only geometry changes.
@@ -68,8 +75,8 @@ pip install -r requirements.txt
 Run the experiments:
 
 ```bash
-cd experiments/01_toy_models_of_superposition && python toy_models.py   # ~1-2 min
-cd experiments/02_superposition_and_readout   && python readout.py      # ~10-15 min (SMOKE=1 for a subset)
+(cd experiments/01_toy_models_of_superposition && python toy_models.py)   # ~1-2 min
+(cd experiments/02_superposition_and_readout   && python readout.py)      # ~10-15 min (SMOKE=1 for a subset)
 ```
 
 CPU-only. No model downloads.
