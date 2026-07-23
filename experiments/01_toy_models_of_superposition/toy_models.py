@@ -12,11 +12,13 @@ The setup, in one paragraph:
   using non-orthogonal directions, accepting interference between features that rarely
   co-occur. That's superposition.
 
-Two experiments:
+Three experiments:
   1. n=5, m=2, sparsity sweep. The iconic figure: you can literally see the feature
      directions rotate from an orthogonal pair (dense) into a pentagon (sparse).
-  2. n=20, m=5, sparsity sweep. Gram matrices + per-feature dimensionality, showing
-     the "1/(1-S) features per dimension" scaling and the discrete geometric phases.
+  2. n=20, m=5, sparsity sweep. Gram matrices + per-feature dimensionality.
+  3. n=20, m=5, capacity vs sparsity: features represented against 1/(1-S), the rough
+     per-feature firing rate. The figures use 1/(1-S) as an axis to show the capacity
+     trend; they do not fit or test a specific functional form.
 
 CPU only. Runs in ~1-2 minutes.
 """
@@ -261,8 +263,8 @@ def experiment_3():
     ax.set_xlabel("1 / (1 - sparsity)   —   roughly, how rarely a feature fires")
     ax.set_ylabel("number of features represented")
     ax.set_title(
-        "Superposition breaks the dimension budget\n"
-        "Sparse enough, and 5 dimensions carry far more than 5 features",
+        "Sparsity lets 5 dimensions carry more than 5 features\n"
+        "Features represented climbs well past the hidden-dimension count",
         fontsize=12,
     )
     ax.legend(fontsize=9, loc="upper left")

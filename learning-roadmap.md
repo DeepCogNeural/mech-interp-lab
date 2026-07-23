@@ -65,7 +65,7 @@ Rough pace: one section per week, ~8-12 hrs/week. Slip freely — the notebook r
 |---|---|---|
 | Elhage et al., *Toy Models of Superposition* | https://transformer-circuits.pub/2022/toy_model/index.html | Why individual neurons aren't features. Phase transitions, feature geometry, the sparsity/interference tradeoff. (Already replicated in `experiments/01`; reread the later sections — the geometry and phase-change material is deeper than the intro.) |
 | Olshausen & Field, *Emergence of simple-cell receptive field properties by learning a sparse code* | https://www.nature.com/articles/381607a0 | Your side of the bridge, 1996. Sparse overcomplete codes, in V1, thirty years ago. The mathematical object under Toy Models and under SAEs is the same one. Reread it with interp eyes. |
-| Rigotti et al., *The importance of mixed selectivity in complex cognitive tasks* | https://www.nature.com/articles/nature12160 | The neuroscience formulation of polysemanticity, and — importantly — the argument that mixed selectivity is *functional*, not a nuisance. Interp mostly treats superposition as an obstacle to reading the model. Both can be true. Hold the tension. |
+| Rigotti et al., *The importance of mixed selectivity in complex cognitive tasks* | https://www.nature.com/articles/nature12160 | The neuroscience formulation of polysemanticity, and — importantly — the argument that mixed selectivity is *functional* (it buys the dimensionality a linear readout needs), not a nuisance. SAE-based interp often treats superposition as something to *undo* for feature enumeration, though the same literature also studies computation in superposition. Holding both is the point. |
 
 **Do:** extend `experiments/01` — sweep sparsity finer, reproduce the phase diagram, try >2 hidden dims and inspect the polytope geometry.
 
@@ -109,7 +109,7 @@ Rough pace: one section per week, ~8-12 hrs/week. Slip freely — the notebook r
 
 ## Bridge reading — neuroscience ↔ interpretability
 
-Not optional, and not a detour. This is where your comparative advantage lives.
+Not optional, and not a detour. This is where a neuroscience background meets interp most directly.
 
 | Item | Link | What you get from it |
 |---|---|---|
@@ -120,7 +120,7 @@ Not optional, and not a detour. This is where your comparative advantage lives.
 
 **The bridge questions to keep live** (add answers to the notebook as they develop):
 
-1. Superposition vs. mixed selectivity — same phenomenon, or convergent solutions to different pressures? Toy Models says superposition arises from *sparse features + limited dimensions*. Rigotti says mixed selectivity buys *dimensionality for linear readout*. These are close to opposite framings. Which one describes V1?
+1. Superposition vs. mixed selectivity — same phenomenon, or convergent solutions to different pressures? Toy Models says superposition arises from *sparse features + limited dimensions*. Rigotti says mixed selectivity buys *dimensionality for linear readout*. These emphasize different pressures on the same geometry. Which one describes V1, and can a ground-truth toy model tell them apart? (`experiments/02`.)
 2. Divisive normalization is everywhere in cortex and is a strong contrast-gain and decorrelation mechanism. LayerNorm sits in the same structural slot in a transformer. Is that a real correspondence or a coincidence of form? (Suspect coincidence — but the interp field's habit of "folding LayerNorm in" and ignoring it is worth poking at.)
-3. Interp has perfect observability, perfect intervention, and unlimited trials. Neuroscience has none of these. So: which of the hard problems *survive* — the ones that are hard even with a perfect experimental setup? Those are the deep ones, and they're where your intuitions about population coding might actually beat the field's.
+3. Interp has perfect observability, perfect intervention, and unlimited trials. Neuroscience has none of these. So: which of the hard problems *survive* — the ones that are hard even with a perfect experimental setup? Those are the deep ones, and they're where a population-coding background is most likely to add something.
 4. What does interp lack that neuroscience developed out of necessity? (Guess: the statistics of comparing across individuals, and the discipline of trial-to-trial variability as signal rather than noise.)
