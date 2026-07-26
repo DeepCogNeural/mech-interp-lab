@@ -18,7 +18,10 @@ an explicit gated-out results.json and stops.  SD averages every one of the 35 b
 dichotomies.  CCGP holds out one condition from each side of a dichotomy and averages
 all 16 choices, with item-disjoint train/test examples.  Every linear probe is
 hand-rolled torch with training-split-only standardisation and strong L2.  No result is
-claimed until the corresponding full command has completed.
+claimed until the corresponding full command has completed.  The completed control
+also tests whether per-feature z-scoring unfairly amplifies rare sparse units: L2 is
+chosen inside each outer training split, and the primary probe uses one global RMS
+scale rather than one scale per feature.
 
 The normal command resolves GPT-2 small and the public res-jb safetensors through the
 local Hugging Face cache.  It does not require sae_lens: the encoder is exactly
@@ -77,7 +80,9 @@ class Config:
     probe_steps: int
     ccgp_splits: tuple[tuple[int, int], ...]
     batch_size: int
-    weight_decay: float
+    legacy_weight_decay: float
+    weight_decay_grid: tuple[float, ...]
+    fair_probe_settings: tuple[str, ...]
 
 
 def config() -> Config:
@@ -91,7 +96,9 @@ def config() -> Config:
             probe_steps=40,
             ccgp_splits=((0, 0), (1, 1)),
             batch_size=16,
-            weight_decay=0.08,
+            legacy_weight_decay=0.08,
+            weight_decay_grid=(0.03, 0.08, 0.2),
+            fair_probe_settings=("per_feature_zscore_inner_l2", "global_rms_inner_l2"),
         )
     return Config(
         n_items=96,
@@ -101,7 +108,9 @@ def config() -> Config:
         probe_steps=100,
         ccgp_splits=tuple(itertools.product(range(4), range(4))),
         batch_size=32,
-        weight_decay=0.08,
+        legacy_weight_decay=0.08,
+        weight_decay_grid=(0.01, 0.03, 0.08, 0.2, 0.5),
+        fair_probe_settings=("per_feature_zscore_inner_l2", "global_rms_inner_l2"),
     )
 
 
@@ -251,7 +260,9 @@ def build_stimuli(tokenizer: Any, n_items: int, seed: int) -> Stimuli:
 
 
 def device() -> str:
-    return "mps" if torch.backends.mps.is_available() else "cpu"
+    # The experiment contract is CPU-only.  Probes already run on CPU, and using the
+    # same device for activations keeps the full fairness sweep comparable and offline.
+    return "cpu"
 
 
 def load_model(run_device: str) -> HookedTransformer:
@@ -390,10 +401,28 @@ def prepare_features(x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     return x[:, keep].contiguous(), keep
 
 
-def standardise(x_train: torch.Tensor, x_test: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+def scale_features(
+    x_train: torch.Tensor,
+    x_test: torch.Tensor,
+    mode: str,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Centre on training items, then use either per-feature or one global scale."""
     mean = x_train.mean(0, keepdim=True)
-    std = x_train.std(0, unbiased=False, keepdim=True).clamp_min(1e-5)
-    return (x_train - mean) / std, (x_test - mean) / std
+    train_centered, test_centered = x_train - mean, x_test - mean
+    if mode == "per_feature_zscore":
+        scale = train_centered.std(0, unbiased=False, keepdim=True).clamp_min(1e-5)
+    elif mode == "global_rms":
+        # A single scalar preserves the relative scale of rare and common units.  The
+        # per-feature mean is still removed; a probe bias makes that translation neutral.
+        scale = train_centered.square().mean().sqrt().clamp_min(1e-5)
+    else:
+        raise ValueError(f"Unknown feature-scaling mode: {mode}")
+    return train_centered / scale, test_centered / scale
+
+
+def standardise(x_train: torch.Tensor, x_test: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """Legacy fixed-L2 preprocessing, retained for gates and sensitivity reporting."""
+    return scale_features(x_train, x_test, "per_feature_zscore")
 
 
 def fit_probe(
@@ -405,7 +434,8 @@ def fit_probe(
     steps: int,
     weight_decay: float,
     train_mask: torch.Tensor | None = None,
-) -> tuple[torch.Tensor, torch.Tensor]:
+    return_loss: bool = False,
+) -> tuple[torch.Tensor, torch.Tensor] | tuple[torch.Tensor, torch.Tensor, float]:
     """One vectorised multi-output logistic probe; optional mask supports CCGP heads."""
     torch.manual_seed(probe_seed)
     # CPU is used deliberately for numerical reproducibility of the probes, even when the
@@ -424,7 +454,16 @@ def fit_probe(
         loss.backward()
         opt.step()
     with torch.no_grad():
-        return balanced_accuracy(head(x_eval), y_eval), balanced_accuracy(head(x_train), y_train)
+        train_logits = head(x_train)
+        final_loss = F.binary_cross_entropy_with_logits(train_logits, y_train, reduction="none")
+        if train_mask is not None:
+            final_loss = (final_loss * train_mask.float().cpu()).sum() / train_mask.sum().clamp_min(1)
+        else:
+            final_loss = final_loss.mean()
+        result = (balanced_accuracy(head(x_eval), y_eval), balanced_accuracy(train_logits, y_train))
+    if return_loss:
+        return (*result, float(final_loss))
+    return result
 
 
 def main_effect_pilot(
@@ -436,11 +475,71 @@ def main_effect_pilot(
     values = []
     for fold_index, (train, test) in enumerate(folds(stimuli.item_ids, cfg.n_folds, seed)):
         tr, te = standardise(resid[train], resid[test])
-        acc, _ = fit_probe(tr, stimuli.factors[train], te, stimuli.factors[test], seed + fold_index, cfg.probe_steps, cfg.weight_decay)
+        acc, _ = fit_probe(
+            tr, stimuli.factors[train], te, stimuli.factors[test], seed + fold_index,
+            cfg.probe_steps, cfg.legacy_weight_decay,
+        )
         values.append(acc.numpy())
     # One [NUMBER, TENSE, POLARITY] vector per item-disjoint fold.  Concatenating
     # would flatten those vectors and accidentally turn this Gate-B check into a scalar.
     return np.stack(values, axis=0).mean(axis=0).tolist()
+
+
+def inner_validation_split(
+    outer_train: torch.Tensor,
+    item_ids: torch.Tensor,
+    seed: int,
+    outer_fold: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Hold out lexical items only from an outer fold's training partition."""
+    ids = torch.unique(item_ids[outer_train]).cpu().numpy()
+    rng = np.random.default_rng(seed + 90_000 + outer_fold)
+    rng.shuffle(ids)
+    n_valid = max(1, int(round(0.2 * len(ids))))
+    valid_ids = torch.tensor(ids[:n_valid], dtype=torch.long)
+    valid = outer_train & torch.isin(item_ids, valid_ids)
+    return outer_train & ~valid, valid
+
+
+def select_weight_decays(
+    rep: torch.Tensor,
+    stimuli: Stimuli,
+    seed: int,
+    cfg: Config,
+    scale_mode: str,
+) -> tuple[list[float], list[dict[str, Any]]]:
+    """Nested L2 selection on the three main effects; outer test items are untouched."""
+    rep, _ = prepare_features(rep)
+    selected, records = [], []
+    for outer_fold, (outer_train, _) in enumerate(folds(stimuli.item_ids, cfg.n_folds, seed)):
+        inner_train, inner_valid = inner_validation_split(outer_train, stimuli.item_ids, seed, outer_fold)
+        tr, va = scale_features(rep[inner_train], rep[inner_valid], scale_mode)
+        scores = []
+        for candidate_i, weight_decay in enumerate(cfg.weight_decay_grid):
+            acc, _ = fit_probe(
+                tr, stimuli.factors[inner_train], va, stimuli.factors[inner_valid],
+                seed + 30_000 + 100 * outer_fold + candidate_i,
+                cfg.probe_steps,
+                weight_decay,
+            )
+            scores.append(float(acc.mean()))
+        best_i = int(np.argmax(scores))
+        selected.append(float(cfg.weight_decay_grid[best_i]))
+        records.append({
+            "outer_fold": outer_fold,
+            "candidate_weight_decay": list(cfg.weight_decay_grid),
+            "inner_validation_main_effect_accuracy": scores,
+            "selected_weight_decay": float(cfg.weight_decay_grid[best_i]),
+        })
+    return selected, records
+
+
+def _fold_weight_decay(
+    fold_weight_decays: list[float] | None,
+    fold_index: int,
+    cfg: Config,
+) -> float:
+    return cfg.legacy_weight_decay if fold_weight_decays is None else fold_weight_decays[fold_index]
 
 
 def sd_metric(
@@ -449,15 +548,22 @@ def sd_metric(
     seed: int,
     cfg: Config,
     ds: list[dict[str, Any]],
+    scale_mode: str = "per_feature_zscore",
+    fold_weight_decays: list[float] | None = None,
+    steps: int | None = None,
 ) -> tuple[dict[str, float], dict[str, float]]:
     """Five item-disjoint folds, all 35 dichotomies trained as one multi-output probe."""
     rep, _ = prepare_features(rep)
     labels_by_condition = torch.stack([d["labels"] for d in ds], dim=1)
     labels = labels_by_condition[stimuli.condition_ids]
     test_accs, train_accs = [], []
+    steps = cfg.probe_steps if steps is None else steps
     for fold_index, (train, test) in enumerate(folds(stimuli.item_ids, cfg.n_folds, seed)):
-        tr, te = standardise(rep[train], rep[test])
-        acc, train_acc = fit_probe(tr, labels[train], te, labels[test], seed + 100 * fold_index, cfg.probe_steps, cfg.weight_decay)
+        tr, te = scale_features(rep[train], rep[test], scale_mode)
+        acc, train_acc = fit_probe(
+            tr, labels[train], te, labels[test], seed + 100 * fold_index, steps,
+            _fold_weight_decay(fold_weight_decays, fold_index, cfg),
+        )
         test_accs.append(acc.numpy())
         train_accs.append(train_acc.numpy())
     test_mean = np.mean(test_accs, axis=0)
@@ -478,6 +584,9 @@ def ccgp_metric(
     seed: int,
     cfg: Config,
     ds: list[dict[str, Any]],
+    scale_mode: str = "per_feature_zscore",
+    fold_weight_decays: list[float] | None = None,
+    steps: int | None = None,
 ) -> dict[str, float]:
     """CCGP with all (or smoke-subset) 4x4 held-condition splits, item-disjoint throughout.
 
@@ -490,6 +599,7 @@ def ccgp_metric(
     """
     rep, _ = prepare_features(rep)
     per_type: dict[str, list[float]] = {}
+    steps = cfg.probe_steps if steps is None else steps
     for d_index, d in enumerate(ds):
         labels = d["labels"][stimuli.condition_ids]
         pos = sorted(d["positive"])
@@ -499,7 +609,7 @@ def ccgp_metric(
             # Standardisation uses lexical training items only, never an item evaluated by
             # this fold.  The held conditions are unlabelled for that head but still belong
             # to the training item universe, as the global item-split rule requires.
-            tr_all, te_all = standardise(rep[item_train], rep[item_test])
+            tr_all, te_all = scale_features(rep[item_train], rep[item_test], scale_mode)
             condition_train = stimuli.condition_ids[item_train]
             condition_test = stimuli.condition_ids[item_test]
             masks, eval_blocks, eval_labels = [], [], []
@@ -526,8 +636,11 @@ def ccgp_metric(
             # accuracy API; fit the parameters here with the exact masked objective.
             torch.manual_seed(seed + 10_000 * d_index + fold_index)
             head = nn.Linear(tr_all.shape[1], n_heads)
-            opt = torch.optim.AdamW(head.parameters(), lr=0.03, weight_decay=cfg.weight_decay)
-            for _ in range(cfg.probe_steps):
+            opt = torch.optim.AdamW(
+                head.parameters(), lr=0.03,
+                weight_decay=_fold_weight_decay(fold_weight_decays, fold_index, cfg),
+            )
+            for _ in range(steps):
                 opt.zero_grad()
                 loss = F.binary_cross_entropy_with_logits(head(tr_all), train_y, reduction="none")
                 loss = (loss * head_masks.float()).sum() / head_masks.sum().clamp_min(1)
@@ -652,6 +765,79 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
+def paired_sae_minus_rand(rows: list[dict[str, Any]], seeds: tuple[int, ...]) -> dict[str, Any]:
+    """Within-seed contrasts for whatever metric scope a probe setting evaluated."""
+    out: dict[str, Any] = {}
+    for metric in ("sd", "ccgp"):
+        kinds = sorted({key for row in rows if row["arm"] == "sae" for key in row[metric]})
+        out[metric] = {
+            kind: dict(zip(("mean", "ci95"), mean_ci(
+                next(row[metric][kind] for row in rows if row["seed"] == seed and row["arm"] == "sae")
+                - next(row[metric][kind] for row in rows if row["seed"] == seed and row["arm"] == "rand_exp")
+                for seed in seeds
+            )))
+            for kind in kinds
+        }
+    return out
+
+
+def convergence_check(
+    rep: torch.Tensor,
+    stimuli: Stimuli,
+    seed: int,
+    cfg: Config,
+    scale_mode: str,
+    selected_weight_decay: float,
+) -> dict[str, float]:
+    """Compare 100 and 200 optimizer steps on an inner validation split, never test items."""
+    rep, _ = prepare_features(rep)
+    outer_train, _ = folds(stimuli.item_ids, cfg.n_folds, seed)[0]
+    inner_train, inner_valid = inner_validation_split(outer_train, stimuli.item_ids, seed, 0)
+    tr, va = scale_features(rep[inner_train], rep[inner_valid], scale_mode)
+    acc_100, _, loss_100 = fit_probe(
+        tr, stimuli.factors[inner_train], va, stimuli.factors[inner_valid], seed + 60_000,
+        cfg.probe_steps, selected_weight_decay, return_loss=True,
+    )
+    acc_200, _, loss_200 = fit_probe(
+        tr, stimuli.factors[inner_train], va, stimuli.factors[inner_valid], seed + 60_000,
+        2 * cfg.probe_steps, selected_weight_decay, return_loss=True,
+    )
+    return {
+        "inner_validation_main_effect_100_steps": float(acc_100.mean()),
+        "inner_validation_main_effect_200_steps": float(acc_200.mean()),
+        "train_bce_100_steps": loss_100,
+        "train_bce_200_steps": loss_200,
+    }
+
+
+def summarise_convergence(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        arm: {
+            key: dict(zip(("mean", "ci95"), mean_ci(
+                row["convergence"][key] for row in rows if row["arm"] == arm
+            )))
+            for key in rows[0]["convergence"]
+        }
+        for arm in ALL_ARMS
+    }
+
+
+def legacy_fixed_standardise_reference() -> dict[str, Any] | None:
+    """Carry the actual pre-control full run forward as a labelled sensitivity baseline."""
+    if not RESULTS.exists():
+        return None
+    previous = json.loads(RESULTS.read_text())
+    if previous.get("schema", "").startswith("exp03-results-v1") and previous.get("status") == "complete":
+        return {
+            "description": "Completed pre-control run: per-feature z-score, fixed AdamW weight decay 0.08, 100 steps.",
+            "per_seed_rows": previous["per_seed_rows"],
+            "summary": previous["summary"],
+            "paired_sae_minus_rand_exp": previous["paired_sae_minus_rand_exp"],
+            "wall_clock_seconds": previous["wall_clock_seconds"],
+        }
+    return previous.get("legacy_fixed_standardise")
+
+
 def plots(summary: dict[str, Any], smoke: bool) -> None:
     arms = ALL_ARMS
     colors = {
@@ -660,17 +846,17 @@ def plots(summary: dict[str, Any], smoke: bool) -> None:
     }
     fig, ax = plt.subplots(figsize=(7.1, 5.4))
     for arm in arms:
-        x = summary[arm]["ccgp"]["overall"]
+        x = summary[arm]["ccgp"]["main_effect"]
         y = summary[arm]["sd"]["overall"]
         ax.errorbar(x["mean"], y["mean"], xerr=x["ci95"], yerr=y["ci95"], fmt="o", ms=8, capsize=3, color=colors[arm], label=arm)
     ax.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
     ax.axvline(0.5, color="crimson", ls="--", lw=1.2)
     ax.set_xlim(0.45, 1.02)
     ax.set_ylim(0.45, 1.02)
-    ax.set_xlabel("CCGP: held-condition balanced accuracy")
+    ax.set_xlabel("main-effect CCGP: held-condition balanced accuracy")
     ax.set_ylabel("shattering dimensionality: balanced accuracy")
     suffix = "SMOKE subset" if smoke else "5 seeds; 95% CI"
-    ax.set_title(f"Where the SAE code lands relative to its matched random expansion\n({suffix})")
+    ax.set_title(f"Expressivity versus factor abstraction: SAE and matched random expansion\n({suffix}; global-RMS probe)")
     ax.grid(alpha=0.25)
     ax.legend(fontsize=8.5, loc="best")
     fig.tight_layout()
@@ -701,6 +887,7 @@ def plots(summary: dict[str, Any], smoke: bool) -> None:
 def run() -> dict[str, Any]:
     global CURRENT_GATE
     started = time.perf_counter()
+    legacy_reference = legacy_fixed_standardise_reference()
     cfg = config()
     run_device = device()
     CURRENT_GATE = "A"
@@ -733,7 +920,16 @@ def run() -> dict[str, Any]:
         )
 
     CURRENT_GATE = "D"
-    rows: list[dict[str, Any]] = []
+    main_effect_ds = [d for d in ds if d["type"] == "main_effect"]
+    primary_setting = "global_rms_inner_l2"
+    scale_modes = {
+        "per_feature_zscore_inner_l2": "per_feature_zscore",
+        "global_rms_inner_l2": "global_rms",
+    }
+    if primary_setting not in cfg.fair_probe_settings:
+        raise RuntimeError(f"Primary setting {primary_setting} is absent from config")
+    setting_rows: dict[str, list[dict[str, Any]]] = {setting: [] for setting in cfg.fair_probe_settings}
+    convergence_rows: list[dict[str, Any]] = []
     seed_metadata = []
     for seed in cfg.seeds:
         stimuli = initial_stimuli if seed == cfg.seeds[0] else build_stimuli(model.tokenizer, cfg.n_items, seed)
@@ -751,26 +947,63 @@ def run() -> dict[str, Any]:
             },
             "matching": matching,
         })
-        for arm, rep in reps.items():
-            sd, gap = sd_metric(rep, stimuli, seed, cfg, ds)
-            ccgp = ccgp_metric(rep, stimuli, seed, cfg, ds)
-            rows.append({"seed": seed, "arm": arm, "sd": sd, "ccgp": ccgp, "gap": gap})
-            print(f"seed={seed} arm={arm} SD={sd['overall']:.3f} CCGP={ccgp['overall']:.3f}", flush=True)
-    summary = aggregate(rows)
-    sae_minus_rand = {
-        metric: {
-            kind: dict(zip(("mean", "ci95"), mean_ci(
-                next(r[metric][kind] for r in rows if r["seed"] == seed and r["arm"] == "sae") -
-                next(r[metric][kind] for r in rows if r["seed"] == seed and r["arm"] == "rand_exp")
-                for seed in cfg.seeds
-            )))
-            for kind in summary["sae"][metric]
+        for setting in cfg.fair_probe_settings:
+            scale_mode = scale_modes[setting]
+            # Full CCGP is needed for the primary headline and its table.  The z-score
+            # sensitivity run evaluates the required main-effect CCGP only; this keeps
+            # the added fairness check inside the original CPU runtime budget.
+            ccgp_ds = ds if setting == primary_setting else main_effect_ds
+            for arm, rep in reps.items():
+                selected_decay, selection_trace = select_weight_decays(
+                    rep, stimuli, seed, cfg, scale_mode,
+                )
+                sd, gap = sd_metric(
+                    rep, stimuli, seed, cfg, ds, scale_mode, selected_decay,
+                )
+                ccgp = ccgp_metric(
+                    rep, stimuli, seed, cfg, ccgp_ds, scale_mode, selected_decay,
+                )
+                row = {
+                    "probe_setting": setting,
+                    "seed": seed,
+                    "arm": arm,
+                    "sd": sd,
+                    "ccgp": ccgp,
+                    "gap": gap,
+                    "selected_weight_decay_by_outer_fold": selected_decay,
+                    "inner_validation_l2_selection": selection_trace,
+                }
+                setting_rows[setting].append(row)
+                if setting == primary_setting:
+                    convergence_rows.append({
+                        "seed": seed,
+                        "arm": arm,
+                        "convergence": convergence_check(
+                            rep, stimuli, seed, cfg, scale_mode, selected_decay[0],
+                        ),
+                    })
+                print(
+                    f"seed={seed} setting={setting} arm={arm} "
+                    f"SD={sd['overall']:.3f} main-CCGP={ccgp['main_effect']:.3f}",
+                    flush=True,
+                )
+    fairness = {
+        setting: {
+            "scale_mode": scale_modes[setting],
+            "l2_selection": "Per outer fold and arm: select from the grid by inner item-disjoint validation mean accuracy over NUMBER/TENSE/POLARITY; outer test items are never consulted.",
+            "ccgp_scope": "all_35_dichotomies" if setting == primary_setting else "main_effect_dichotomies_only",
+            "per_seed_rows": setting_rows[setting],
+            "summary": aggregate(setting_rows[setting]),
+            "paired_sae_minus_rand_exp": paired_sae_minus_rand(setting_rows[setting], cfg.seeds),
         }
-        for metric in ("sd", "ccgp")
+        for setting in cfg.fair_probe_settings
     }
+    fairness[primary_setting]["convergence_100_vs_200_steps"] = summarise_convergence(convergence_rows)
+    summary = fairness[primary_setting]["summary"]
+    sae_minus_rand = fairness[primary_setting]["paired_sae_minus_rand_exp"]
     elapsed = time.perf_counter() - started
     payload = {
-        "schema": "exp03-results-v1; per_seed_rows: one row per (seed, arm), sd/ccgp/gap map dichotomy type to balanced accuracy; ci95=1.96*sample_sd/sqrt(n)",
+        "schema": "exp03-results-v2; probe_fairness records legacy fixed-z-score sensitivity plus nested-L2 per-feature-z-score and global-RMS settings. Per-seed rows map dichotomy type to balanced accuracy; ci95=1.96*sample_sd/sqrt(n).",
         "status": "complete",
         "smoke": SMOKE,
         "config": {**cfg.__dict__, "seeds": list(cfg.seeds), "pilot_layers": list(cfg.pilot_layers), "ccgp_splits": [list(s) for s in cfg.ccgp_splits]},
@@ -789,7 +1022,10 @@ def run() -> dict[str, Any]:
             "C_resid_two_way_xor_sd": xor_gate["overall"],
         },
         "per_seed_metadata": seed_metadata,
-        "per_seed_rows": rows,
+        "legacy_fixed_standardise": legacy_reference,
+        "probe_fairness": fairness,
+        "primary_probe_setting": primary_setting,
+        "per_seed_rows": setting_rows[primary_setting],
         "summary": summary,
         "paired_sae_minus_rand_exp": sae_minus_rand,
         "wall_clock_seconds": elapsed,
