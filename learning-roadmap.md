@@ -6,7 +6,7 @@ Canonical path. Ordered so that each week's reading is immediately cashed out in
 
 Rough pace: one section per week, ~8-12 hrs/week. Slip freely — the notebook records reality, not the plan.
 
-**Numbering deviation (2026-07-26):** `experiments/03_ccgp_on_sae_features/` was started before the planned IOI replication and before the planned SAE exercise; directory numbers record work actually attempted, so this roadmap is not renumbered.
+**Numbering deviation (2026-07-26):** `experiments/03_ccgp_on_sae_features/` was completed before the planned IOI replication and before the planned SAE exercise; directory numbers record work actually done, so this roadmap is not renumbered.
 
 ---
 
