@@ -1,0 +1,13 @@
+{
+  "schema": "exp03-gated-out-v1",
+  "status": "gated_out",
+  "failed_gate": "A",
+  "error_type": "OSError",
+  "error": "Can't load the configuration of 'gpt2'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'gpt2' is the correct path to a directory containing a config.json file",
+  "wall_clock_seconds": 1.0249325000331737,
+  "smoke": true,
+  "python": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 21.0.0 (clang-2100.0.123.102)]",
+  "platform": "macOS-26.5-arm64-arm-64bit",
+  "torch": "2.13.0",
+  "note": "No SD/CCGP rows or figures were produced after a failed gate."
+}

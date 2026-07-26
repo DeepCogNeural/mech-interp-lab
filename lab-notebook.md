@@ -16,6 +16,25 @@ Template for a new entry:
 
 ---
 
+## 2026-07-26 — Experiment 03: a real SAE code needs a matched random expansion, not a straw-man residual comparison
+
+**Goal:** Leave toy land and locate a GPT-2-small residual-stream SAE code on the shattering-dimensionality × CCGP plane, with the right comparison: sparse SAE features versus a width-, scale-, and L0-matched random ReLU expansion.
+
+**Did:** Wrote `experiments/03_ccgp_on_sae_features/ccgp_sae.py`: full factorial NUMBER × TENSE × POLARITY stimuli; final-`.` read-out; per-item token-length assertion; residual layer pilot; direct loading of the res-jb safetensors without `sae_lens`; four principal arms plus a dense-random reference; item-disjoint multi-output torch probes; all 35 dichotomies and CCGP's 16 held-condition splits. Static compilation and a synthetic shape/35-dichotomy probe check passed. I also ran the requested `SMOKE=1` command, which wrote its real Gate-A failure manifest.
+
+**Expected:** Before running, I expected the SAE/random comparison to be genuinely open. A sparse code might have lower shattering and higher CCGP because it factorises variables cleanly; or conjunctive features might give it more interaction-readout capacity than matched random expansion. I did *not* expect `sae > resid` to be scientifically interesting, since SAE width itself makes that mostly a Cover-theorem comparison.
+
+**Happened:** No SAE experiment result. `pip install sae-lens --dry-run` could not resolve PyPI and changed nothing. The existing Hugging Face cache has neither GPT-2 nor the res-jb layer-8 weights; direct `hf_hub_download` of `jbloom/GPT2-Small-SAEs-Reformatted/blocks.8.hook_resid_pre/sae_weights.safetensors` also failed because this terminal cannot resolve `huggingface.co`. Gate A stopped before activation collection, so there are no reconstruction, L0, tokenisation, main-effect, SD, CCGP, or paired-difference numbers. I left an explicit `gated_out` `results.json` rather than filling the figures with a synthetic surrogate.
+
+**Confused about / open:**
+- The first conceptual trap was exactly the naive exp02 extrapolation: “SAE = monosemantic arm, therefore no interaction.” Wrong direction. Exp02 compressed coordinate-wise; a real SAE expands nonlinearly from 768 to 24,576. The only comparison that can answer the intended question is SAE versus a matched random expansion.
+- The quiet implementation trap is word-form leakage. If the probe reads `did`, `does`, `do`, `not`, or the main verb rather than the sentence-final `.`, it measures vocabulary identity, not a carried representation — and token-identity SAE latents make that look especially convincing. The second quiet trap is eight condition means: it deletes lexical nuisance variance and lets every code saturate. The script rejects unequal token lengths within item and always splits by lexical item.
+- I cannot tell whether the intended run fits the 30-minute target on this hardware. `torch.backends.mps.is_available()` returned false here, so even after assets are available the run will be CPU-only unless that changes. Also, the required exp02 smoke regression could not finish under this sandbox's roughly 28.5-second foreground limit; it started normally but is not verified complete.
+
+**Next:** Make GPT-2 small and the exact res-jb safetensors available locally (or restore terminal Hugging Face access), rerun Gate A, and only then decide whether the stimulus vocabulary needs a Gate-B/C repair. Do not add a README result until a five-seed, all-16-split run completes.
+
+---
+
 ## 2026-07-20 — Experiment 02: does superposition help a downstream readout?
 
 **Goal:** Turn the exp1 bridge thought into a real, falsifiable test — is mixed/superposed coding just a storage compromise, or does it also keep nonlinear computation linearly readable (Rigotti's mixed-selectivity claim), measured in a toy model with ground truth?
