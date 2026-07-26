@@ -20,8 +20,8 @@ all 16 choices, with item-disjoint train/test examples.  Every linear probe is
 hand-rolled torch with training-split-only standardisation and strong L2.  No result is
 claimed until the corresponding full command has completed.
 
-The normal command downloads GPT-2 small and the public res-jb safetensors on first
-use.  It does not require sae_lens: the encoder is exactly
+The normal command resolves GPT-2 small and the public res-jb safetensors through the
+local Hugging Face cache.  It does not require sae_lens: the encoder is exactly
 ReLU((x - b_dec) @ W_enc + b_enc).  Set SMOKE=1 for a small two-seed, two-CCGP-split
 pipeline check; it is intentionally not a substitute for the 5-seed result.
 """
@@ -438,7 +438,9 @@ def main_effect_pilot(
         tr, te = standardise(resid[train], resid[test])
         acc, _ = fit_probe(tr, stimuli.factors[train], te, stimuli.factors[test], seed + fold_index, cfg.probe_steps, cfg.weight_decay)
         values.append(acc.numpy())
-    return np.concatenate(values, axis=0).mean(axis=0).tolist()
+    # One [NUMBER, TENSE, POLARITY] vector per item-disjoint fold.  Concatenating
+    # would flatten those vectors and accidentally turn this Gate-B check into a scalar.
+    return np.stack(values, axis=0).mean(axis=0).tolist()
 
 
 def sd_metric(
@@ -482,7 +484,9 @@ def ccgp_metric(
     The 16 heads for one dichotomy share an nn.Linear.  Its loss mask gives each head its
     own six training conditions; all standardisation statistics come only from training
     lexical items.  This keeps the implementation vectorised without allowing a lexical
-    nuisance item into both a head's train and test examples.
+    nuisance item into both a head's train and test examples.  The shared feature matrix
+    is deliberately *not* repeated once per head: a [examples, heads] masked loss is
+    exactly equivalent and avoids a 16-fold CPU/memory multiplier.
     """
     rep, _ = prepare_features(rep)
     per_type: dict[str, list[float]] = {}
@@ -498,7 +502,7 @@ def ccgp_metric(
             tr_all, te_all = standardise(rep[item_train], rep[item_test])
             condition_train = stimuli.condition_ids[item_train]
             condition_test = stimuli.condition_ids[item_test]
-            ys, masks, eval_blocks, eval_labels = [], [], [], []
+            masks, eval_blocks, eval_labels = [], [], []
             for held_pos_i, held_neg_i in cfg.ccgp_splits:
                 held_pos, held_neg = pos[held_pos_i], neg[held_neg_i]
                 train_mask = (condition_train != held_pos) & (condition_train != held_neg)
@@ -506,7 +510,6 @@ def ccgp_metric(
                 # This happens only with a malformed factorial stimulus set.
                 if int(eval_mask.sum()) == 0:
                     raise RuntimeError("CCGP held-condition split has no item-disjoint evaluation data")
-                ys.append(labels[item_train])
                 masks.append(train_mask)
                 eval_blocks.append(te_all[eval_mask])
                 eval_labels.append(labels[item_test][eval_mask])
@@ -514,22 +517,11 @@ def ccgp_metric(
             # two cells per test item, so all blocks have the same length by construction.
             eval_x = torch.stack(eval_blocks, dim=1)  # [examples, heads, features]
             eval_y = torch.stack(eval_labels, dim=1)
-            # Train all 16 heads together.  Repeating x is modest here and makes the
-            # masking logic auditable; no random split is introduced.
+            # Train all 16 heads together.  Every head sees the same item-disjoint
+            # lexical training universe but its loss includes only its own six cells.
             n_heads = len(cfg.ccgp_splits)
-            x_repeated = tr_all.unsqueeze(1).expand(-1, n_heads, -1).reshape(-1, tr_all.shape[1])
-            # `repeat_interleave` keeps all H copies of lexical item i adjacent, just
-            # like x_repeated.  Only the diagonal loss entry of each copy is enabled.
-            y_repeated = labels[item_train].unsqueeze(1).expand(-1, n_heads).repeat_interleave(n_heads, dim=0)
-            mask_repeated = torch.stack(masks, dim=1).repeat_interleave(n_heads, dim=0)
-            # To keep a single head per split, rows corresponding to other head copies have
-            # zero loss.  This is equivalent to separate probes, but vectorised parameters.
-            diagonal_mask = torch.zeros((x_repeated.shape[0], n_heads), dtype=torch.bool)
-            row_head = torch.arange(x_repeated.shape[0]) % n_heads
-            diagonal_mask[torch.arange(x_repeated.shape[0]), row_head] = True
-            head_masks = mask_repeated & diagonal_mask
-            x_eval_flat = eval_x.permute(1, 0, 2).reshape(-1, tr_all.shape[1])
-            y_eval_flat = torch.zeros((x_eval_flat.shape[0], n_heads), dtype=torch.float32)
+            train_y = labels[item_train].unsqueeze(1).expand(-1, n_heads)
+            head_masks = torch.stack(masks, dim=1)
             # A dedicated evaluation pass is simpler than abusing fit_probe's all-head
             # accuracy API; fit the parameters here with the exact masked objective.
             torch.manual_seed(seed + 10_000 * d_index + fold_index)
@@ -537,7 +529,7 @@ def ccgp_metric(
             opt = torch.optim.AdamW(head.parameters(), lr=0.03, weight_decay=cfg.weight_decay)
             for _ in range(cfg.probe_steps):
                 opt.zero_grad()
-                loss = F.binary_cross_entropy_with_logits(head(x_repeated), y_repeated, reduction="none")
+                loss = F.binary_cross_entropy_with_logits(head(tr_all), train_y, reduction="none")
                 loss = (loss * head_masks.float()).sum() / head_masks.sum().clamp_min(1)
                 loss.backward()
                 opt.step()
@@ -590,10 +582,11 @@ def representations(x: torch.Tensor, sae: SAEWeights, seed: int) -> tuple[dict[s
 # ----------------------------------------------------------------------- gates/run
 
 
-def explained_variance(x: torch.Tensor, recon: torch.Tensor) -> tuple[float, float]:
+def explained_variance(x: torch.Tensor, recon: torch.Tensor) -> tuple[float, float, float]:
     mse = float(((x - recon) ** 2).mean())
     var = float(((x - x.mean(0, keepdim=True)) ** 2).mean())
-    return 1.0 - mse / max(var, 1e-12), mse
+    relative_error = float(torch.linalg.vector_norm(x - recon) / torch.linalg.vector_norm(x).clamp_min(1e-12))
+    return 1.0 - mse / max(var, 1e-12), mse, relative_error
 
 
 def gate_a(model: HookedTransformer, stimuli: Stimuli, run_device: str, cfg: Config) -> tuple[SAEWeights, dict[str, Any], dict[int, torch.Tensor]]:
@@ -602,12 +595,19 @@ def gate_a(model: HookedTransformer, stimuli: Stimuli, run_device: str, cfg: Con
     resid = collect_residuals(model, stimuli, cfg.pilot_layers, run_device, cfg.batch_size)
     x8 = resid[8]
     f8 = sae8.encode(x8)
-    ev, mse = explained_variance(x8, sae8.decode(f8))
+    ev, mse, relative_error = explained_variance(x8, sae8.decode(f8))
     l0 = float((f8 > 0).sum(1).float().mean())
     # "Tens" is intentionally a broad sanity band, not an asserted published target.
     if not (1 < l0 < 2_000) or not np.isfinite(ev):
         raise RuntimeError(f"Gate A failed: layer-8 SAE EV={ev:.4f}, MSE={mse:.6g}, mean L0={l0:.1f}; likely wrong hook/weights.")
-    return sae8, {"layer": 8, "explained_variance": ev, "mse": mse, "mean_l0": l0, "source": sae8.source}, resid
+    return sae8, {
+        "layer": 8,
+        "explained_variance": ev,
+        "mse": mse,
+        "relative_reconstruction_error": relative_error,
+        "mean_l0": l0,
+        "source": sae8.source,
+    }, resid
 
 
 def choose_layer(resid: dict[int, torch.Tensor], stimuli: Stimuli, seed: int, cfg: Config) -> tuple[int, dict[str, list[float]]]:
@@ -717,7 +717,7 @@ def run() -> dict[str, Any]:
     sae = sae8 if layer == 8 else load_direct_res_jb(layer)
     # Check the exact selected SAE, not merely the layer-8 loading sentinel.
     selected_x = pilot_resid[layer]
-    selected_ev, selected_mse = explained_variance(selected_x, sae.decode(sae.encode(selected_x)))
+    selected_ev, selected_mse, selected_relative_error = explained_variance(selected_x, sae.decode(sae.encode(selected_x)))
     selected_l0 = float((sae.encode(selected_x) > 0).sum(1).float().mean())
     if not (1 < selected_l0 < 2_000) or not np.isfinite(selected_ev):
         raise RuntimeError(f"Gate A selected-layer sanity failed: EV={selected_ev:.4f}, MSE={selected_mse:.6g}, L0={selected_l0:.1f}")
@@ -779,7 +779,12 @@ def run() -> dict[str, Any]:
         "chosen_layer": layer,
         "gates": {
             "A_layer8": gate_a_stats,
-            "A_selected_layer": {"explained_variance": selected_ev, "mse": selected_mse, "mean_l0": selected_l0},
+            "A_selected_layer": {
+                "explained_variance": selected_ev,
+                "mse": selected_mse,
+                "relative_reconstruction_error": selected_relative_error,
+                "mean_l0": selected_l0,
+            },
             "B_pilot_main_effects": pilot,
             "C_resid_two_way_xor_sd": xor_gate["overall"],
         },

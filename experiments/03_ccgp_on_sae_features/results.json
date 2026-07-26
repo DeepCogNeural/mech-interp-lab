@@ -1,13 +1,1291 @@
 {
-  "schema": "exp03-gated-out-v1",
-  "status": "gated_out",
-  "failed_gate": "A",
-  "error_type": "OSError",
-  "error": "Can't load the configuration of 'gpt2'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'gpt2' is the correct path to a directory containing a config.json file",
-  "wall_clock_seconds": 1.0249325000331737,
-  "smoke": true,
-  "python": "3.11.15 (main, Mar  3 2026, 00:52:57) [Clang 21.0.0 (clang-2100.0.123.102)]",
-  "platform": "macOS-26.5-arm64-arm-64bit",
-  "torch": "2.13.0",
-  "note": "No SD/CCGP rows or figures were produced after a failed gate."
+  "schema": "exp03-results-v1; per_seed_rows: one row per (seed, arm), sd/ccgp/gap map dichotomy type to balanced accuracy; ci95=1.96*sample_sd/sqrt(n)",
+  "status": "complete",
+  "smoke": false,
+  "config": {
+    "n_items": 96,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "n_folds": 5,
+    "pilot_layers": [
+      6,
+      7,
+      8,
+      9
+    ],
+    "probe_steps": 100,
+    "ccgp_splits": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        3,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        3
+      ]
+    ],
+    "batch_size": 32,
+    "weight_decay": 0.08
+  },
+  "device": "cpu",
+  "sae_loading": "direct safetensors: jbloom/GPT2-Small-SAEs-Reformatted/blocks.8.hook_resid_pre/sae_weights.safetensors",
+  "chosen_layer": 8,
+  "gates": {
+    "A_layer8": {
+      "layer": 8,
+      "explained_variance": -0.6599054603397028,
+      "mse": 1.0864808559417725,
+      "relative_reconstruction_error": 0.28627267479896545,
+      "mean_l0": 71.87109375,
+      "source": "direct safetensors: jbloom/GPT2-Small-SAEs-Reformatted/blocks.8.hook_resid_pre/sae_weights.safetensors"
+    },
+    "A_selected_layer": {
+      "explained_variance": -0.6599054603397028,
+      "mse": 1.0864808559417725,
+      "relative_reconstruction_error": 0.28627267479896545,
+      "mean_l0": 71.87109375
+    },
+    "B_pilot_main_effects": {
+      "6": [
+        0.9934210777282715,
+        0.9986842274665833,
+        1.0
+      ],
+      "7": [
+        0.9986842274665833,
+        1.0,
+        0.9947368502616882
+      ],
+      "8": [
+        1.0,
+        1.0,
+        0.996052622795105
+      ],
+      "9": [
+        0.9986842274665833,
+        1.0,
+        0.9947368502616882
+      ]
+    },
+    "C_resid_two_way_xor_sd": 0.8265350461006165
+  },
+  "per_seed_metadata": [
+    {
+      "seed": 0,
+      "stimuli": {
+        "n_items": 96,
+        "n_sequences": 768,
+        "attempted_items": 96,
+        "dropped_items": 0,
+        "readout_token_id": 764
+      },
+      "matching": {
+        "target_l0": 72,
+        "mean_l0": {
+          "resid": 373.3203125,
+          "sae": 71.87109375,
+          "sae_recon": 381.5260314941406,
+          "rand_exp": 72.0,
+          "rand_exp_dense": 12155.3720703125
+        },
+        "surviving_width": {
+          "resid": 768,
+          "sae": 797,
+          "sae_recon": 768,
+          "rand_exp": 464,
+          "rand_exp_dense": 20248
+        },
+        "rand_dense_reference_l0": 12155.3720703125
+      }
+    },
+    {
+      "seed": 1,
+      "stimuli": {
+        "n_items": 96,
+        "n_sequences": 768,
+        "attempted_items": 96,
+        "dropped_items": 0,
+        "readout_token_id": 764
+      },
+      "matching": {
+        "target_l0": 72,
+        "mean_l0": {
+          "resid": 373.2578125,
+          "sae": 72.34765625,
+          "sae_recon": 381.3619689941406,
+          "rand_exp": 72.0,
+          "rand_exp_dense": 12138.3720703125
+        },
+        "surviving_width": {
+          "resid": 768,
+          "sae": 802,
+          "sae_recon": 768,
+          "rand_exp": 489,
+          "rand_exp_dense": 20082
+        },
+        "rand_dense_reference_l0": 12138.3720703125
+      }
+    },
+    {
+      "seed": 2,
+      "stimuli": {
+        "n_items": 96,
+        "n_sequences": 768,
+        "attempted_items": 96,
+        "dropped_items": 0,
+        "readout_token_id": 764
+      },
+      "matching": {
+        "target_l0": 72,
+        "mean_l0": {
+          "resid": 372.6184997558594,
+          "sae": 72.2265625,
+          "sae_recon": 380.8502502441406,
+          "rand_exp": 72.0,
+          "rand_exp_dense": 11997.1044921875
+        },
+        "surviving_width": {
+          "resid": 768,
+          "sae": 785,
+          "sae_recon": 768,
+          "rand_exp": 513,
+          "rand_exp_dense": 19986
+        },
+        "rand_dense_reference_l0": 11997.1044921875
+      }
+    },
+    {
+      "seed": 3,
+      "stimuli": {
+        "n_items": 96,
+        "n_sequences": 768,
+        "attempted_items": 96,
+        "dropped_items": 0,
+        "readout_token_id": 764
+      },
+      "matching": {
+        "target_l0": 72,
+        "mean_l0": {
+          "resid": 372.7525939941406,
+          "sae": 72.02994537353516,
+          "sae_recon": 380.09375,
+          "rand_exp": 72.0,
+          "rand_exp_dense": 12090.4189453125
+        },
+        "surviving_width": {
+          "resid": 768,
+          "sae": 803,
+          "sae_recon": 768,
+          "rand_exp": 559,
+          "rand_exp_dense": 20172
+        },
+        "rand_dense_reference_l0": 12090.4189453125
+      }
+    },
+    {
+      "seed": 4,
+      "stimuli": {
+        "n_items": 96,
+        "n_sequences": 768,
+        "attempted_items": 96,
+        "dropped_items": 0,
+        "readout_token_id": 764
+      },
+      "matching": {
+        "target_l0": 71,
+        "mean_l0": {
+          "resid": 372.80859375,
+          "sae": 70.54947662353516,
+          "sae_recon": 381.20703125,
+          "rand_exp": 71.0,
+          "rand_exp_dense": 12047.2216796875
+        },
+        "surviving_width": {
+          "resid": 768,
+          "sae": 784,
+          "sae_recon": 768,
+          "rand_exp": 489,
+          "rand_exp_dense": 20189
+        },
+        "rand_dense_reference_l0": 12047.2216796875
+      }
+    }
+  ],
+  "per_seed_rows": [
+    {
+      "seed": 0,
+      "arm": "resid",
+      "sd": {
+        "main_effect": 0.9986842075983683,
+        "unstructured": 0.896726980805397,
+        "two_way_xor": 0.8243640462557474,
+        "three_way_parity": 0.6159210801124573,
+        "overall": 0.8912405967712402
+      },
+      "ccgp": {
+        "main_effect": 0.9528783003489177,
+        "unstructured": 0.48784950503281177,
+        "two_way_xor": 0.31681468784809114,
+        "three_way_parity": 0.04929276406764984,
+        "overall": 0.5005187962736404
+      },
+      "gap": {
+        "main_effect": 0.001315792401631673,
+        "unstructured": 0.10157488286495209,
+        "two_way_xor": 0.1741136908531189,
+        "three_way_parity": 0.22808098793029785,
+        "overall": 0.10281331092119217
+      }
+    },
+    {
+      "seed": 0,
+      "arm": "sae",
+      "sd": {
+        "main_effect": 0.764978031317393,
+        "unstructured": 0.6921123095921108,
+        "two_way_xor": 0.6579385797182719,
+        "three_way_parity": 0.5806578397750854,
+        "overall": 0.6922443509101868
+      },
+      "ccgp": {
+        "main_effect": 0.7171381592750549,
+        "unstructured": 0.49326656886509485,
+        "two_way_xor": 0.41744517485300703,
+        "three_way_parity": 0.25838816463947295,
+        "overall": 0.4992457741498948
+      },
+      "gap": {
+        "main_effect": 0.23502196868260702,
+        "unstructured": 0.3078876904078892,
+        "two_way_xor": 0.3420614202817281,
+        "three_way_parity": 0.41901326179504395,
+        "overall": 0.3077462315559387
+      }
+    },
+    {
+      "seed": 0,
+      "arm": "sae_recon",
+      "sd": {
+        "main_effect": 0.9821052948633829,
+        "unstructured": 0.8696334511041641,
+        "two_way_xor": 0.7960087855656942,
+        "three_way_parity": 0.615789532661438,
+        "overall": 0.8657105565071106
+      },
+      "ccgp": {
+        "main_effect": 0.9432894825935364,
+        "unstructured": 0.48485491062913627,
+        "two_way_xor": 0.3425164520740509,
+        "three_way_parity": 0.06134868636727333,
+        "overall": 0.4998486853710243
+      },
+      "gap": {
+        "main_effect": 0.017894705136617024,
+        "unstructured": 0.10159387333052498,
+        "two_way_xor": 0.15635653336842856,
+        "three_way_parity": 0.12835347652435303,
+        "overall": 0.09987816214561462
+      }
+    },
+    {
+      "seed": 0,
+      "arm": "rand_exp",
+      "sd": {
+        "main_effect": 0.8611183762550354,
+        "unstructured": 0.7370277302605766,
+        "two_way_xor": 0.6681359807650248,
+        "three_way_parity": 0.578092098236084,
+        "overall": 0.7372180223464966
+      },
+      "ccgp": {
+        "main_effect": 0.8170559326807657,
+        "unstructured": 0.4893943846225738,
+        "two_way_xor": 0.3721710483233134,
+        "three_way_parity": 0.21616776287555695,
+        "overall": 0.4996254707234246
+      },
+      "gap": {
+        "main_effect": 0.1388816237449646,
+        "unstructured": 0.2622515197311129,
+        "two_way_xor": 0.3304542700449626,
+        "three_way_parity": 0.3669182062149048,
+        "overall": 0.26051339507102966
+      }
+    },
+    {
+      "seed": 0,
+      "arm": "rand_exp_dense",
+      "sd": {
+        "main_effect": 0.9437938332557678,
+        "unstructured": 0.8124999978712627,
+        "two_way_xor": 0.7605921228726705,
+        "three_way_parity": 0.6124342083930969,
+        "overall": 0.8135882616043091
+      },
+      "ccgp": {
+        "main_effect": 0.8716611822446186,
+        "unstructured": 0.48982378116675784,
+        "two_way_xor": 0.3518147051334381,
+        "three_way_parity": 0.13950657844543457,
+        "overall": 0.5007142889499665
+      },
+      "gap": {
+        "main_effect": 0.05620616674423218,
+        "unstructured": 0.18750000212873733,
+        "two_way_xor": 0.2394078771273295,
+        "three_way_parity": 0.3875657916069031,
+        "overall": 0.18641164898872375
+      }
+    },
+    {
+      "seed": 1,
+      "arm": "resid",
+      "sd": {
+        "main_effect": 0.9978070259094238,
+        "unstructured": 0.9089027345180511,
+        "two_way_xor": 0.8579605023066202,
+        "three_way_parity": 0.6248683929443359,
+        "overall": 0.9040413498878479
+      },
+      "ccgp": {
+        "main_effect": 0.9471107522646586,
+        "unstructured": 0.4877948769501277,
+        "two_way_xor": 0.3182730267445247,
+        "three_way_parity": 0.03842105157673359,
+        "overall": 0.49979511266308174
+      },
+      "gap": {
+        "main_effect": 0.002192974090576172,
+        "unstructured": 0.08985273114272527,
+        "two_way_xor": 0.14138871431350708,
+        "three_way_parity": 0.2156391143798828,
+        "overall": 0.09035031497478485
+      }
+    },
+    {
+      "seed": 1,
+      "arm": "sae",
+      "sd": {
+        "main_effect": 0.7884868383407593,
+        "unstructured": 0.7105357072183064,
+        "two_way_xor": 0.670877198378245,
+        "three_way_parity": 0.5794079303741455,
+        "overall": 0.7100714445114136
+      },
+      "ccgp": {
+        "main_effect": 0.7275493423144023,
+        "unstructured": 0.494533009827137,
+        "two_way_xor": 0.4175877253214518,
+        "three_way_parity": 0.2295065701007843,
+        "overall": 0.5003383442333766
+      },
+      "gap": {
+        "main_effect": 0.21151316165924072,
+        "unstructured": 0.2894642927816936,
+        "two_way_xor": 0.32912280162175495,
+        "three_way_parity": 0.4202674627304077,
+        "overall": 0.28991928696632385
+      }
+    },
+    {
+      "seed": 1,
+      "arm": "sae_recon",
+      "sd": {
+        "main_effect": 0.986052672068278,
+        "unstructured": 0.8903994326080594,
+        "two_way_xor": 0.8246710697809855,
+        "three_way_parity": 0.634276270866394,
+        "overall": 0.8856465816497803
+      },
+      "ccgp": {
+        "main_effect": 0.948486852645874,
+        "unstructured": 0.48466283019099915,
+        "two_way_xor": 0.34803728163242337,
+        "three_way_parity": 0.04638157933950424,
+        "overall": 0.5001860922149249
+      },
+      "gap": {
+        "main_effect": 0.013947327931722006,
+        "unstructured": 0.08647934028080531,
+        "two_way_xor": 0.13406954209009805,
+        "three_way_parity": 0.1114773154258728,
+        "overall": 0.08505570888519287
+      }
+    },
+    {
+      "seed": 1,
+      "arm": "rand_exp",
+      "sd": {
+        "main_effect": 0.8452850381533304,
+        "unstructured": 0.7141423842736653,
+        "two_way_xor": 0.6553947528203329,
+        "three_way_parity": 0.511776328086853,
+        "overall": 0.7145657539367676
+      },
+      "ccgp": {
+        "main_effect": 0.7895230372746784,
+        "unstructured": 0.49139626473188397,
+        "two_way_xor": 0.3770065764586131,
+        "three_way_parity": 0.2388322412967682,
+        "overall": 0.4999290427139827
+      },
+      "gap": {
+        "main_effect": 0.15471496184666952,
+        "unstructured": 0.2857531096254076,
+        "two_way_xor": 0.34428056081136066,
+        "three_way_parity": 0.44335007667541504,
+        "overall": 0.2840406596660614
+      }
+    },
+    {
+      "seed": 1,
+      "arm": "rand_exp_dense",
+      "sd": {
+        "main_effect": 0.9273245334625244,
+        "unstructured": 0.8032330977065223,
+        "two_way_xor": 0.7561842203140259,
+        "three_way_parity": 0.6353289484977722,
+        "overall": 0.8050394058227539
+      },
+      "ccgp": {
+        "main_effect": 0.8592434446016947,
+        "unstructured": 0.4903765282460622,
+        "two_way_xor": 0.35028508802254993,
+        "three_way_parity": 0.14493421018123626,
+        "overall": 0.5001160742555346
+      },
+      "gap": {
+        "main_effect": 0.07267546653747559,
+        "unstructured": 0.19676690229347774,
+        "two_way_xor": 0.24381577968597412,
+        "three_way_parity": 0.3646710515022278,
+        "overall": 0.19496051967144012
+      }
+    },
+    {
+      "seed": 2,
+      "arm": "resid",
+      "sd": {
+        "main_effect": 0.9991228183110555,
+        "unstructured": 0.9087382640157428,
+        "two_way_xor": 0.839978039264679,
+        "three_way_parity": 0.652302622795105,
+        "overall": 0.9032649993896484
+      },
+      "ccgp": {
+        "main_effect": 0.9451425552368163,
+        "unstructured": 0.489201714524201,
+        "two_way_xor": 0.31464363932609557,
+        "three_way_parity": 0.03547697402536869,
+        "overall": 0.5003566732683352
+      },
+      "gap": {
+        "main_effect": 0.0008771816889444987,
+        "unstructured": 0.08954163534300667,
+        "two_way_xor": 0.159046471118927,
+        "three_way_parity": 0.1846761703491211,
+        "overall": 0.09061750769615173
+      }
+    },
+    {
+      "seed": 2,
+      "arm": "sae",
+      "sd": {
+        "main_effect": 0.8087061246236166,
+        "unstructured": 0.7317786706345422,
+        "two_way_xor": 0.6981578866640726,
+        "three_way_parity": 0.6051316261291504,
+        "overall": 0.7318722605705261
+      },
+      "ccgp": {
+        "main_effect": 0.7442160209019978,
+        "unstructured": 0.49489485515015463,
+        "two_way_xor": 0.40925986766815187,
+        "three_way_parity": 0.2219572424888611,
+        "overall": 0.5011268814972469
+      },
+      "gap": {
+        "main_effect": 0.19129387537638345,
+        "unstructured": 0.2682213293654578,
+        "two_way_xor": 0.3018421133359273,
+        "three_way_parity": 0.39454376697540283,
+        "overall": 0.2681185305118561
+      }
+    },
+    {
+      "seed": 2,
+      "arm": "sae_recon",
+      "sd": {
+        "main_effect": 0.9801754752794901,
+        "unstructured": 0.8833599601473127,
+        "two_way_xor": 0.828333338101705,
+        "three_way_parity": 0.6303947567939758,
+        "overall": 0.8797142505645752
+      },
+      "ccgp": {
+        "main_effect": 0.9416337768236795,
+        "unstructured": 0.4858006349631718,
+        "two_way_xor": 0.3444517562786738,
+        "three_way_parity": 0.050263159722089765,
+        "overall": 0.500312501085656
+      },
+      "gap": {
+        "main_effect": 0.019824524720509846,
+        "unstructured": 0.09255212545394897,
+        "two_way_xor": 0.12877678871154785,
+        "three_way_parity": 0.11346632242202759,
+        "overall": 0.09002085030078888
+      }
+    },
+    {
+      "seed": 2,
+      "arm": "rand_exp",
+      "sd": {
+        "main_effect": 0.8621930082639059,
+        "unstructured": 0.7272391979183469,
+        "two_way_xor": 0.6632017691930135,
+        "three_way_parity": 0.5442105531692505,
+        "overall": 0.7280883193016052
+      },
+      "ccgp": {
+        "main_effect": 0.811968207359314,
+        "unstructured": 0.4886730534689766,
+        "two_way_xor": 0.38082784811655684,
+        "three_way_parity": 0.2159210503101349,
+        "overall": 0.49934727753911706
+      },
+      "gap": {
+        "main_effect": 0.13780699173609415,
+        "unstructured": 0.272726018513952,
+        "two_way_xor": 0.3367982308069865,
+        "three_way_parity": 0.42358672618865967,
+        "overall": 0.27096372842788696
+      }
+    },
+    {
+      "seed": 2,
+      "arm": "rand_exp_dense",
+      "sd": {
+        "main_effect": 0.9437060952186584,
+        "unstructured": 0.8071498913424355,
+        "two_way_xor": 0.7540350953737894,
+        "three_way_parity": 0.6416447758674622,
+        "overall": 0.8095732927322388
+      },
+      "ccgp": {
+        "main_effect": 0.8586677630742391,
+        "unstructured": 0.49118596954005106,
+        "two_way_xor": 0.35138157804807024,
+        "three_way_parity": 0.14726974070072174,
+        "overall": 0.500874997462545
+      },
+      "gap": {
+        "main_effect": 0.05629390478134155,
+        "unstructured": 0.19285010865756444,
+        "two_way_xor": 0.24596490462621054,
+        "three_way_parity": 0.35835522413253784,
+        "overall": 0.19042669236660004
+      }
+    },
+    {
+      "seed": 3,
+      "arm": "resid",
+      "sd": {
+        "main_effect": 0.9969517787297567,
+        "unstructured": 0.9161301595824105,
+        "two_way_xor": 0.8679166833559672,
+        "three_way_parity": 0.6278946995735168,
+        "overall": 0.9106898903846741
+      },
+      "ccgp": {
+        "main_effect": 0.9474945346514384,
+        "unstructured": 0.4884504222444125,
+        "two_way_xor": 0.312757674853007,
+        "three_way_parity": 0.03353618420660496,
+        "overall": 0.4997401324446712
+      },
+      "gap": {
+        "main_effect": 0.0030482212702433267,
+        "unstructured": 0.08267214681421008,
+        "two_way_xor": 0.13045424222946167,
+        "three_way_parity": 0.2380528450012207,
+        "overall": 0.08438229560852051
+      }
+    },
+    {
+      "seed": 3,
+      "arm": "sae",
+      "sd": {
+        "main_effect": 0.793377161026001,
+        "unstructured": 0.7220018740211215,
+        "two_way_xor": 0.6731578509012858,
+        "three_way_parity": 0.5861184000968933,
+        "overall": 0.7200507521629333
+      },
+      "ccgp": {
+        "main_effect": 0.7336238980293274,
+        "unstructured": 0.494520089668887,
+        "two_way_xor": 0.417807020743688,
+        "three_way_parity": 0.2473190724849701,
+        "overall": 0.5013764097009387
+      },
+      "gap": {
+        "main_effect": 0.20662283897399902,
+        "unstructured": 0.27797478224549976,
+        "two_way_xor": 0.3268421490987142,
+        "three_way_parity": 0.4099769592285156,
+        "overall": 0.2798190116882324
+      }
+    },
+    {
+      "seed": 3,
+      "arm": "sae_recon",
+      "sd": {
+        "main_effect": 0.9778070449829102,
+        "unstructured": 0.8755780160427094,
+        "two_way_xor": 0.8180482387542725,
+        "three_way_parity": 0.5936184525489807,
+        "overall": 0.8713533878326416
+      },
+      "ccgp": {
+        "main_effect": 0.9410690863927206,
+        "unstructured": 0.4862934695822851,
+        "two_way_xor": 0.3326864014069239,
+        "three_way_parity": 0.06725328937172889,
+        "overall": 0.5001353400307041
+      },
+      "gap": {
+        "main_effect": 0.022192955017089844,
+        "unstructured": 0.09612779319286346,
+        "two_way_xor": 0.1338756481806437,
+        "three_way_parity": 0.12938648462295532,
+        "overall": 0.09397629648447037
+      }
+    },
+    {
+      "seed": 3,
+      "arm": "rand_exp",
+      "sd": {
+        "main_effect": 0.8578947385152181,
+        "unstructured": 0.7282659794603076,
+        "two_way_xor": 0.664013127485911,
+        "three_way_parity": 0.5211184024810791,
+        "overall": 0.727951169013977
+      },
+      "ccgp": {
+        "main_effect": 0.7908771991729736,
+        "unstructured": 0.49281602523156576,
+        "two_way_xor": 0.3810690760612488,
+        "three_way_parity": 0.21963815689086913,
+        "overall": 0.5009807339736394
+      },
+      "gap": {
+        "main_effect": 0.1421052614847819,
+        "unstructured": 0.27172242743628366,
+        "two_way_xor": 0.33598687251408893,
+        "three_way_parity": 0.4704357385635376,
+        "overall": 0.2717982828617096
+      }
+    },
+    {
+      "seed": 3,
+      "arm": "rand_exp_dense",
+      "sd": {
+        "main_effect": 0.937434196472168,
+        "unstructured": 0.8058623203209468,
+        "two_way_xor": 0.7589912215868632,
+        "three_way_parity": 0.6484867930412292,
+        "overall": 0.8086259365081787
+      },
+      "ccgp": {
+        "main_effect": 0.8527467131614684,
+        "unstructured": 0.4899512454867363,
+        "two_way_xor": 0.35706140398979186,
+        "three_way_parity": 0.1472368448972702,
+        "overall": 0.49986560199941904
+      },
+      "gap": {
+        "main_effect": 0.06256580352783203,
+        "unstructured": 0.19413767967905318,
+        "two_way_xor": 0.2410087784131368,
+        "three_way_parity": 0.35151320695877075,
+        "overall": 0.1913740485906601
+      }
+    },
+    {
+      "seed": 4,
+      "arm": "resid",
+      "sd": {
+        "main_effect": 0.9969956080118815,
+        "unstructured": 0.900472274848393,
+        "two_way_xor": 0.8340789675712585,
+        "three_way_parity": 0.6500657796859741,
+        "overall": 0.8959004282951355
+      },
+      "ccgp": {
+        "main_effect": 0.9413815816243489,
+        "unstructured": 0.4883675998875074,
+        "two_way_xor": 0.317669959863027,
+        "three_way_parity": 0.0404934223741293,
+        "overall": 0.4997697383910417
+      },
+      "gap": {
+        "main_effect": 0.0030043919881184897,
+        "unstructured": 0.09791151966367449,
+        "two_way_xor": 0.16396443049112955,
+        "three_way_parity": 0.20147210359573364,
+        "overall": 0.09839717298746109
+      }
+    },
+    {
+      "seed": 4,
+      "arm": "sae",
+      "sd": {
+        "main_effect": 0.7810526291529337,
+        "unstructured": 0.7263674778597695,
+        "two_way_xor": 0.6801754236221313,
+        "three_way_parity": 0.6107894778251648,
+        "overall": 0.7237932682037354
+      },
+      "ccgp": {
+        "main_effect": 0.7318859696388245,
+        "unstructured": 0.49382812529802317,
+        "two_way_xor": 0.41441338062286376,
+        "three_way_parity": 0.23797696828842163,
+        "overall": 0.5001160722119468
+      },
+      "gap": {
+        "main_effect": 0.21894737084706625,
+        "unstructured": 0.2736325221402304,
+        "two_way_xor": 0.31982457637786865,
+        "three_way_parity": 0.3892105221748352,
+        "overall": 0.2762067914009094
+      }
+    },
+    {
+      "seed": 4,
+      "arm": "sae_recon",
+      "sd": {
+        "main_effect": 0.9870394865671793,
+        "unstructured": 0.8804746291467122,
+        "two_way_xor": 0.8253289461135864,
+        "three_way_parity": 0.6266447305679321,
+        "overall": 0.8776296377182007
+      },
+      "ccgp": {
+        "main_effect": 0.9551315704981486,
+        "unstructured": 0.48380169144698554,
+        "two_way_xor": 0.3475986848274866,
+        "three_way_parity": 0.05697368383407593,
+        "overall": 0.5003317660093309
+      },
+      "gap": {
+        "main_effect": 0.012960513432820639,
+        "unstructured": 0.0930066704750061,
+        "two_way_xor": 0.12497578064600627,
+        "three_way_parity": 0.11359792947769165,
+        "overall": 0.08947410434484482
+      }
+    },
+    {
+      "seed": 4,
+      "arm": "rand_exp",
+      "sd": {
+        "main_effect": 0.8754166960716248,
+        "unstructured": 0.7445535681077412,
+        "two_way_xor": 0.684583326180776,
+        "three_way_parity": 0.5679605603218079,
+        "overall": 0.7455846071243286
+      },
+      "ccgp": {
+        "main_effect": 0.8063870747884114,
+        "unstructured": 0.4892910037721907,
+        "two_way_xor": 0.37841009497642525,
+        "three_way_parity": 0.20697368383407594,
+        "overall": 0.49890037996428344
+      },
+      "gap": {
+        "main_effect": 0.12458330392837524,
+        "unstructured": 0.2554116440670831,
+        "two_way_xor": 0.31541667381922406,
+        "three_way_parity": 0.40408313274383545,
+        "overall": 0.25358882546424866
+      }
+    },
+    {
+      "seed": 4,
+      "arm": "rand_exp_dense",
+      "sd": {
+        "main_effect": 0.9346053004264832,
+        "unstructured": 0.8131109071629388,
+        "two_way_xor": 0.7635306914647421,
+        "three_way_parity": 0.6341447234153748,
+        "overall": 0.8141615986824036
+      },
+      "ccgp": {
+        "main_effect": 0.853722588221232,
+        "unstructured": 0.4902032422167914,
+        "two_way_xor": 0.3460964918136597,
+        "three_way_parity": 0.13976974040269852,
+        "overall": 0.49899765035935806
+      },
+      "gap": {
+        "main_effect": 0.06539469957351685,
+        "unstructured": 0.1868890928370612,
+        "two_way_xor": 0.23646930853525797,
+        "three_way_parity": 0.36585527658462524,
+        "overall": 0.18583832681179047
+      }
+    }
+  ],
+  "summary": {
+    "resid": {
+      "sd": {
+        "main_effect": {
+          "mean": 0.9979122877120972,
+          "ci95": 0.0008582924669077665
+        },
+        "overall": {
+          "mean": 0.9010274529457092,
+          "ci95": 0.006639770440873627
+        },
+        "three_way_parity": {
+          "mean": 0.6342105150222779,
+          "ci95": 0.01413635634684133
+        },
+        "two_way_xor": {
+          "mean": 0.8448596477508545,
+          "ci95": 0.015577883013452764
+        },
+        "unstructured": {
+          "mean": 0.9061940827539988,
+          "ci95": 0.0067171173186216775
+        }
+      },
+      "ccgp": {
+        "main_effect": {
+          "mean": 0.9468015448252359,
+          "ci95": 0.0036571480646018745
+        },
+        "overall": {
+          "mean": 0.5000360906081541,
+          "ci95": 0.00032573263222008495
+        },
+        "three_way_parity": {
+          "mean": 0.039444079250097276,
+          "ci95": 0.00536384084882108
+        },
+        "two_way_xor": {
+          "mean": 0.31603179772694906,
+          "ci95": 0.0020067980467012767
+        },
+        "unstructured": {
+          "mean": 0.4883328237278121,
+          "ci95": 0.0004983555265629404
+        }
+      },
+      "gap": {
+        "main_effect": {
+          "mean": 0.002087712287902832,
+          "ci95": 0.0008582924669077634
+        },
+        "overall": {
+          "mean": 0.09331212043762208,
+          "ci95": 0.006379873476158241
+        },
+        "three_way_parity": {
+          "mean": 0.21358424425125122,
+          "ci95": 0.018570786308053543
+        },
+        "two_way_xor": {
+          "mean": 0.15379350980122883,
+          "ci95": 0.015448924342361479
+        },
+        "unstructured": {
+          "mean": 0.09231058316571372,
+          "ci95": 0.006556563314829652
+        }
+      }
+    },
+    "sae": {
+      "sd": {
+        "main_effect": {
+          "mean": 0.7873201568921406,
+          "ci95": 0.014091981140217364
+        },
+        "overall": {
+          "mean": 0.715606415271759,
+          "ci95": 0.0133494301228762
+        },
+        "three_way_parity": {
+          "mean": 0.5924210548400879,
+          "ci95": 0.012750516933806402
+        },
+        "two_way_xor": {
+          "mean": 0.6760613878568014,
+          "ci95": 0.012919084475246029
+        },
+        "unstructured": {
+          "mean": 0.71655920786517,
+          "ci95": 0.013799501184958603
+        }
+      },
+      "ccgp": {
+        "main_effect": {
+          "mean": 0.7308826780319213,
+          "ci95": 0.00861421489595615
+        },
+        "overall": {
+          "mean": 0.5004406963586808,
+          "ci95": 0.0007450714340743308
+        },
+        "three_way_parity": {
+          "mean": 0.23902960360050202,
+          "ci95": 0.012601526560160767
+        },
+        "two_way_xor": {
+          "mean": 0.4153026338418324,
+          "ci95": 0.003202362694961522
+        },
+        "unstructured": {
+          "mean": 0.49420852976185936,
+          "ci95": 0.0005723396859464422
+        }
+      },
+      "gap": {
+        "main_effect": {
+          "mean": 0.21267984310785928,
+          "ci95": 0.014091981140217345
+        },
+        "overall": {
+          "mean": 0.2843619704246521,
+          "ci95": 0.013356089158654235
+        },
+        "three_way_parity": {
+          "mean": 0.4066023945808411,
+          "ci95": 0.012396431545254123
+        },
+        "two_way_xor": {
+          "mean": 0.32393861214319863,
+          "ci95": 0.012919084475246026
+        },
+        "unstructured": {
+          "mean": 0.28343612338815416,
+          "ci95": 0.013801272587801757
+        }
+      }
+    },
+    "sae_recon": {
+      "sd": {
+        "main_effect": {
+          "mean": 0.9826359947522482,
+          "ci95": 0.0034150990271232494
+        },
+        "overall": {
+          "mean": 0.8760108828544617,
+          "ci95": 0.006746657293211439
+        },
+        "three_way_parity": {
+          "mean": 0.6201447486877442,
+          "ci95": 0.01433364927234769
+        },
+        "two_way_xor": {
+          "mean": 0.8184780756632488,
+          "ci95": 0.011491247467506793
+        },
+        "unstructured": {
+          "mean": 0.8798890978097915,
+          "ci95": 0.006882650798376103
+        }
+      },
+      "ccgp": {
+        "main_effect": {
+          "mean": 0.9459221537907918,
+          "ci95": 0.005190567647780033
+        },
+        "overall": {
+          "mean": 0.5001628769423281,
+          "ci95": 0.00017026324669073103
+        },
+        "three_way_parity": {
+          "mean": 0.05644407972693444,
+          "ci95": 0.007341924886559804
+        },
+        "two_way_xor": {
+          "mean": 0.3430581152439117,
+          "ci95": 0.005460226387176891
+        },
+        "unstructured": {
+          "mean": 0.4850827073625156,
+          "ci95": 0.0008600085086829386
+        }
+      },
+      "gap": {
+        "main_effect": {
+          "mean": 0.01736400524775187,
+          "ci95": 0.003415099027123259
+        },
+        "overall": {
+          "mean": 0.09168102443218232,
+          "ci95": 0.004880022567384443
+        },
+        "three_way_parity": {
+          "mean": 0.11925630569458008,
+          "ci95": 0.007734340544587843
+        },
+        "two_way_xor": {
+          "mean": 0.13561085859934488,
+          "ci95": 0.010695738386956501
+        },
+        "unstructured": {
+          "mean": 0.09395196054662977,
+          "ci95": 0.004837394436766483
+        }
+      }
+    },
+    "rand_exp": {
+      "sd": {
+        "main_effect": {
+          "mean": 0.860381571451823,
+          "ci95": 0.0094402928734317
+        },
+        "overall": {
+          "mean": 0.730681574344635,
+          "ci95": 0.010172431070297248
+        },
+        "three_way_parity": {
+          "mean": 0.5446315884590149,
+          "ci95": 0.02516277420586437
+        },
+        "two_way_xor": {
+          "mean": 0.6670657912890117,
+          "ci95": 0.009485993981656936
+        },
+        "unstructured": {
+          "mean": 0.7302457720041275,
+          "ci95": 0.010022733142719877
+        }
+      },
+      "ccgp": {
+        "main_effect": {
+          "mean": 0.8031622902552286,
+          "ci95": 0.010894580229320376
+        },
+        "overall": {
+          "mean": 0.49975658098288944,
+          "ci95": 0.0006854527999291991
+        },
+        "three_way_parity": {
+          "mean": 0.21950657904148102,
+          "ci95": 0.010320993249874599
+        },
+        "two_way_xor": {
+          "mean": 0.37789692878723147,
+          "ci95": 0.0031753990286454356
+        },
+        "unstructured": {
+          "mean": 0.49031414636543813,
+          "ci95": 0.0015192431687593522
+        }
+      },
+      "gap": {
+        "main_effect": {
+          "mean": 0.13961842854817708,
+          "ci95": 0.009440292873431691
+        },
+        "overall": {
+          "mean": 0.26818097829818727,
+          "ci95": 0.010222868866111593
+        },
+        "three_way_parity": {
+          "mean": 0.4216747760772705,
+          "ci95": 0.03439465926653887
+        },
+        "two_way_xor": {
+          "mean": 0.3325873215993246,
+          "ci95": 0.009454857976747093
+        },
+        "unstructured": {
+          "mean": 0.2695729438747679,
+          "ci95": 0.010094528869444248
+        }
+      }
+    },
+    "rand_exp_dense": {
+      "sd": {
+        "main_effect": {
+          "mean": 0.9373727917671204,
+          "ci95": 0.00604066117781117
+        },
+        "overall": {
+          "mean": 0.8101976990699769,
+          "ci95": 0.003299464386732568
+        },
+        "three_way_parity": {
+          "mean": 0.634407889842987,
+          "ci95": 0.011876599878179975
+        },
+        "two_way_xor": {
+          "mean": 0.7586666703224182,
+          "ci95": 0.0032528161201212167
+        },
+        "unstructured": {
+          "mean": 0.8083712428808212,
+          "ci95": 0.003762433355246675
+        }
+      },
+      "ccgp": {
+        "main_effect": {
+          "mean": 0.8592083382606506,
+          "ci95": 0.006606287938591281
+        },
+        "overall": {
+          "mean": 0.5001137226053647,
+          "ci95": 0.0006570249142681457
+        },
+        "three_way_parity": {
+          "mean": 0.14374342292547226,
+          "ci95": 0.003389097101477029
+        },
+        "two_way_xor": {
+          "mean": 0.35132785340150197,
+          "ci95": 0.0034388929474577982
+        },
+        "unstructured": {
+          "mean": 0.49030815333127975,
+          "ci95": 0.0004696321906945005
+        }
+      },
+      "gap": {
+        "main_effect": {
+          "mean": 0.06262720823287964,
+          "ci95": 0.00604066117781117
+        },
+        "overall": {
+          "mean": 0.18980224728584288,
+          "ci95": 0.003299474948625229
+        },
+        "three_way_parity": {
+          "mean": 0.36559211015701293,
+          "ci95": 0.011876599878179975
+        },
+        "two_way_xor": {
+          "mean": 0.24133332967758178,
+          "ci95": 0.0032528161201211985
+        },
+        "unstructured": {
+          "mean": 0.19162875711917876,
+          "ci95": 0.003762433355246685
+        }
+      }
+    }
+  },
+  "paired_sae_minus_rand_exp": {
+    "sd": {
+      "main_effect": {
+        "mean": -0.07306141455968222,
+        "ci95": 0.018107958274805144
+      },
+      "overall": {
+        "mean": -0.015075159072875977,
+        "ci95": 0.016735491214026593
+      },
+      "three_way_parity": {
+        "mean": 0.047789466381072995,
+        "ci95": 0.023731966874907622
+      },
+      "two_way_xor": {
+        "mean": 0.008995596567789676,
+        "ci95": 0.015582154336727258
+      },
+      "unstructured": {
+        "mean": -0.013686564138957436,
+        "ci95": 0.016885446364001442
+      }
+    },
+    "ccgp": {
+      "main_effect": {
+        "mean": -0.07227961222330728,
+        "ci95": 0.014675823273589503
+      },
+      "overall": {
+        "mean": 0.0006841153757913166,
+        "ci95": 0.0007298316220367324
+      },
+      "three_way_parity": {
+        "mean": 0.01952302455902099,
+        "ci95": 0.01821672324412085
+      },
+      "two_way_xor": {
+        "mean": 0.037405705054601016,
+        "ci95": 0.005455268663829179
+      },
+      "unstructured": {
+        "mean": 0.0038943833964211636,
+        "ci95": 0.0014668602494159872
+      }
+    }
+  },
+  "wall_clock_seconds": 685.4868508329964
 }
