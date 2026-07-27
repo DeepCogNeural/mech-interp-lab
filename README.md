@@ -23,8 +23,10 @@ than dressed up. Two of the three produced results I did not want; all three are
 
 Experiment 02's caveats named this one twice: XOR accuracy is a task-specific proxy where shattering
 dimensionality / CCGP (Bernardi et al. 2020) is the task-agnostic measure, and the whole thing was a toy
-model. So: GPT-2-small layer 8, the published res-jb SAE, a full factorial NUMBER × TENSE × POLARITY read
-at a sentence-final `.` that is byte-identical across all eight conditions. The comparison that matters is
+model. So this one is measured on a real model, with SAE weights I did not train: GPT-2-small layer 8 and
+the published res-jb SAE from `jbloom/GPT2-Small-SAEs-Reformatted`, loaded straight from safetensors. Then
+a full factorial NUMBER × TENSE × POLARITY over 96 lexical items, read at a sentence-final `.` that is
+byte-identical across all eight conditions. The comparison that matters is
 not SAE versus residual stream — a 768 → 24,576 ReLU expansion wins that by Cover's theorem — but **SAE
 versus a random expansion matched in width, column norm, and L0.**
 
@@ -37,11 +39,25 @@ not the codes. **I report that as not adjudicated** rather than shipping the fla
 width-matched follow-ups that survived (`+0.081 ± 0.008`, `+0.075 ± 0.016`) inherit the same question,
 because they only ever ran under the convention that produces an effect.
 
+Per arm, in overall shattering dimensionality (five seeds, 95% Student-t):
+
+| arm | per-feature z-score | global RMS |
+|---|---:|---:|
+| `sae` (sparse; ~790 latents ever fire here) | 0.718 ± 0.020 | 0.888 ± 0.006 |
+| `rand_exp` (matched random; ~500) | 0.731 ± 0.014 | 0.809 ± 0.008 |
+| `resid` (768, dense) | 0.901 ± 0.009 | 0.902 ± 0.009 |
+| `sae_recon` (768, dense) | 0.877 ± 0.010 | 0.877 ± 0.009 |
+
 What does survive is a methodological result, and it is the part I'd defend: the sensitivity is
 **localised**. The two dense 768-dimensional arms are unmoved by the scaling (0.902 vs 0.901; 0.877 vs
 0.877) while every sparse or very wide arm swings hard — so preprocessing that is harmless for dense
 representations is decisive for sparse over-complete ones, and any SAE-versus-baseline decoding comparison
 that doesn't state its scaling convention is under-determined.
+
+This is a fallback report, and the writeup says so in full. The run that would settle the comparison —
+every headline arm fitted to a stated convergence criterion, with L2 selected per arm *and* per scaling —
+did not complete, so what ships is the earlier completed run. The question counts as adjudicated only when
+both scaling estimates are individually precise *and* agree, not merely when their intervals overlap.
 
 ### Scope — what this does not say
 
@@ -193,7 +209,7 @@ python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirem
 ```
 
 ```bash
-(cd experiments/03_ccgp_on_sae_features && python ccgp_sae.py)           # 19m51s measured on an M1 Pro CPU; SMOKE=1 gives an 81s plumbing subset
+(cd experiments/03_ccgp_on_sae_features && python ccgp_sae.py)           # 19m51s measured on an M1 Pro CPU; SMOKE=1 gives a fast plumbing subset
 ```
 
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
