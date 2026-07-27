@@ -1,0 +1,2894 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "exp03_item_disjoint_probe_protocol",
+        "label": "Factorial item-disjoint probe protocol",
+        "nodes": [
+          "exp03_factorial_final_token_control",
+          "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+          "03_ccgp_on_sae_features_ccgp_sae_folds",
+          "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py"
+      },
+      {
+        "id": "exp03_sparse_control_comparison",
+        "label": "SAE versus sparse random-control comparison",
+        "nodes": [
+          "exp03_sparse_sae_code",
+          "exp03_matched_sparse_random_control",
+          "exp03_effective_active_width_caveat",
+          "exp03_two_way_xor_comparison"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md"
+      },
+      {
+        "id": "exp03_fair_primary_probe_pipeline",
+        "label": "Fair primary probe pipeline",
+        "nodes": [
+          "exp03_global_rms_primary_probe",
+          "exp03_nested_l2_selection",
+          "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+          "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py"
+      },
+      {
+        "id": "fig01_displayed_arms",
+        "label": "Displayed representation arms",
+        "nodes": [
+          "fig01_arm_resid",
+          "fig01_arm_sae",
+          "fig01_arm_sae_recon",
+          "fig01_arm_rand_exp",
+          "fig01_arm_rand_exp_dense"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "figures/01_shattering_vs_ccgp.png"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "ccgp_sae.py",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L1",
+      "id": "ccgp_sae_py",
+      "community": 1,
+      "norm_label": "ccgp_sae.py"
+    },
+    {
+      "label": "Config",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L75",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_config",
+      "community": 1,
+      "norm_label": "config"
+    },
+    {
+      "label": "Stimuli",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L118",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_stimuli",
+      "community": 4,
+      "norm_label": "stimuli"
+    },
+    {
+      "label": "SAEWeights",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L131",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_saeweights",
+      "community": 2,
+      "norm_label": "saeweights"
+    },
+    {
+      "label": ".encode()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L139",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_saeweights_encode",
+      "community": 2,
+      "norm_label": ".encode()"
+    },
+    {
+      "label": ".decode()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L142",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_saeweights_decode",
+      "community": 2,
+      "norm_label": ".decode()"
+    },
+    {
+      "label": "_ids()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L180",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_ids",
+      "community": 4,
+      "norm_label": "_ids()"
+    },
+    {
+      "label": "sentence()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L186",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_sentence",
+      "community": 4,
+      "norm_label": "sentence()"
+    },
+    {
+      "label": "build_stimuli()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L197",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "community": 4,
+      "norm_label": "build_stimuli()"
+    },
+    {
+      "label": "device()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L262",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_device",
+      "community": 1,
+      "norm_label": "device()"
+    },
+    {
+      "label": "load_model()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L268",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_load_model",
+      "community": 1,
+      "norm_label": "load_model()"
+    },
+    {
+      "label": "_tensor()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L274",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_tensor",
+      "community": 2,
+      "norm_label": "_tensor()"
+    },
+    {
+      "label": "load_direct_res_jb()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L280",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_load_direct_res_jb",
+      "community": 2,
+      "norm_label": "load_direct_res_jb()"
+    },
+    {
+      "label": "collect_residuals()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L302",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_collect_residuals",
+      "community": 4,
+      "norm_label": "collect_residuals()"
+    },
+    {
+      "label": "ci95()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L331",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_ci95",
+      "community": 1,
+      "norm_label": "ci95()"
+    },
+    {
+      "label": "mean_ci()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L336",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_mean_ci",
+      "community": 1,
+      "norm_label": "mean_ci()"
+    },
+    {
+      "label": "_canonical_mask()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L341",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_canonical_mask",
+      "community": 1,
+      "norm_label": "_canonical_mask()"
+    },
+    {
+      "label": "dichotomies()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L346",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_dichotomies",
+      "community": 1,
+      "norm_label": "dichotomies()"
+    },
+    {
+      "label": "folds()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L375",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_folds",
+      "community": 0,
+      "norm_label": "folds()"
+    },
+    {
+      "label": "balanced_accuracy()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L388",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_balanced_accuracy",
+      "community": 0,
+      "norm_label": "balanced_accuracy()"
+    },
+    {
+      "label": "prepare_features()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L398",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "community": 0,
+      "norm_label": "prepare_features()"
+    },
+    {
+      "label": "scale_features()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L404",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "community": 0,
+      "norm_label": "scale_features()"
+    },
+    {
+      "label": "standardise()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L423",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_standardise",
+      "community": 6,
+      "norm_label": "standardise()"
+    },
+    {
+      "label": "fit_probe()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L428",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_fit_probe",
+      "community": 0,
+      "norm_label": "fit_probe()"
+    },
+    {
+      "label": "main_effect_pilot()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L469",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_main_effect_pilot",
+      "community": 6,
+      "norm_label": "main_effect_pilot()"
+    },
+    {
+      "label": "inner_validation_split()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L488",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_inner_validation_split",
+      "community": 0,
+      "norm_label": "inner_validation_split()"
+    },
+    {
+      "label": "select_weight_decays()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L504",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "community": 0,
+      "norm_label": "select_weight_decays()"
+    },
+    {
+      "label": "_fold_weight_decay()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L537",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_fold_weight_decay",
+      "community": 0,
+      "norm_label": "_fold_weight_decay()"
+    },
+    {
+      "label": "sd_metric()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L545",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "community": 0,
+      "norm_label": "sd_metric()"
+    },
+    {
+      "label": "ccgp_metric()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L581",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "community": 0,
+      "norm_label": "ccgp_metric()"
+    },
+    {
+      "label": "random_expansion()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L662",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_random_expansion",
+      "community": 2,
+      "norm_label": "random_expansion()"
+    },
+    {
+      "label": "representations()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L675",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_representations",
+      "community": 2,
+      "norm_label": "representations()"
+    },
+    {
+      "label": "explained_variance()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L698",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_explained_variance",
+      "community": 2,
+      "norm_label": "explained_variance()"
+    },
+    {
+      "label": "gate_a()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L705",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "community": 2,
+      "norm_label": "gate_a()"
+    },
+    {
+      "label": "choose_layer()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L726",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_choose_layer",
+      "community": 6,
+      "norm_label": "choose_layer()"
+    },
+    {
+      "label": "write_gated_out()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L739",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_write_gated_out",
+      "community": 1,
+      "norm_label": "write_gated_out()"
+    },
+    {
+      "label": "aggregate()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L757",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_aggregate",
+      "community": 1,
+      "norm_label": "aggregate()"
+    },
+    {
+      "label": "paired_sae_minus_rand()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L768",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_paired_sae_minus_rand",
+      "community": 1,
+      "norm_label": "paired_sae_minus_rand()"
+    },
+    {
+      "label": "convergence_check()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L784",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "community": 0,
+      "norm_label": "convergence_check()"
+    },
+    {
+      "label": "summarise_convergence()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L813",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_summarise_convergence",
+      "community": 1,
+      "norm_label": "summarise_convergence()"
+    },
+    {
+      "label": "legacy_fixed_standardise_reference()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L825",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_legacy_fixed_standardise_reference",
+      "community": 1,
+      "norm_label": "legacy_fixed_standardise_reference()"
+    },
+    {
+      "label": "plots()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L841",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_plots",
+      "community": 1,
+      "norm_label": "plots()"
+    },
+    {
+      "label": "run()",
+      "file_type": "code",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L887",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "community": 1,
+      "norm_label": "run()"
+    },
+    {
+      "label": "Experiment 03 \u2014 shattering dimensionality and CCGP on a real GPT-2-small SAE.  T",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L1",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_1",
+      "community": 1,
+      "norm_label": "experiment 03 \u2014 shattering dimensionality and ccgp on a real gpt-2-small sae.  t"
+    },
+    {
+      "label": "Tokenizer-interface shim for both fast and slow GPT-2 tokenizers.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L181",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_181",
+      "community": 4,
+      "norm_label": "tokenizer-interface shim for both fast and slow gpt-2 tokenizers."
+    },
+    {
+      "label": "One grammatical cell.  number/tense/polarity use 0/1 coding.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L187",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_187",
+      "community": 4,
+      "norm_label": "one grammatical cell.  number/tense/polarity use 0/1 coding."
+    },
+    {
+      "label": "Make full-factorial lexical items and reject an item unless all eight lengths ma",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L198",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_198",
+      "community": 4,
+      "norm_label": "make full-factorial lexical items and reject an item unless all eight lengths ma"
+    },
+    {
+      "label": "Fallback loader required by the experiment: no sae_lens dependency or API pins.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L281",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_281",
+      "community": 2,
+      "norm_label": "fallback loader required by the experiment: no sae_lens dependency or api pins."
+    },
+    {
+      "label": "Cache only requested residual hooks and select each sequence's final '.' positio",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L309",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_309",
+      "community": 4,
+      "norm_label": "cache only requested residual hooks and select each sequence's final '.' positio"
+    },
+    {
+      "label": "35 balanced dichotomies, with the seven parity-family masks recognised up to fli",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L347",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_347",
+      "community": 1,
+      "norm_label": "35 balanced dichotomies, with the seven parity-family masks recognised up to fli"
+    },
+    {
+      "label": "Column-wise balanced accuracy; all experiment labels have both classes.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L389",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_389",
+      "community": 0,
+      "norm_label": "column-wise balanced accuracy; all experiment labels have both classes."
+    },
+    {
+      "label": "Drop units exactly zero over this experiment's whole sample, as specified.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L399",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_399",
+      "community": 0,
+      "norm_label": "drop units exactly zero over this experiment's whole sample, as specified."
+    },
+    {
+      "label": "Centre on training items, then use either per-feature or one global scale.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L409",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_409",
+      "community": 0,
+      "norm_label": "centre on training items, then use either per-feature or one global scale."
+    },
+    {
+      "label": "Legacy fixed-L2 preprocessing, retained for gates and sensitivity reporting.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L424",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_424",
+      "community": 6,
+      "norm_label": "legacy fixed-l2 preprocessing, retained for gates and sensitivity reporting."
+    },
+    {
+      "label": "One vectorised multi-output logistic probe; optional mask supports CCGP heads.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L439",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_439",
+      "community": 0,
+      "norm_label": "one vectorised multi-output logistic probe; optional mask supports ccgp heads."
+    },
+    {
+      "label": "Hold out lexical items only from an outer fold's training partition.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L494",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_494",
+      "community": 0,
+      "norm_label": "hold out lexical items only from an outer fold's training partition."
+    },
+    {
+      "label": "Nested L2 selection on the three main effects; outer test items are untouched.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L511",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_511",
+      "community": 0,
+      "norm_label": "nested l2 selection on the three main effects; outer test items are untouched."
+    },
+    {
+      "label": "Five item-disjoint folds, all 35 dichotomies trained as one multi-output probe.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L555",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_555",
+      "community": 0,
+      "norm_label": "five item-disjoint folds, all 35 dichotomies trained as one multi-output probe."
+    },
+    {
+      "label": "CCGP with all (or smoke-subset) 4x4 held-condition splits, item-disjoint through",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L591",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_591",
+      "community": 0,
+      "norm_label": "ccgp with all (or smoke-subset) 4x4 held-condition splits, item-disjoint through"
+    },
+    {
+      "label": "Matched-width random ReLU expansion: SAE norm distribution + SAE bias + top-k L0",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L663",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_663",
+      "community": 2,
+      "norm_label": "matched-width random relu expansion: sae norm distribution + sae bias + top-k l0"
+    },
+    {
+      "label": "Load an exact residual SAE at layer 8 and ensure its real-text reconstruction is",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L706",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_706",
+      "community": 2,
+      "norm_label": "load an exact residual sae at layer 8 and ensure its real-text reconstruction is"
+    },
+    {
+      "label": "A failure manifest is a real result; it is never dressed up as an experiment run",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L740",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_740",
+      "community": 1,
+      "norm_label": "a failure manifest is a real result; it is never dressed up as an experiment run"
+    },
+    {
+      "label": "Within-seed contrasts for whatever metric scope a probe setting evaluated.",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L769",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_769",
+      "community": 1,
+      "norm_label": "within-seed contrasts for whatever metric scope a probe setting evaluated."
+    },
+    {
+      "label": "Compare 100 and 200 optimizer steps on an inner validation split, never test ite",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L792",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_792",
+      "community": 0,
+      "norm_label": "compare 100 and 200 optimizer steps on an inner validation split, never test ite"
+    },
+    {
+      "label": "Carry the actual pre-control full run forward as a labelled sensitivity baseline",
+      "file_type": "rationale",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L826",
+      "id": "03_ccgp_on_sae_features_ccgp_sae_rationale_826",
+      "community": 1,
+      "norm_label": "carry the actual pre-control full run forward as a labelled sensitivity baseline"
+    },
+    {
+      "label": "Factorial final-token and item-disjoint probe control",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L10",
+      "id": "exp03_factorial_final_token_control",
+      "community": 4,
+      "norm_label": "factorial final-token and item-disjoint probe control"
+    },
+    {
+      "label": "Sparse SAE code",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L21",
+      "id": "exp03_sparse_sae_code",
+      "community": 2,
+      "norm_label": "sparse sae code"
+    },
+    {
+      "label": "Width, norm, and L0-matched sparse random control",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L662",
+      "id": "exp03_matched_sparse_random_control",
+      "community": 2,
+      "norm_label": "width, norm, and l0-matched sparse random control"
+    },
+    {
+      "label": "Effective active-width caveat",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L130",
+      "id": "exp03_effective_active_width_caveat",
+      "community": 2,
+      "norm_label": "effective active-width caveat"
+    },
+    {
+      "label": "Global-RMS primary probe scaling",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L415",
+      "id": "exp03_global_rms_primary_probe",
+      "community": 0,
+      "norm_label": "global-rms primary probe scaling"
+    },
+    {
+      "label": "Per-feature z-score sensitivity analysis",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L93",
+      "id": "exp03_per_feature_zscore_sensitivity",
+      "community": 0,
+      "norm_label": "per-feature z-score sensitivity analysis"
+    },
+    {
+      "label": "Nested item-disjoint L2 selection",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L511",
+      "id": "exp03_nested_l2_selection",
+      "community": 0,
+      "norm_label": "nested item-disjoint l2 selection"
+    },
+    {
+      "label": "Shattering dimensionality",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L555",
+      "id": "exp03_shattering_dimensionality",
+      "community": 0,
+      "norm_label": "shattering dimensionality"
+    },
+    {
+      "label": "Cross-condition generalization performance",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L591",
+      "id": "exp03_ccgp_generalization",
+      "community": 0,
+      "norm_label": "cross-condition generalization performance"
+    },
+    {
+      "label": "SAE minus random two-way-XOR comparison",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L91",
+      "id": "exp03_two_way_xor_comparison",
+      "community": 2,
+      "norm_label": "sae minus random two-way-xor comparison"
+    },
+    {
+      "label": "Dense random expansion upper reference",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L25",
+      "id": "exp03_dense_random_upper_reference",
+      "community": 2,
+      "norm_label": "dense random expansion upper reference"
+    },
+    {
+      "label": "Representation-lens, not intervention scope",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L13",
+      "id": "exp03_representation_lens_scope",
+      "community": 8,
+      "norm_label": "representation-lens, not intervention scope"
+    },
+    {
+      "label": "Pre-execution gates A through C",
+      "file_type": "rationale",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L16",
+      "id": "exp03_preexecution_gates",
+      "community": 6,
+      "norm_label": "pre-execution gates a through c"
+    },
+    {
+      "label": "Experiment 03 writeup",
+      "file_type": "document",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L1",
+      "id": "exp03_writeup",
+      "community": 7,
+      "norm_label": "experiment 03 writeup"
+    },
+    {
+      "label": "Experiment 03 results JSON",
+      "file_type": "document",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L3",
+      "id": "exp03_results_json",
+      "community": 7,
+      "norm_label": "experiment 03 results json"
+    },
+    {
+      "label": "Experiment 03 README snippet",
+      "file_type": "document",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/README-snippet.md",
+      "source_location": "L1",
+      "id": "exp03_readme_snippet",
+      "community": 7,
+      "norm_label": "experiment 03 readme snippet"
+    },
+    {
+      "label": "Shattering versus main-effect CCGP figure",
+      "file_type": "document",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L51",
+      "id": "exp03_main_plane_figure",
+      "community": 7,
+      "norm_label": "shattering versus main-effect ccgp figure"
+    },
+    {
+      "label": "Dichotomy-family SD breakdown figure",
+      "file_type": "document",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L79",
+      "id": "exp03_dichotomy_breakdown_figure",
+      "community": 7,
+      "norm_label": "dichotomy-family sd breakdown figure"
+    },
+    {
+      "label": "Dichotomy breakdown chart",
+      "file_type": "image",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "dichotomy_breakdown_figure",
+      "community": 3,
+      "norm_label": "dichotomy breakdown chart"
+    },
+    {
+      "label": "Shattering: balanced decoding accuracy",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "shattering_balanced_decoding_accuracy",
+      "community": 3,
+      "norm_label": "shattering: balanced decoding accuracy"
+    },
+    {
+      "label": "main effect",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "main_effect_dichotomy",
+      "community": 3,
+      "norm_label": "main effect"
+    },
+    {
+      "label": "2-way XOR",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "two_way_xor_dichotomy",
+      "community": 3,
+      "norm_label": "2-way xor"
+    },
+    {
+      "label": "3-way parity",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "three_way_parity_dichotomy",
+      "community": 3,
+      "norm_label": "3-way parity"
+    },
+    {
+      "label": "unstructured",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "unstructured_dichotomy",
+      "community": 3,
+      "norm_label": "unstructured"
+    },
+    {
+      "label": "chance (0.5)",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "chance_accuracy_0_5",
+      "community": 3,
+      "norm_label": "chance (0.5)"
+    },
+    {
+      "label": "resid",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "resid_arm",
+      "community": 3,
+      "norm_label": "resid"
+    },
+    {
+      "label": "sae",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "sae_arm",
+      "community": 3,
+      "norm_label": "sae"
+    },
+    {
+      "label": "sae_recon",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "sae_recon_arm",
+      "community": 3,
+      "norm_label": "sae_recon"
+    },
+    {
+      "label": "rand_exp",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "rand_exp_arm",
+      "community": 3,
+      "norm_label": "rand_exp"
+    },
+    {
+      "label": "rand_exp_dense",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "rand_exp_dense_arm",
+      "community": 3,
+      "norm_label": "rand_exp_dense"
+    },
+    {
+      "label": "base-factor enumeration versus parity-family interactions",
+      "file_type": "rationale",
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "id": "base_factor_vs_parity_family_interactions",
+      "community": 3,
+      "norm_label": "base-factor enumeration versus parity-family interactions"
+    },
+    {
+      "label": "Expressivity versus factor abstraction: SAE and matched random expansion",
+      "file_type": "image",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "chart title",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_shattering_vs_ccgp",
+      "community": 5,
+      "norm_label": "expressivity versus factor abstraction: sae and matched random expansion"
+    },
+    {
+      "label": "5 seeds; 95% CI; global-RMS probe",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "chart subtitle",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_global_rms_probe",
+      "community": 5,
+      "norm_label": "5 seeds; 95% ci; global-rms probe"
+    },
+    {
+      "label": "main-effect CCGP: held-condition balanced accuracy",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "x-axis",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_x_axis_main_effect_ccgp",
+      "community": 5,
+      "norm_label": "main-effect ccgp: held-condition balanced accuracy"
+    },
+    {
+      "label": "shattering dimensionality: balanced accuracy",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "y-axis",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_y_axis_shattering_dimensionality",
+      "community": 5,
+      "norm_label": "shattering dimensionality: balanced accuracy"
+    },
+    {
+      "label": "chance (0.5)",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "red dashed horizontal and vertical reference lines; legend",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_chance_05",
+      "community": 5,
+      "norm_label": "chance (0.5)"
+    },
+    {
+      "label": "resid",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_arm_resid",
+      "community": 5,
+      "norm_label": "resid"
+    },
+    {
+      "label": "sae",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_arm_sae",
+      "community": 5,
+      "norm_label": "sae"
+    },
+    {
+      "label": "sae_recon",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_arm_sae_recon",
+      "community": 5,
+      "norm_label": "sae_recon"
+    },
+    {
+      "label": "rand_exp",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_arm_rand_exp",
+      "community": 5,
+      "norm_label": "rand_exp"
+    },
+    {
+      "label": "rand_exp_dense",
+      "file_type": "rationale",
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fig01_arm_rand_exp_dense",
+      "community": 5,
+      "norm_label": "rand_exp_dense"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_stimuli",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L180",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ids",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L186",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_sentence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L197",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L262",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_device",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L268",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_load_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L274",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_tensor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L280",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_load_direct_res_jb",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L302",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_collect_residuals",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L331",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ci95",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L336",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_mean_ci",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L341",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_canonical_mask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L346",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_dichotomies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L375",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_folds",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L388",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_balanced_accuracy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L398",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L404",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L423",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_standardise",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L428",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fit_probe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L469",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_main_effect_pilot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L488",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_inner_validation_split",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L504",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L537",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fold_weight_decay",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L545",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L581",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L662",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_random_expansion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L675",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_representations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L698",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_explained_variance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L705",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L726",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_choose_layer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L739",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_write_gated_out",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L757",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_aggregate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L768",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_paired_sae_minus_rand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L784",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L813",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_summarise_convergence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L825",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_legacy_fixed_standardise_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L841",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_plots",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L887",
+      "weight": 1.0,
+      "source": "ccgp_sae_py",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_1",
+      "target": "ccgp_sae_py",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L891",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_config",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L246",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_stimuli",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_saeweights",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_encode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_saeweights",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_decode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L286",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_load_direct_res_jb",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L665",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_random_expansion",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_encode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L676",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_representations",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_encode"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L710",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_encode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L907",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_encode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_saeweights_encode",
+      "target": "exp03_sparse_sae_code"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L682",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_representations",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_decode"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L711",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_decode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L907",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_saeweights_decode",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L218",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ids",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L181",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_181",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ids",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L217",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_sentence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L187",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_187",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_sentence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L897",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_198",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L197",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+      "target": "exp03_factorial_final_token_control"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L892",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_device",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L894",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_load_model",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L287",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_load_direct_res_jb",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_tensor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L707",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_load_direct_res_jb",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L904",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_load_direct_res_jb",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_281",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_load_direct_res_jb",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L708",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_collect_residuals",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L939",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_collect_residuals",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L309",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_309",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_collect_residuals",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L302",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_collect_residuals",
+      "target": "exp03_factorial_final_token_control"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L338",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_mean_ci",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ci95",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L764",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_aggregate",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_mean_ci",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L774",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_paired_sae_minus_rand",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_mean_ci",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L816",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_summarise_convergence",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_mean_ci",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L357",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_dichotomies",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_canonical_mask",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L913",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_dichotomies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L347",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_347",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_dichotomies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L476",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_main_effect_pilot",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_folds",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L514",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_folds",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L561",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_folds",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L608",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_folds"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L794",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_folds",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L375",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_folds",
+      "target": "exp03_factorial_final_token_control"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L463",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_fit_probe",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_balanced_accuracy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L652",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_balanced_accuracy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L389",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_389",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_balanced_accuracy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L512",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L556",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L600",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L686",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_representations",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L793",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L399",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_399",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_prepare_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L425",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_standardise",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L516",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L562",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L612",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L796",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L409",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_409",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L404",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "target": "exp03_global_rms_primary_probe"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L412",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_scale_features",
+      "target": "exp03_per_feature_zscore_sensitivity"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L477",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_main_effect_pilot",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_standardise",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L424",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_424",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_standardise",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L478",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_main_effect_pilot",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fit_probe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L519",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fit_probe"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L563",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fit_probe"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L797",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fit_probe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L439",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_439",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fit_probe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L727",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_choose_layer",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_main_effect_pilot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L515",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_inner_validation_split"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L795",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_inner_validation_split",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L494",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_494",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_inner_validation_split",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L957",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L511",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_511",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L504",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_select_weight_decays",
+      "target": "exp03_nested_l2_selection"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L565",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fold_weight_decay",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L641",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_fold_weight_decay",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L960",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_sd_metric"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L555",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_555",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L545",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+      "target": "exp03_shattering_dimensionality"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L963",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L591",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_591",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L581",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric",
+      "target": "exp03_ccgp_generalization"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L677",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_representations",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_random_expansion"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L663",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_663",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_random_expansion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L662",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_random_expansion",
+      "target": "exp03_matched_sparse_random_control"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L940",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_representations"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L685",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_representations",
+      "target": "exp03_effective_active_width_caveat"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L711",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_explained_variance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L907",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_explained_variance",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L898",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_gate_a"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L706",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_706",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L705",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_gate_a",
+      "target": "exp03_preexecution_gates"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L900",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_choose_layer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L726",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_choose_layer",
+      "target": "exp03_preexecution_gates"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L740",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_740",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_write_gated_out",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L996",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_aggregate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L997",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_paired_sae_minus_rand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L769",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_769",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_paired_sae_minus_rand",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py",
+      "source_location": "L768",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_paired_sae_minus_rand",
+      "target": "exp03_two_way_xor_comparison"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L981",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L792",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_792",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_convergence_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L1001",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_summarise_convergence",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L890",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_legacy_fixed_standardise_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L826",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_rationale_826",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_legacy_fixed_standardise_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ccgp_sae.py",
+      "source_location": "L1034",
+      "weight": 1.0,
+      "source": "03_ccgp_on_sae_features_ccgp_sae_run",
+      "target": "03_ccgp_on_sae_features_ccgp_sae_plots",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "exp03_dense_random_upper_reference",
+      "target": "exp03_matched_sparse_random_control"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "exp03_effective_active_width_caveat",
+      "target": "exp03_two_way_xor_comparison"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L93",
+      "weight": 1.0,
+      "source": "exp03_global_rms_primary_probe",
+      "target": "exp03_per_feature_zscore_sensitivity"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "exp03_writeup",
+      "target": "exp03_results_json"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "exp03_writeup",
+      "target": "exp03_main_plane_figure"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "exp03_writeup",
+      "target": "exp03_dichotomy_breakdown_figure"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/README-snippet.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "exp03_readme_snippet",
+      "target": "exp03_writeup"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "shattering_balanced_decoding_accuracy"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "main_effect_dichotomy"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "two_way_xor_dichotomy"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "three_way_parity_dichotomy"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "unstructured_dichotomy"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "chance_accuracy_0_5"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "resid_arm"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "sae_arm"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "sae_recon_arm"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "rand_exp_arm"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "rand_exp_dense_arm"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/02_dichotomy_breakdown.png",
+      "source": "dichotomy_breakdown_figure",
+      "target": "base_factor_vs_parity_family_interactions"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "chart subtitle",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_global_rms_probe"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "x-axis",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_x_axis_main_effect_ccgp"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "y-axis",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_y_axis_shattering_dimensionality"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend and plot area",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_chance_05"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend and plotted point",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_arm_resid"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend and plotted point",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_arm_sae"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend and plotted point",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_arm_sae_recon"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend and plotted point",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_arm_rand_exp"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png",
+      "source_location": "legend and plotted point",
+      "weight": 1.0,
+      "source": "fig01_shattering_vs_ccgp",
+      "target": "fig01_arm_rand_exp_dense"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "exp03_item_disjoint_probe_protocol",
+      "label": "Factorial item-disjoint probe protocol",
+      "nodes": [
+        "exp03_factorial_final_token_control",
+        "03_ccgp_on_sae_features_ccgp_sae_build_stimuli",
+        "03_ccgp_on_sae_features_ccgp_sae_folds",
+        "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py"
+    },
+    {
+      "id": "exp03_sparse_control_comparison",
+      "label": "SAE versus sparse random-control comparison",
+      "nodes": [
+        "exp03_sparse_sae_code",
+        "exp03_matched_sparse_random_control",
+        "exp03_effective_active_width_caveat",
+        "exp03_two_way_xor_comparison"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/writeup.md"
+    },
+    {
+      "id": "exp03_fair_primary_probe_pipeline",
+      "label": "Fair primary probe pipeline",
+      "nodes": [
+        "exp03_global_rms_primary_probe",
+        "exp03_nested_l2_selection",
+        "03_ccgp_on_sae_features_ccgp_sae_sd_metric",
+        "03_ccgp_on_sae_features_ccgp_sae_ccgp_metric"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "/Users/linghao/Github/mech-interp-lab/.claude/worktrees/serene-wing-ec635d/experiments/03_ccgp_on_sae_features/ccgp_sae.py"
+    },
+    {
+      "id": "fig01_displayed_arms",
+      "label": "Displayed representation arms",
+      "nodes": [
+        "fig01_arm_resid",
+        "fig01_arm_sae",
+        "fig01_arm_sae_recon",
+        "fig01_arm_rand_exp",
+        "fig01_arm_rand_exp_dense"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "figures/01_shattering_vs_ccgp.png"
+    }
+  ],
+  "built_at_commit": "6b561fedb674524d1dc113d16e23a43020f7195b"
+}

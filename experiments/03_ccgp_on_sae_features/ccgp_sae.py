@@ -5,7 +5,9 @@ The question is deliberately NOT whether an SAE is better or worse than the resi
 stream.  A residual stream is 768-wide; this SAE is a 24,576-wide ReLU expansion, so
 that comparison would mostly rediscover Cover's theorem.  The load-bearing comparison
 is instead a real sparse SAE code versus a Gaussian ReLU expansion matched in width,
-encoder-column scale, and active-feature count.
+encoder-column scale, and active-feature count.  The primary result also tests the
+active-width objection in both directions: widen the random pool to the SAE's
+surviving width, and narrow the SAE's surviving latents to the random arm's width.
 
 The trap avoided: each of the eight NUMBER x TENSE x POLARITY conditions has the same
 sentence-final '.' read-out token and (within an item) the same GPT-2 token length.
@@ -18,8 +20,8 @@ an explicit gated-out results.json and stops.  SD averages every one of the 35 b
 dichotomies.  CCGP holds out one condition from each side of a dichotomy and averages
 all 16 choices, with item-disjoint train/test examples.  Every linear probe is
 hand-rolled torch with training-split-only standardisation and strong L2.  No result is
-claimed until the corresponding full command has completed.  The completed control
-also tests whether per-feature z-scoring unfairly amplifies rare sparse units: L2 is
+claimed until the corresponding full command has completed.  The completed controls
+also test whether per-feature z-scoring unfairly amplifies rare sparse units: L2 is
 chosen inside each outer training split, and the primary probe uses one global RMS
 scale rather than one scale per feature.
 
@@ -68,7 +70,12 @@ SATURATION_THRESHOLD = 0.98
 CORE_ARMS = ("resid", "sae", "sae_recon", "rand_exp")
 # This fifth entry is deliberately an upper reference, not part of the load-bearing
 # SAE-versus-sparsity-matched-random contrast.
-ALL_ARMS = CORE_ARMS + ("rand_exp_dense",)
+BASE_ARMS = CORE_ARMS + ("rand_exp_dense",)
+# These two controls close the remaining effective-width alternative explanation.
+# They are evaluated only under the primary global-RMS probe convention; the
+# per-feature-z-score table remains a sensitivity analysis of the original arms.
+WIDTH_MATCHED_ARMS = ("rand_exp_width_matched", "sae_width_matched")
+ALL_ARMS = BASE_ARMS + WIDTH_MATCHED_ARMS
 
 
 @dataclass(frozen=True)
@@ -672,15 +679,129 @@ def random_expansion(x: torch.Tensor, sae: SAEWeights, seed: int) -> tuple[torch
     return sparse, dense, target_l0
 
 
+def random_expansion_at_width(
+    x: torch.Tensor,
+    sae: SAEWeights,
+    seed: int,
+    target_l0: int,
+    n_columns: int,
+) -> torch.Tensor:
+    """Random sparse code at a chosen nominal width for the effective-width control.
+
+    The widened arm keeps the original control's residual centring and top-k rule.  It
+    samples SAE encoder-column norms and encoder biases with replacement, so widening
+    preserves their empirical marginal distributions instead of copying a privileged
+    block of SAE columns.  Width is calibrated only against the unlabeled count of
+    nonzero-on-any-sample units; no probe score enters the calibration.
+    """
+    if n_columns < target_l0:
+        raise ValueError(f"Random-expansion width {n_columns} is below top-k {target_l0}")
+    g = torch.Generator(device="cpu").manual_seed(seed + 500_000)
+    source = torch.randint(sae.W_enc.shape[1], (n_columns,), generator=g)
+    norms = sae.W_enc.norm(dim=0)[source]
+    biases = sae.b_enc[source]
+    # Draw column-major: a width-N candidate is then an exact prefix of a larger-width
+    # candidate under the same seed.  That makes the unlabeled width calibration stable
+    # instead of changing every existing random direction when N changes shape.
+    R = torch.randn((n_columns, sae.W_enc.shape[0]), generator=g).T.contiguous()
+    R *= norms.unsqueeze(0) / R.norm(dim=0, keepdim=True).clamp_min(1e-8)
+    dense = torch.relu((x - sae.b_dec) @ R + biases)
+    values, indices = dense.topk(target_l0, dim=1)
+    return torch.zeros_like(dense).scatter(1, indices, values)
+
+
+def widened_random_to_effective_width(
+    x: torch.Tensor,
+    sae: SAEWeights,
+    seed: int,
+    target_l0: int,
+    target_width: int,
+    baseline_width: int,
+) -> tuple[torch.Tensor, dict[str, int]]:
+    """Choose a random-expansion column count using surviving width only.
+
+    Candidate selection is by absolute difference from the SAE's *unlabelled* surviving
+    width; it never sees conditions, dichotomies, or probe accuracy.  The candidate grid
+    deliberately covers the nonlinear part of the top-k usage curve (rather than
+    assuming active width grows linearly with nominal columns).  We retain the closest
+    candidate so every seed documents its achieved rather than merely intended match.
+    """
+    base_columns = sae.W_enc.shape[1]
+    if baseline_width < 1:
+        raise RuntimeError("Cannot width-match a random expansion with zero surviving baseline units")
+    initial = max(target_l0, int(round(base_columns * target_width / baseline_width)))
+    tried = 0
+    best_rep: torch.Tensor | None = None
+    best_columns = initial
+    best_width = -1
+    for multiplier in (0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 5.25, 5.5, 5.75, 6.0, 6.5):
+        candidate = max(target_l0, int(round(initial * multiplier)))
+        rep = random_expansion_at_width(x, sae, seed, target_l0, candidate)
+        tried += 1
+        achieved = int(prepare_features(rep)[0].shape[1])
+        if best_rep is None or abs(achieved - target_width) < abs(best_width - target_width):
+            if best_rep is not None:
+                del best_rep
+            best_rep, best_columns, best_width = rep, candidate, achieved
+        else:
+            del rep
+        if abs(achieved - target_width) <= 3:
+            break
+    if best_rep is None:
+        raise RuntimeError("Effective-width calibration tried no random expansions")
+    chosen, chosen_columns, achieved_width = best_rep, best_columns, best_width
+    # Carry only surviving coordinates into the probe path.  This is exactly the common
+    # all-zero removal rule, merely applied before (rather than inside) the probe helper.
+    chosen, _ = prepare_features(chosen)
+    return chosen, {
+        "target_surviving_width": target_width,
+        "achieved_surviving_width": achieved_width,
+        "nominal_column_count": chosen_columns,
+        "calibration_candidates": tried,
+    }
+
+
+def narrow_sae_to_effective_width(
+    f: torch.Tensor,
+    target_width: int,
+    seed: int,
+) -> tuple[torch.Tensor, dict[str, int]]:
+    """Uniformly subsample already-surviving SAE latents to an exact active width."""
+    active, _ = prepare_features(f)
+    if target_width > active.shape[1]:
+        raise RuntimeError(
+            f"Cannot narrow SAE from {active.shape[1]} surviving units to larger target {target_width}"
+        )
+    g = torch.Generator(device="cpu").manual_seed(seed + 600_000)
+    chosen = torch.randperm(active.shape[1], generator=g)[:target_width]
+    narrowed = active[:, chosen].contiguous()
+    # Since selection is from units that each fired at least once, this assertion checks
+    # that the control really matches the target after applying the common removal rule.
+    assert int(prepare_features(narrowed)[0].shape[1]) == target_width
+    return narrowed, {
+        "source_surviving_width": int(active.shape[1]),
+        "target_surviving_width": target_width,
+        "achieved_surviving_width": target_width,
+    }
+
+
 def representations(x: torch.Tensor, sae: SAEWeights, seed: int) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
     f = sae.encode(x)
     rand_topk, rand_dense, target_l0 = random_expansion(x, sae, seed)
+    sae_width = int(prepare_features(f)[0].shape[1])
+    rand_width = int(prepare_features(rand_topk)[0].shape[1])
+    rand_widened, random_width_control = widened_random_to_effective_width(
+        x, sae, seed, target_l0, sae_width, rand_width,
+    )
+    sae_narrowed, sae_width_control = narrow_sae_to_effective_width(f, rand_width, seed)
     reps = {
         "resid": x,
         "sae": f,
         "sae_recon": sae.decode(f),
         "rand_exp": rand_topk,
         "rand_exp_dense": rand_dense,
+        "rand_exp_width_matched": rand_widened,
+        "sae_width_matched": sae_narrowed,
     }
     l0 = {name: float((rep > 0).sum(1).float().mean()) for name, rep in reps.items()}
     widths = {name: int(prepare_features(rep)[0].shape[1]) for name, rep in reps.items()}
@@ -689,6 +810,16 @@ def representations(x: torch.Tensor, sae: SAEWeights, seed: int) -> tuple[dict[s
         "mean_l0": l0,
         "surviving_width": widths,
         "rand_dense_reference_l0": l0["rand_exp_dense"],
+        "effective_width_controls": {
+            "random_widened_to_sae": {
+                **random_width_control,
+                "mean_l0": l0["rand_exp_width_matched"],
+            },
+            "sae_narrowed_to_random": {
+                **sae_width_control,
+                "mean_l0": l0["sae_width_matched"],
+            },
+        },
     }
 
 
@@ -754,9 +885,9 @@ def write_gated_out(gate: str, error: BaseException, started: float) -> None:
     RESULTS.write_text(json.dumps(payload, indent=2) + "\n")
 
 
-def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def aggregate(rows: list[dict[str, Any]], arms: tuple[str, ...]) -> dict[str, Any]:
     out: dict[str, Any] = {}
-    for arm in ALL_ARMS:
+    for arm in arms:
         arm_rows = [r for r in rows if r["arm"] == arm]
         out[arm] = {}
         for metric in ("sd", "ccgp", "gap"):
@@ -765,15 +896,20 @@ def aggregate(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
-def paired_sae_minus_rand(rows: list[dict[str, Any]], seeds: tuple[int, ...]) -> dict[str, Any]:
-    """Within-seed contrasts for whatever metric scope a probe setting evaluated."""
+def paired_difference(
+    rows: list[dict[str, Any]],
+    seeds: tuple[int, ...],
+    left_arm: str,
+    right_arm: str,
+) -> dict[str, Any]:
+    """Within-seed contrast for an explicitly named, same-seed pair of arms."""
     out: dict[str, Any] = {}
     for metric in ("sd", "ccgp"):
-        kinds = sorted({key for row in rows if row["arm"] == "sae" for key in row[metric]})
+        kinds = sorted({key for row in rows if row["arm"] == left_arm for key in row[metric]})
         out[metric] = {
             kind: dict(zip(("mean", "ci95"), mean_ci(
-                next(row[metric][kind] for row in rows if row["seed"] == seed and row["arm"] == "sae")
-                - next(row[metric][kind] for row in rows if row["seed"] == seed and row["arm"] == "rand_exp")
+                next(row[metric][kind] for row in rows if row["seed"] == seed and row["arm"] == left_arm)
+                - next(row[metric][kind] for row in rows if row["seed"] == seed and row["arm"] == right_arm)
                 for seed in seeds
             )))
             for kind in kinds
@@ -818,7 +954,7 @@ def summarise_convergence(rows: list[dict[str, Any]]) -> dict[str, Any]:
             )))
             for key in rows[0]["convergence"]
         }
-        for arm in ALL_ARMS
+        for arm in sorted({row["arm"] for row in rows})
     }
 
 
@@ -843,42 +979,65 @@ def plots(summary: dict[str, Any], smoke: bool) -> None:
     colors = {
         "resid": "#666666", "sae": "#3b6ea5", "sae_recon": "#5c9f72",
         "rand_exp": "#e08214", "rand_exp_dense": "#d73027",
+        "rand_exp_width_matched": "#9b59b6", "sae_width_matched": "#168aad",
     }
-    fig, ax = plt.subplots(figsize=(7.1, 5.4))
+    labels = {
+        "resid": "resid", "sae": "sae", "sae_recon": "sae_recon",
+        "rand_exp": "rand_exp", "rand_exp_dense": "rand_exp_dense",
+        "rand_exp_width_matched": "rand_exp (width-matched)",
+        "sae_width_matched": "sae (width-matched)",
+    }
+    # The full panel preserves the chance lines; the zoomed panel makes the observed
+    # 0.80--0.94 separation readable instead of visually collapsing it near the corner.
+    fig, (ax, zoom) = plt.subplots(1, 2, figsize=(12.2, 5.25), gridspec_kw={"width_ratios": (1.0, 1.12)})
     for arm in arms:
         x = summary[arm]["ccgp"]["main_effect"]
         y = summary[arm]["sd"]["overall"]
-        ax.errorbar(x["mean"], y["mean"], xerr=x["ci95"], yerr=y["ci95"], fmt="o", ms=8, capsize=3, color=colors[arm], label=arm)
-    ax.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
-    ax.axvline(0.5, color="crimson", ls="--", lw=1.2)
+        for panel in (ax, zoom):
+            panel.errorbar(
+                x["mean"], y["mean"], xerr=x["ci95"], yerr=y["ci95"], fmt="o", ms=7,
+                capsize=3, color=colors[arm], label=labels[arm],
+            )
+    for panel in (ax, zoom):
+        panel.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
+        panel.axvline(0.5, color="crimson", ls="--", lw=1.2)
+        panel.grid(alpha=0.25)
     ax.set_xlim(0.45, 1.02)
     ax.set_ylim(0.45, 1.02)
+    zoom.set_xlim(0.89, 0.97)
+    zoom.set_ylim(0.68, 0.96)
     ax.set_xlabel("main-effect CCGP: held-condition balanced accuracy")
     ax.set_ylabel("shattering dimensionality: balanced accuracy")
+    zoom.set_xlabel("main-effect CCGP: zoomed")
+    zoom.set_ylabel("shattering: zoomed")
     suffix = "SMOKE subset" if smoke else "5 seeds; 95% CI"
-    ax.set_title(f"Expressivity versus factor abstraction: SAE and matched random expansion\n({suffix}; global-RMS probe)")
-    ax.grid(alpha=0.25)
-    ax.legend(fontsize=8.5, loc="best")
-    fig.tight_layout()
+    ax.set_title("Full scale (chance retained)")
+    zoom.set_title("Observed-result zoom")
+    fig.suptitle(f"Expressivity versus factor abstraction: SAE and matched random expansion\n({suffix}; global-RMS probe)")
+    handles, legend_labels = zoom.get_legend_handles_labels()
+    dedup = dict(zip(legend_labels, handles))
+    fig.legend(dedup.values(), dedup.keys(), fontsize=8.1, loc="lower center", ncol=4, bbox_to_anchor=(0.5, 0.01))
+    fig.tight_layout(rect=(0.0, 0.13, 1.0, 0.91))
     fig.savefig(FIGDIR / "01_shattering_vs_ccgp.png", dpi=180)
     plt.close(fig)
 
     types = ("main_effect", "two_way_xor", "three_way_parity", "unstructured")
-    labels = ("main effect", "2-way XOR", "3-way parity", "unstructured")
+    type_labels = ("main effect", "2-way XOR", "3-way parity", "unstructured")
     fig, ax = plt.subplots(figsize=(9.0, 4.9))
     x = np.arange(len(types))
-    width = 0.19
+    width = 0.115
     for i, arm in enumerate(arms):
         vals = [summary[arm]["sd"][kind]["mean"] for kind in types]
         errs = [summary[arm]["sd"][kind]["ci95"] for kind in types]
-        ax.bar(x + (i - 1.5) * width, vals, width, yerr=errs, capsize=2.5, label=arm, color=colors[arm])
+        offset = (i - (len(arms) - 1) / 2) * width
+        ax.bar(x + offset, vals, width, yerr=errs, capsize=2.5, label=labels[arm], color=colors[arm])
     ax.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
-    ax.set_xticks(x, labels)
+    ax.set_xticks(x, type_labels)
     ax.set_ylim(0.45, 1.02)
     ax.set_ylabel("shattering: balanced decoding accuracy")
     ax.set_title("Dichotomy breakdown: base-factor enumeration versus parity-family interactions")
     ax.grid(axis="y", alpha=0.25)
-    ax.legend(ncol=3, fontsize=8, loc="upper center")
+    ax.legend(ncol=4, fontsize=7.5, loc="upper center")
     fig.tight_layout()
     fig.savefig(FIGDIR / "02_dichotomy_breakdown.png", dpi=180)
     plt.close(fig)
@@ -953,7 +1112,13 @@ def run() -> dict[str, Any]:
             # sensitivity run evaluates the required main-effect CCGP only; this keeps
             # the added fairness check inside the original CPU runtime budget.
             ccgp_ds = ds if setting == primary_setting else main_effect_ds
-            for arm, rep in reps.items():
+            # The width controls answer a distinct primary-result objection.  They do
+            # not belong in the z-score sensitivity table, whose job is only to show
+            # the original scaling reversal.  Keeping that scope fixed also avoids
+            # multiplying a non-headline sensitivity run by two extra controls.
+            arms = ALL_ARMS if setting == primary_setting else BASE_ARMS
+            for arm in arms:
+                rep = reps[arm]
                 selected_decay, selection_trace = select_weight_decays(
                     rep, stimuli, seed, cfg, scale_mode,
                 )
@@ -993,17 +1158,37 @@ def run() -> dict[str, Any]:
             "l2_selection": "Per outer fold and arm: select from the grid by inner item-disjoint validation mean accuracy over NUMBER/TENSE/POLARITY; outer test items are never consulted.",
             "ccgp_scope": "all_35_dichotomies" if setting == primary_setting else "main_effect_dichotomies_only",
             "per_seed_rows": setting_rows[setting],
-            "summary": aggregate(setting_rows[setting]),
-            "paired_sae_minus_rand_exp": paired_sae_minus_rand(setting_rows[setting], cfg.seeds),
+            "summary": aggregate(
+                setting_rows[setting], ALL_ARMS if setting == primary_setting else BASE_ARMS,
+            ),
+            "paired_sae_minus_rand_exp": paired_difference(
+                setting_rows[setting], cfg.seeds, "sae", "rand_exp",
+            ),
         }
         for setting in cfg.fair_probe_settings
     }
     fairness[primary_setting]["convergence_100_vs_200_steps"] = summarise_convergence(convergence_rows)
     summary = fairness[primary_setting]["summary"]
     sae_minus_rand = fairness[primary_setting]["paired_sae_minus_rand_exp"]
+    width_matched_controls = {
+        "random_widened_to_sae_width": {
+            "comparison": "sae - rand_exp_width_matched",
+            "matching_rule": "Calibrate random nominal columns only to the SAE surviving width after the common all-zero removal; preserve SAE encoder-norm and encoder-bias marginal distributions, residual b_dec centring, and the SAE-derived top-k L0.",
+            "paired_difference": paired_difference(
+                setting_rows[primary_setting], cfg.seeds, "sae", "rand_exp_width_matched",
+            ),
+        },
+        "sae_narrowed_to_random_width": {
+            "comparison": "sae_width_matched - rand_exp",
+            "matching_rule": "Uniformly sample from SAE latents that survived the common all-zero removal until their count equals rand_exp's surviving width for that seed.",
+            "paired_difference": paired_difference(
+                setting_rows[primary_setting], cfg.seeds, "sae_width_matched", "rand_exp",
+            ),
+        },
+    }
     elapsed = time.perf_counter() - started
     payload = {
-        "schema": "exp03-results-v2; probe_fairness records legacy fixed-z-score sensitivity plus nested-L2 per-feature-z-score and global-RMS settings. Per-seed rows map dichotomy type to balanced accuracy; ci95=1.96*sample_sd/sqrt(n).",
+        "schema": "exp03-results-v3; effective_width_controls add a widened random arm and narrowed SAE arm under the global-RMS primary. Per-seed rows map dichotomy type to balanced accuracy; ci95=1.96*sample_sd/sqrt(n).",
         "status": "complete",
         "smoke": SMOKE,
         "config": {**cfg.__dict__, "seeds": list(cfg.seeds), "pilot_layers": list(cfg.pilot_layers), "ccgp_splits": [list(s) for s in cfg.ccgp_splits]},
@@ -1028,6 +1213,7 @@ def run() -> dict[str, Any]:
         "per_seed_rows": setting_rows[primary_setting],
         "summary": summary,
         "paired_sae_minus_rand_exp": sae_minus_rand,
+        "effective_width_controls": width_matched_controls,
         "wall_clock_seconds": elapsed,
     }
     RESULTS.write_text(json.dumps(payload, indent=2) + "\n")
