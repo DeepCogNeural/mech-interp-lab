@@ -511,3 +511,37 @@ with where the agreement causal-mediation literature localises this — flagged 
 recollection, per this document's convention. It comes with an honest limitation: the SAE cache pins the
 intervention to layer 8, mid-transport, while layer 4's subject position alone already carries 0.68 —
 and there is no SAE there.
+
+---
+
+# Amendment 1a — 2026-07-27: a numerical tolerance I specified on the wrong object
+
+Not a design change. Recorded because it stopped two runs and the record should say why.
+
+The complete-basis arms rest on `decode(encode(x)) = x`. The dispatch instructions asked for that to be
+asserted as an **absolute** bound, `max |decode(encode(x)) − x| ≤ 1e-4`. On layer-8 residual activations,
+whose entries run to tens or hundreds, that is a test of float32 round-off through a 768 × 768
+orthonormal matrix, not a test of anything the design claims. It failed at `1.34e-4` — a relative error
+on the order of `1e-6` — and the run correctly refused to continue rather than loosen a threshold on its
+own initiative.
+
+The assertion is restated on the quantities that carry the claim:
+
+1. **Relative** on the reconstruction: `max |decode(encode(x)) − x| ≤ 1e-5 · max |x|`.
+2. **Directly on the effect the design depends on**: `|E(basis_full) − E_resid| ≤ 1e-3 · |E_resid|`,
+   for each complete basis, per seed. This is the real content of "the Gate C ratio is 1 by
+   construction", and it is what the manifest must record.
+
+No scientific threshold moves. Gate C's `[0.70, 1.30]` band, the `0.05` and `0.10` AUC half-widths, Gate
+A, Gate B, Gate D, the `k` grid, the seed count, and every other frozen value are untouched.
+
+Two measured facts from the aborted attempts, recorded rather than discarded: the three invariance and
+exactness self-tests passed again (`zero_selection` bitwise, `D_rescale` bitwise, `start_at_layer=8` max
+abs `0.0`, prompt-swap exactness `5.7e-06`), and the **pre-declared coverage trigger fired** on the first
+seed — `E(top-64)/E(full)` was `0.756` for `sae` and `0.428` for `pca` — so the candidate budget extends
+to 128 and the `k` grid gains `k = 128`, exactly as frozen. Nothing about that trigger is discretionary.
+
+Also recorded: the pilot's 1.16-minute projection covered patched forward passes only. It omitted the
+per-seed generated-text pool, the PCA fit, and two exact dual-ridge solves, which dominate. Measured
+first-seed cost is about 300 seconds, so the run is tens of minutes, not one. The projection was
+arithmetic and the measurement supersedes it.
