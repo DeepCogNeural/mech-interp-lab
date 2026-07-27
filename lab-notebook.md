@@ -16,6 +16,26 @@ Template for a new entry:
 
 ---
 
+## 2026-07-26 — Experiment 03 run 4: effective width narrows the edge but does not erase it
+
+**Goal:** Test the reviewer’s strongest alternative explanation for the global-RMS result: `sae` might beat L0-matched `rand_exp` on two-way XOR merely because about 794 SAE directions, versus about 503 random directions, fire somewhere in the stimulus set.
+
+**Did:** Added two primary-only, item-split-preserving controls to `experiments/03_ccgp_on_sae_features/ccgp_sae.py` and reran all five seeds offline on CPU. First, widened the random top-k expansion and selected nominal column count using only the unlabelled surviving-width statistic; it retained the same per-sample L0 (71 or 72). Second, uniformly sampled from SAE latents that survived the common all-zero removal until each seed exactly matched its `rand_exp` surviving width; I reported the resulting L0 drop. Rebuilt Figure 1 as a chance-line overview plus a zoom panel, and updated all Experiment 03 artifacts. `SMOKE=1` completed in 84.2 s; the full run completed in 1,190.8 s.
+
+**Expected:** I expected the original `sae − rand_exp` two-way-XOR difference (+0.121±0.011) to shrink if raw active width supplied some of the advantage. I did not know whether it would collapse to zero. A collapse would have made width the right headline; persistence in both matching directions would make the learned-code reading stronger.
+
+**Happened:** The original number was too large to keep as the headline. The widened random arm reached 740–794 surviving units against SAE’s 784–803 (mean 772.6 versus 794.2) while keeping L0 71.80, and its two-way-XOR contrast was `sae − widened-random = +0.081±0.006`. The reciprocal control matched width exactly every seed (464/489/513/559/489) and reduced SAE L0 to 42.23/44.65/48.01/48.70/41.25; it still gave `narrowed-SAE − rand_exp = +0.075±0.011` on two-way XOR. Crucially, its main-effect SD difference was −0.001±0.006, so the surviving interaction edge is not accompanied by a visible base-factor advantage in that exact match. Width explains part of the old effect, not all of it.
+
+**Confused about / open:**
+- The widened-random grid was deliberately selected only on surviving width, but it is only near-matched on three seeds (especially seed 1: 740 versus 802). It corroborates the exact narrowed-SAE result rather than replacing it.
+- Narrowing SAE width necessarily lowers L0 by about 27; that direction answers the active-direction objection but not a hypothetical code with both exact width and exact L0. The two controls agree in direction, but they are not interchangeable manipulations.
+- The result still does not directly demonstrate conjunctive latents. It says a pure count-of-directions account is insufficient on this template family; identifying which SAE structure is responsible requires a separate, preregistered feature analysis.
+- Dense random remains highest on shattering (overall SD 0.936, two-way XOR 0.918) because it activates roughly 12,000 coordinates per sample. That is a Cover-theorem upper reference, not a reason to treat dense random as the control.
+
+**Next:** Freeze this width-matched conclusion for the current template. Before looking at individual latents, add independent template families; then preregister a feature-family analysis or a causal circuit question rather than promoting this code-geometry result into a claim about GPT-2’s downstream computation.
+
+---
+
 ## 2026-07-26 — Experiment 03: a real SAE code needs a matched random expansion *and* a fair sparse probe
 
 **Goal:** Leave toy land and locate a GPT-2-small residual-stream SAE code on the shattering-dimensionality × CCGP plane, with the right comparison: sparse SAE features versus a width-, scale-, and L0-matched random ReLU expansion.
