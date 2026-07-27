@@ -545,3 +545,89 @@ Also recorded: the pilot's 1.16-minute projection covered patched forward passes
 per-seed generated-text pool, the PCA fit, and two exact dual-ridge solves, which dominate. Measured
 first-seed cost is about 300 seconds, so the run is tens of minutes, not one. The projection was
 arithmetic and the measurement supersedes it.
+
+---
+
+# Amendment 2 — 2026-07-27: robustness arms, specified after unblinding
+
+**Blinding is spent, and this section says so rather than pretending otherwise.** The primary result has
+been computed and read. Nothing below may be called pre-registered, and nothing below can change the
+frozen verdict. These arms are specified here, in writing, *before they are computed*, and they are
+reported under the label **"specified after unblinding of the primary, before its own computation;
+never adjudicating."** That is a weaker guarantee than pre-registration and it is the honest one.
+
+## The verdict this cannot change
+
+The run returned **inconclusive**, and it is double-locked. Gate C requires each adjudicated basis to
+write back at least 0.70 of the residual-stream effect; the SAE's trained decoder measured
+`0.694 ± 0.014`, passing in two of five seeds. No aggregation rescues it — even the most generous
+reading consistent with the frozen text, the pooled five-seed mean, is 0.6939, still below the floor.
+Independently, in seed 20260803 PCA never reached `R ≥ 0.5`, so Gate D is unevaluable there and blocks
+an adjudicated positive on its own. Two separate frozen gates would each have to be re-read to overturn
+this. Neither will be.
+
+A relaxation of Gate C was considered and is refused. The threshold was fixed before the number existed;
+moving it by 0.006 after seeing a favourable effect is exactly the failure this project was built to
+avoid, and experiment 03 exists in this repository because I have already made the softer version of
+that mistake once.
+
+## What is being added, and why
+
+Two objections to the primary comparison survive the run, and both are answerable with measurements
+rather than argument.
+
+**R1 — the PCA fitting-budget curve.** PCA is estimated from 8,192 tokens for a 768-dimensional
+covariance — about 10.7 samples per dimension — from model-generated text, against an SAE trained on the
+order of 10⁸ tokens. Sampling noise rotates axes within near-degenerate eigenvalue subspaces, which
+would spread a direction a converged PCA could concentrate, biasing the control's concentration
+*downward*. The manifest already hints at it: the SAE's AUC spans 0.004 across seeds while the
+per-seed-refitted PCA spans 0.049 with `k50` jumping between 64, 128, and not-reached, which suggests the
+control's variance is dominated by basis fitting rather than evaluation noise *(inference, not a
+measurement)*. Measurement: recompute `AUC(pca)` with the fitting pool at 2,048 tokens and at 8,192,
+using the existing pools so no generation cost is added. If the curve is flat between the two, the
+objection is empirically capped by the same logic Amendment 1's Rule 2 used. If it is climbing, that is
+reported as an open limitation and the primary comparison is described as bounded by it.
+
+**R2 — the `sae_ridge` robustness arm.** `s8k = 0.887 ± 0.013` shows the SAE's *code* supports faithful
+write-back even though its published decoder measured 0.694. The one quantity never yet computed for
+that arm is its **ranking and concentration curve**, and that is what gets frozen here: the same
+single-coordinate causal ranking, the same pre-filter, the same candidate budget, the same `k` grid, the
+same within-basis and absolute normalisations. It is reported beside the primary as a robustness check
+on whether the ordering `sae > pca` survives on an arm that clears every gate. It does not adjudicate,
+because the arm was chosen with the answer already in view.
+
+The ridge for this arm is refitted on **generic generated text only**. In the primary run, 320 of 6,873
+fitting rows (4.7%) were train-split template activations, added to satisfy the coverage requirement.
+Items were disjoint from evaluation, but the mixture makes "a ridge beats the trained decoder" an impure
+comparison, and a clean refit is the outstanding control. If the pure-generic fit fails the 95% coverage
+check, both versions are reported rather than one being chosen.
+
+## Three recomputations from the existing manifest
+
+Zero new model calls; all three are arithmetic over rows already recorded, and all are labelled
+*post-hoc, recomputable from `run_results.json`*. They exist because the obvious deflation of the
+headline is that the ranked SAE latents are token-identity detectors for the specific nouns used.
+
+1. **Noun-disjoint transfer** — restrict evaluation to pairs whose subject noun never appears as a
+   subject in that seed's ranking-training split, and recompute `R_sae(16)`.
+2. **Cross-seed stability of the selected latents** — the size of the intersection of the top-16 sets
+   across the five seeds, and the mean pairwise overlap.
+3. **Sign consistency** — the fraction of individual directed edits at `k = 16` whose effect has the
+   expected sign.
+
+## One wording correction the run forces
+
+The edited position set is `both`, which includes the final position — one step from the readout. Gate D
+and the `was/were` cross-tense check constrain what that can be, and both bases share the identical
+position set so the comparison is unaffected. But the claim language is nonetheless narrowed
+everywhere: not "localises the computation", but **"localises the causal signal present at layer 8 at
+these positions"**.
+
+## A sober reference the writeup must carry
+
+`mu_ref` — the supervised rank-one mean-difference direction — is not a competitor arm, but it sets the
+scale and the writeup is required to state it. A single supervised direction recovers substantially more
+of the effect than the SAE's single best latent, and the SAE needs tens of coordinates to match one
+supervised direction. The finding is that ranked SAE coordinates approach that with roughly four to
+eight times fewer coordinates than ranked PCA components — not that any unsupervised basis puts this
+factor into one coordinate. None of them does.
