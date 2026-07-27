@@ -10,8 +10,10 @@ problem to undo or a computation to explain?**
 
 Four experiments. One replicates the *storage* account of superposition. The second tests whether the
 same geometry also has a *computation* account and finds that it does — under a nonlinearity held fixed
-across arms, a monosemantic code reads a feature interaction at `0.494 ± 0.005`, exactly chance and
-provably so, while mixed codes reach `0.81`. The third takes that question to real SAE features on
+across arms, a monosemantic code reads a feature interaction at `0.494 ± 0.005` — on the chance line and
+provably unable to leave it, while mixed codes reach `0.81`. (The interval sits a hair below 0.50 rather
+than astride it: the theorem forbids performance *above* chance, and a fitted probe scoring slightly under
+it on held-out data is the expected finite-sample behaviour, not a violation.) The third takes that question to real SAE features on
 GPT-2-small and **fails to settle it** — for a reason worth reading, and reported as unsettled rather
 than dressed up. The fourth removes the instrument that failed and asks the question causally instead —
 and then **declines to certify what it measured**, because a faithfulness threshold fixed before the run
@@ -21,7 +23,7 @@ was missed by 0.006. Most of these produced results I did not want; all of them 
 
 ## Experiment 04 — the causal version, and a gate that refused to certify a result I liked
 
-[Full writeup](experiments/04_causal_feature_interchange/writeup.md) · [pre-registration, plus three dated amendments — the last written after unblinding and non-adjudicating](experiments/04_causal_feature_interchange/DESIGN.md) · [code](experiments/04_causal_feature_interchange/run_experiment.py) · [raw results](experiments/04_causal_feature_interchange/run_results.json)
+[Full writeup](experiments/04_causal_feature_interchange/writeup.md) · [pre-registration, plus three dated amendments and one correction — the last amendment written after unblinding and non-adjudicating, the correction retracting three claims in the frozen text](experiments/04_causal_feature_interchange/DESIGN.md) · [code](experiments/04_causal_feature_interchange/run_experiment.py) · [raw results](experiments/04_causal_feature_interchange/run_results.json)
 
 Experiment 03 stalled because a linear probe's L2 penalty is not invariant to rescaling its inputs, so
 the answer moved with a preprocessing choice. The fix is not a better probe. It is no probe: edit
@@ -37,8 +39,9 @@ objective. It is not otherwise matched, and every difference favours the SAE: 76
 24,576 latents, and one 8,192-token fit per seed against a dictionary trained on a corpus larger by many
 orders of magnitude.
 (The originally planned control, a width/norm/L0-matched random expansion, failed its own faithfulness
-gate; a diagnostic showed that was structural rather than a fitting artifact, and the control changed
-family. All of that is in the amendments, each committed before the commit containing the output it
+gate; a diagnostic quadrupled its fitting budget and the number moved the wrong way, which is the
+pre-declared trigger for calling the failure structural rather than a fitting artifact — a rule's label
+for a two-point outcome, not a proof about where the curve asymptotes — and the control changed family. All of that is in the amendments, each committed before the commit containing the output it
 governs — commit order, which is not the same as proof of read order, and the writeup says so.)
 
 ![Causal recovery against the number of edited coordinates, for SAE, PCA, neuron and random-expansion bases](experiments/04_causal_feature_interchange/figures/01_recovery_curves.png)
@@ -63,7 +66,7 @@ positive in all five seeds under both denominators.
 
 The obvious deflations are tested rather than waved off, all post-hoc and recomputable from the manifest:
 restricting to pairs whose subject noun never appears in the ranking-training split moves the number by
-`+0.005` (`0.594` against `0.588`, on 150 edits, with no equivalence test), and the five seeds' top-16
+`+0.0054` (`0.5936` against `0.5882`, on 150 edits, with no equivalence test), and the five seeds' top-16
 latents share a 12-latent intersection. The matched random expansion — same nominal 24,576-wide pool,
 same pre-filter, same ranking rule — finishes *last*, which points away from a pure pool-width story
 without settling it, since that arm failed Gate C too. The 32× width advantage stays a live alternative
@@ -75,8 +78,8 @@ unsupervised basis, none puts this factor in one coordinate.
 
 The model is never modified: the base residual is left exactly as GPT-2 produced it and one vector is
 added to it, so no reconstruction is ever substituted for the model's own state. (The *difference* of
-reconstruction errors does not cancel — an earlier draft said it did, and that was wrong; Gate C is
-precisely the measurement of how large it is.) Low recovery in a basis means a factor is not concentrated
+reconstruction errors does not cancel — an earlier draft said it did, and that was wrong; had it
+cancelled, Gate C's ratio would be 1, and it is 0.694.) Low recovery in a basis means a factor is not concentrated
 in few coordinates of that basis — never that an SAE harms a model's computation.
 
 ---
@@ -311,8 +314,10 @@ Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes to
 
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
 not. Experiment 04 additionally ships its
-[pre-registration](experiments/04_causal_feature_interchange/DESIGN.md) with three dated amendments, so
-the order in which decisions were made is checkable against the commit history rather than asserted.
+[pre-registration](experiments/04_causal_feature_interchange/DESIGN.md) with three dated amendments and a
+dated correction that retracts three claims made in the frozen text. Each amendment commit precedes the
+commit containing the output it governs — commit order, which is weaker than proof of when anything was
+read, and the writeup says so.
 [`lab-notebook.md`](lab-notebook.md) is the dated process record, including the traps I nearly
 fell into and the pilot-versus-full-run story behind the null.
 [`learning-roadmap.md`](learning-roadmap.md) is where this is going next.

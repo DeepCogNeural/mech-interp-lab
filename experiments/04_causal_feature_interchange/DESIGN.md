@@ -1,5 +1,12 @@
 # Experiment 04 — Design: is an SAE basis a *causal* basis?
 
+> **Notice added 2026-07-27 — read before the frozen text.** [Correction 1](#correction-1--2026-07-27-three-retractions-against-the-frozen-text-above), at the end of this
+> file, retracts three claims made in the frozen text below: that the SAE's reconstruction error
+> "cancels exactly" (it does not), the wider "localises the computation" phrasing, and the strength of
+> the blinding claims. **The frozen text is preserved unedited on purpose** — editing a pre-registration
+> after the fact destroys the only thing it is for — so you will meet those claims before you meet their
+> retraction.
+
 **Status: design only, frozen before implementation. Nothing in this document has been run, and no
 number below is a measurement.** Every threshold here is pre-declared so it cannot be chosen after
 seeing data. When the run happens it gets the usual `writeup.md` + raw manifest beside this file, and
