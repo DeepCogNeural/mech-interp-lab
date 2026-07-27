@@ -99,8 +99,10 @@ the SAE in width, column norm, and per-sample L0. **It failed Gate C**: it wrote
 residual-stream effect, against a pre-declared floor of `0.70`.
 
 Rather than treat that as fact, a diagnostic asked whether it was an under-powered ridge fit. Quadrupling
-the fitting budget moved it the wrong way — `0.588` at 2,048 tokens, `0.554` at 8,192 — so under the
-frozen rule the failure is structural. An L0 sweep priced it: a random expansion needs its per-sample L0
+the fitting budget moved it the wrong way — `0.588` at 2,048 tokens, `0.554` at 8,192 — which triggers
+Rule 2. "Structural" is that rule's **pre-declared operational label for this two-point outcome**, not a
+physical attribution: two budgets cannot establish where a learning curve asymptotes, and the honest
+content is that more data did not help, so the frozen rule redirected the control arm. An L0 sweep priced it: a random expansion needs its per-sample L0
 roughly **doubled**, from the SAE's measured 72.76 to 144, before it writes back as faithfully
 (`0.704`), and 1,536 to reach `0.888`.
 
@@ -110,8 +112,9 @@ Sparsity is matched where the dependent variable lives: the intervention budget.
 because it has seen the same kind of data and is equally unsupervised, and lacks the sparse
 dictionary-learning objective. It is **not** matched to the SAE otherwise, and the differences all favour
 the SAE: 768 components against 24,576 latents, one 8,192-token fit per seed against a dictionary trained
-on the order of 10⁸ tokens, and — as the robustness section shows — a spectrum that has not converged at
-that budget. The measured PCA identity residual on the effect is `4.77e-07` against a threshold of
+on a corpus larger by many orders of magnitude (*I have seen ~10⁸ tokens quoted for res-jb and have not
+verified it against the published card — treat the exact figure as recalled, not measured*), and — as the
+robustness section shows — a spectrum that has not converged at that budget. The measured PCA identity residual on the effect is `4.77e-07` against a threshold of
 `4.22e-03`.
 
 That decision and its decision rule were written into `DESIGN.md` and committed before the commit that
@@ -160,8 +163,9 @@ Sixteen SAE coordinates recover half of that basis's own causal effect, in every
 128 and in one seed never gets there within the grid; the model's own residual-stream coordinates and a
 matched random expansion never reach half at any `k` on the grid.
 
-**Two normalisations, both reported, neither chosen.** Within-basis normalisation divides by each basis's
-own full effect; since the SAE writes back `0.694` and PCA writes back exactly `1.000`, the SAE gets a
+**Two normalisations: within-basis is the pre-declared primary, absolute is a sensitivity diagnostic.**
+Both are reported at every step and neither is picked after the fact. Within-basis normalisation divides
+by each basis's own full effect; since the SAE writes back `0.694` and PCA writes back exactly `1.000`, the SAE gets a
 denominator 31% smaller. That is the mirror image of the inflation the design was written to prevent. The
 absolute normalisation gives the unwritten 31% no credit at all. These are two different denominators,
 and it would overstate them to say the truth is bracketed between: nothing here establishes that the
@@ -202,7 +206,7 @@ Blinding is spent: the primary result had been read before these were specified.
 way in `robustness_results.json` and they cannot change the verdict.
 
 **The strongest surviving objection is that PCA is under-sampled** — 8,192 tokens for a 768-dimensional
-covariance, about 10.7 samples per dimension, against an SAE trained on the order of 10⁸ tokens. Sampling
+covariance, about 10.7 samples per dimension, against an SAE trained on a vastly larger corpus. Sampling
 noise rotates axes inside near-degenerate eigenvalue subspaces, which would spread a direction a
 converged PCA could concentrate and bias the control downward. Measured: `AUC(pca)` is `0.195 ± 0.008` at
 2,048 tokens and `0.213 ± 0.023` at 8,192, a change of `+0.018 ± 0.025` whose interval crosses zero.
@@ -252,9 +256,11 @@ is not explained by the estimator being too weak to decode anything.
 recovers `0.072 ± 0.003`, and it takes 32 SAE coordinates (`0.506 ± 0.012`) to approach one supervised
 direction.
 
-So the finding is not that an SAE puts this factor into one coordinate. **No unsupervised basis here
-does.** It is that ranked SAE coordinates approach a supervised direction with roughly four to eight
-times fewer coordinates than ranked PCA components do.
+So the measurement is not that an SAE puts this factor into one coordinate. **None of the 128 candidates
+scored in any unsupervised basis here does** — a statement about the coordinates the ranker admitted, not
+about every coordinate of every basis, since nothing outside the candidate set was tested. What is
+measured is that ranked SAE coordinates approach a supervised direction with fewer coordinates than
+ranked PCA components do, by a factor of 4, 8, more than 8, 8, and 4 across the five seeds.
 
 ## Gates and controls
 

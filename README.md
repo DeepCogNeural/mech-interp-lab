@@ -34,7 +34,8 @@ the pilot and in the main run.
 The task is subject–verb number agreement on single-flip minimal pairs. The control is **PCA** of the
 same activations — equally unsupervised, same kind of data, without the sparse dictionary-learning
 objective. It is not otherwise matched, and every difference favours the SAE: 768 components against
-24,576 latents, one 8,192-token fit per seed against a dictionary trained on the order of 10⁸ tokens.
+24,576 latents, and one 8,192-token fit per seed against a dictionary trained on a corpus larger by many
+orders of magnitude.
 (The originally planned control, a width/norm/L0-matched random expansion, failed its own faithfulness
 gate; a diagnostic showed that was structural rather than a fitting artifact, and the control changed
 family. All of that is in the amendments, each committed before the commit containing the output it
@@ -67,8 +68,8 @@ latents share a 12-latent intersection. The matched random expansion — same no
 same pre-filter, same ranking rule — finishes *last*, which points away from a pure pool-width story
 without settling it, since that arm failed Gate C too. The 32× width advantage stays a live alternative
 reading. What keeps the whole thing honest-sized: a single **supervised** direction recovers `0.549` on
-its own while the SAE's best single latent recovers `0.072`. No unsupervised basis here puts this factor
-in one coordinate.
+its own while the SAE's best single latent recovers `0.072`. Among the 128 candidates scored in each
+unsupervised basis, none puts this factor in one coordinate.
 
 ### Scope — what this does not say
 
@@ -301,8 +302,12 @@ python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirem
 ```
 
 ```bash
-(cd experiments/04_causal_feature_interchange && python pilot.py && python run_experiment.py)  # 42s + 29m20s measured on an M1 Pro CPU
+(cd experiments/04_causal_feature_interchange && python pilot.py && python gate_c_diagnostic.py && python run_experiment.py && python robustness.py)
 ```
+
+Experiment 04 is four stages in the order they were actually run — go/no-go pilot, the Gate C diagnostic
+that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
+Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
 not. Experiment 04 additionally ships its
