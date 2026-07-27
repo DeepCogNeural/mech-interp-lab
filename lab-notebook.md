@@ -16,6 +16,20 @@ Template for a new entry:
 
 ---
 
+## 2026-07-26 — Experiment 03 addendum: convergence did not remove the scaling problem
+
+**Goal:** Run the one decisive five-seed test: fit the SAE and sparse-random SD probes to a stated convergence criterion, select L2 item-disjointly for each arm and scaling, then ask whether the paired two-way-XOR difference agrees across the two affine feature scalings.
+
+**Did:** Used full-batch L-BFGS on L2-logistic loss, stopping below `1e-3` relative objective change across ten accepted iterations (500-iteration cap). Kept five item-disjoint folds, all 35 dichotomies, both scalings, and four arms; omitted CCGP and `rand_exp_dense` exactly as scoped. The zero-unit keep-mask was fit in each outer training fold. Seed 0 took 30.1 s, so the pilot projected far below the 40-minute budget and no planned scope was cut. Full raw rows are in `experiments/03_ccgp_on_sae_features/convergence_results.json`.
+
+**Expected:** If the old 10× swing was merely fixed-step non-convergence, the paired `sae − rand_exp` two-way-XOR estimates would both be tight and close after convergence. If the z-score result stayed noisy or the two means stayed apart, that would confirm the comparison is conditional on the L2 prior geometry rather than adjudicate a code property.
+
+**Happened:** The dense check behaved as expected: every `resid` / `sae_recon` SD-family shift was at most 0.0058. But z-score gave `+0.0580 ± 0.0414` and global RMS `+0.1151 ± 0.0192` for the paired SAE−random two-way-XOR contrast; their means differ by 0.0571. The z-score estimate is not precise and the means are not close, so the test **does not adjudicate** the code comparison. It supports the shipped methodological conclusion instead: the apparent edge is still inseparable from the L2 geometry induced by feature scaling.
+
+**Confused about / open:** One z-score SAE inner split selected the high L2 grid edge even after four predeclared expansions; its documented `1e19` fallback is a direct sign that the inner main-effect criterion itself can become uninformative for that sparse scaling. I did not retune it away after seeing the result. A future probe family needs either a scaling-invariant criterion or a question that explicitly treats the regularisation geometry as the object of study.
+
+**Next:** Keep the published headline and its `Next` item unchanged. This addendum closes the convergence test as a confirmation of non-adjudication, not as a route to revive the width-control interaction claim.
+
 ## 2026-07-26 — Experiment 03: a real SAE on the shattering × CCGP plane, and a headline I had to give back
 
 **Goal:** Leave toy land. Ask exp02's enumeration-versus-computation question of real SAE features on a real transformer, with Bernardi's task-agnostic metrics instead of one hand-picked XOR.
@@ -42,7 +56,6 @@ So the headline is now: **not adjudicated.** The convergence test that would set
 
 **Next:** Finish the convergence test — converged probes, L2 selected per arm *and* per scaling on an interior grid, agreement judged only when both estimates are individually precise. Then, and only then, ask whether conjunctive latents are the mechanism. Independent template families before any of it generalises.
 
----
 
 ## 2026-07-20 — Experiment 02: does superposition help a downstream readout?
 
