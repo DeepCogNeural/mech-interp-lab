@@ -357,3 +357,157 @@ benefit lives in mixing plus nonlinearity, not in the particular learned basis.
 
 Either way the answer does not depend on a preprocessing convention, which is the entire point of
 running it this way.
+
+---
+
+# Amendment 1 — 2026-07-27: the control arm, decided while blind
+
+**Blinding declaration.** This amendment is written and committed *before* the Gate C diagnostic's
+output is read. At the time of writing: `gate_c_diagnostic.json` has not been opened; the step-7 timing
+preview rows in `pilot_results.json` (top-`k` recovery for both bases) have not been read; no AUC, no
+concentration curve, and no `sae`-versus-anything comparison has been computed by anyone. The rules
+below are therefore outcome-independent by construction, not by good intentions. That is the only
+methodological asset available here, and it is worth more than a faster answer.
+
+## What the pilot found, and why an amendment is needed
+
+The pilot passed steps 1–5 and 7 and failed Gate C on the control arm:
+
+| basis | `E(full)/E_resid` | pre-declared band |
+|---|---:|---|
+| SAE, trained decoder | 0.731 | pass |
+| matched random, dual ridge | 0.588 | **fail** |
+| matched random, tied weights | 0.298 | **fail** |
+
+The pre-declared fallback therefore fired: ship the within-SAE comparison
+`AUC(sae_topk) − AUC(sae_randk)`. On reflection that statistic is close to a sanity check —
+`randk` draws uniformly from a candidate set already pre-filtered by a causal proxy, so ranking beating
+uniform sampling is not news. It keeps two pieces of real content, and they survive below: the ranking's
+transfer across items (the ranking is fitted on an item-disjoint split, so item-specific causal
+coordinates would collapse `topk` onto `randk` — falsifiable, if unlikely), and the shape of `R(k)`
+itself, which is a descriptive measurement about a real model.
+
+So the fallback is reported, and it is not the headline.
+
+## The decision rule, frozen
+
+Let `r2k` and `r8k` be the random arm's `E(full)/E_resid` at ridge fitting budgets of 2,048 and 8,192
+generated tokens, from `sweep_A_ridge_fitting_power` in `gate_c_diagnostic.json`.
+
+The diagnostic was asked for four budgets `{2k, 8k, 32k, 128k}`; the script caps an exact dual solve at
+8,000 rows and its generation pool at 8,192 tokens, so the larger budgets are expected to record as
+`not_run`. That cap is the right call — it refuses to substitute a different estimator and call it the
+same thing — and the rule below is written to work off two points.
+
+**Rule 1 — under-powered fit.** `r8k ≥ 0.70` → the original design stands. Set the ridge budget to the
+largest exactly-solvable value, re-verify Gate C within each seed, and change nothing else. The
+amendment then records one line: *instrument repair, fitting budget 2k → 8k.*
+
+**Rule 2 — structural.** `r8k < 0.70` and `r8k − r2k ≤ 0.03` → the failure is a property of a random
+sparse code at matched L0, not of the fit. A 4× increase in data moving the number by at most 0.03,
+against a 0.11 gap, on a decreasing learning curve, does not get closed by two more 4× steps. The `0.03`
+knife-edge is defensible anywhere in 0.02–0.05 and is frozen here precisely so it cannot be picked
+afterwards. Go to the ladder below.
+
+**Rule 3 — ambiguous.** `r8k < 0.70` but `r8k − r2k > 0.03` → run the **symmetrisation discriminator**
+before choosing: fit a decoder for the *SAE's own code* with the identical 8k dual ridge, giving `s8k`.
+If `s8k ≥ 0.70`, the estimator can decode a good code at this budget and the random arm's shortfall
+belongs to the code → structural → the ladder, and `s8k` becomes the fairness certificate required
+below. If `s8k < 0.70`, the estimator throttles every code → pre-declared switch to a primal ridge
+solved on active units only, re-run sweep A once, then re-apply Rules 1 and 2.
+
+The symmetrisation discriminator costs a minute or two and is worth running in every branch. It is the
+sharpest instrument available for separating "the code is worse" from "my estimator is weak", and the
+whole point of experiment 04 is not to repeat experiment 03's mistake of letting an estimator's
+limitation masquerade as a property of a representation.
+
+## The ladder — the control arm if the failure is structural
+
+Under Rule 2 or Rule 3-structural, the matched-random family is abandoned, and the reason is
+constructive rather than defeatist. Every rescue for it collapses to the same object: a linear decoder
+trained on generic activations converges to the least-squares limit the diagnostic already measures, so
+"random code plus a properly trained decoder" is not a new control, it is the same control at
+saturation. Shuffled-SAE variants either break the encoder–decoder correspondence (already recorded as
+unable to pass Gate C) or, if permuted jointly, are a renaming and therefore a no-op.
+
+So the control changes family, to bases that pass Gate C **by construction**: a complete orthonormal
+basis has `decode ∘ encode = identity`, so `E(full) = E_resid` exactly and the Gate C ratio is 1 with
+nothing fitted. Sparsity is then matched where the dependent variable actually lives — the *intervention
+budget*: the same 64-candidate pre-filter, the same `k` grid, the same single-coordinate causal ranking,
+the same scale-invariant proxy.
+
+| arm | basis | role |
+|---|---|---|
+| `pca_topk` | PCA of layer-8 residuals, fitted on the same off-template generated text, label-free | **the new load-bearing control** |
+| `neuron_topk` | the residual stream's own coordinates | secondary: the model's privileged basis, zero fitting |
+| `mu_ref` | the supervised mean-difference direction from the training split | a `k = 1` reference line, drawn, never adjudicated |
+
+PCA is the right primary control because it is the one that isolates the actual question. It has seen
+the same data distribution as the SAE and is equally unsupervised; the only thing it lacks is the sparse
+dictionary-learning objective. So `sae` versus `pca` asks **whether dictionary learning concentrates a
+causal factor better than any data-adaptive basis does** — a sharper question than the original, and one
+where the SAE can genuinely lose. It also escapes this document's own earlier objection to a random
+orthogonal basis: that was a straw man because a fixed causal direction lands in `k` random directions
+with expected mass `k/768`, whereas PCA's alignment with the number direction is an empirical fact that
+could go either way, and number is behaviourally strong at layer 8.
+
+`neuron_topk` is the classic features-versus-neurons question, costs nothing, and its full anchor
+coincides with `resid_full`, so its `R(k)` is directly an absolute recovery fraction.
+
+**Headline under the ladder:** `AUC(sae) − AUC(pca)`, with the frozen `t(4)`, the `0.05` paired
+half-width, the `0.10` per-basis half-width, and the same three branches. `neuron_topk` and `mu_ref` are
+reported without adjudication.
+
+**What is given up, stated plainly:** complete bases are dense, so ambient L0 matching is gone. That
+match existed to make an over-complete *random* code well defined; the dependent variable was always
+"how many coordinates must be edited", and that is preserved exactly. The SAE keeps its 24,576-unit
+over-completeness against PCA's 768 — an advantage that biases toward the SAE, which is worth saying out
+loud, because it makes a null result *more* credible and a positive result correspondingly weaker.
+
+## The Gate C failure as a finding — conditions for reporting it
+
+`0.731` against `0.588` is not yet a claim, and this document predicted the reason before the pilot ran:
+the SAE's decoder saw on the order of 10⁸ tokens and the ridge saw 2×10³. The pilot supplies direct
+evidence that fitting quality is a first-order term — tied weights `0.298` against dual ridge `0.588`
+differ *only* in how the decoder was fitted, and that doubles the number.
+
+It may be reported as a secondary finding if and only if all four hold: the `s8k` symmetrisation
+certificate exists; the full five-seed `t(4)` interval is computed (the pilot value is one seed, thirty
+pairs, and sits 0.031 from the band edge); the wording is pinned to **faithfulness of a differential
+write-back** and never slides into "the SAE represents number better"; and the symmetric half is
+reported in the same breath — *the trained dictionary itself only writes back 0.731, losing 27% of the
+causal effect*. That last clause is the most honest sentence available here and it is not optional.
+
+Even fully certified it stays secondary, because it is a statement about write-back faithfulness, not
+about concentration, and it does not survive the obvious retort that a trained autoencoder reconstructs
+better than an untrained one.
+
+## Faithfulness-matching, considered and reduced
+
+Raising the random arm's L0 until its faithfulness matches the SAE's was the obvious repair and it is
+rejected as a headline. Two reasons. L0 is not a nuisance variable here — it is the defining property of
+the object under study, so buying validity with it turns the claim into a two-axis conditional. And the
+outcome is close to geometrically pre-determined: a fixed causal direction's mass spreads as the basis
+widens, so a higher-L0 random arm has a flatter concentration curve by construction, and the comparison
+degenerates into measuring the SAE against a backdrop already known to be flat.
+
+It survives as one number: sweep B's smallest L0 that passes Gate C, reported as *the L0 price of
+randomness*.
+
+## Unchanged by this amendment
+
+Gate A, Gate B, Gate D, the invariance and exactness self-tests, the single-flip stimuli, both-direction
+edits, within-basis normalisation, the AUC statistic with `R` clipped to `[0, 1]`, `k50` as a narrative
+number, five seeds with `t(4) = 2.776`, and every threshold already frozen. All of them apply unchanged
+to the new arms.
+
+## A by-product worth a paragraph in the writeup
+
+Gate B's layer × position scan is reported as method validation, not sold as a discovery: the causal
+handle sits entirely at the subject position at layer 4 (0.677 against 0.005 at the final position) and
+has divided roughly evenly by layer 8 (0.398 against 0.406, 0.840 together, slightly super-additive),
+which is a direct trace of attention moving the number signal between those layers. It is consistent
+with where the agreement causal-mediation literature localises this — flagged as an unverified
+recollection, per this document's convention. It comes with an honest limitation: the SAE cache pins the
+intervention to layer 8, mid-transport, while layer 4's subject position alone already carries 0.68 —
+and there is no SAE there.
