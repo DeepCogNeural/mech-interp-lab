@@ -42,6 +42,7 @@ So the headline is now: **not adjudicated.** The convergence test that would set
 
 **Next:** Finish the convergence test — converged probes, L2 selected per arm *and* per scaling on an interior grid, agreement judged only when both estimates are individually precise. Then, and only then, ask whether conjunctive latents are the mechanism. Independent template families before any of it generalises.
 
+---
 
 ## 2026-07-20 — Experiment 02: does superposition help a downstream readout?
 
