@@ -16,6 +16,33 @@ Template for a new entry:
 
 ---
 
+## 2026-07-26 — Experiment 03: a real SAE on the shattering × CCGP plane, and a headline I had to give back
+
+**Goal:** Leave toy land. Ask exp02's enumeration-versus-computation question of real SAE features on a real transformer, with Bernardi's task-agnostic metrics instead of one hand-picked XOR.
+
+**Did:** GPT-2-small layer 8, res-jb SAE loaded straight from the published safetensors. Full factorial NUMBER × TENSE × POLARITY, read at a sentence-final `.` that is byte-identical across all eight cells. Seven arms, 35 dichotomies, 16 CCGP splits, 5 seeds, item-disjoint folds. Then, after review, a probe-fairness control and two effective-width controls. `experiments/03_ccgp_on_sae_features/`.
+
+**Expected:** Genuinely open. Sparsity pressure could make the SAE a clean factorised code (low shattering, high CCGP); conjunctive latents could instead hand a linear readout the product term (high shattering). I deliberately did not pre-register a direction. The one thing I was confident about: `sae > resid` would be uninteresting, because 768 → 24,576 with a ReLU wins that by Cover's theorem alone.
+
+**Happened:** Four separate times I thought I had the answer and did not.
+
+1. First real numbers said the SAE was *worse* than matched random on everything, with a big base-factor confound. I flagged it as confounded and moved on.
+2. Suspecting the probe, I asked for a fairness control. Per-feature z-scoring turned out to amplify rare SAE latents into exactly the directions a probe overfits — train−test gap +0.28 versus +0.09 for the residual stream. Under a single global scale the ordering *reversed*: SAE two-way-XOR went from +0.009 to +0.121 over matched random. That felt like the result.
+3. The obvious attack was that the SAE simply has more distinct latents firing (~790 versus ~500) even at matched per-sample L0. Matched it in both directions. The edge shrank to +0.081 and +0.075 but survived, and the narrowed-SAE control matched base factors exactly while handicapping the SAE on L0. That felt like a *strong* result.
+4. Then an adversarial review pointed out the thing I should have seen in step 2: **for a linear probe, per-feature z-scoring is an invertible affine reparameterisation.** The reachable function class is identical. So a 10× swing in the answer cannot be a property of the codes — it is the L2 prior and the optimiser's path, and my "global RMS is principled because the decoder reads raw activations" argument was a post-hoc story for a number I liked.
+
+So the headline is now: **not adjudicated.** The convergence test that would settle it did not complete (inner-L2 selection found no stable candidate on the dense-random arm), and I am not shipping the flattering setting.
+
+**Confused about / open:**
+- The salvage is that the sensitivity is *localised*. The two dense 768-dim arms (`resid`, `sae_recon`) are completely unmoved by the scaling — 0.902 vs 0.901, 0.877 vs 0.877. Every sparse or very wide arm swings hard. That is exactly what the affine argument predicts, and it makes the real finding methodological: probe preprocessing that is harmless for dense representations is decisive for sparse over-complete ones. Any SAE-versus-baseline decoding comparison that doesn't state its scaling convention is under-determined. I believe that part.
+- I still don't know whether the SAE has a genuine interaction-readout edge. I think the width controls are suggestive, but they only ever ran under the one scaling that produces an effect, so they inherit the question rather than answering it.
+- Uncomfortable lesson about my own process: at step 3 I was *more* confident than at step 2, because the controls all pointed the same way — but every one of them was downstream of an unexamined preprocessing choice. Stacking controls on top of an unvalidated foundation feels like rigour and isn't. The review caught it; I didn't.
+- Two smaller things I got wrong and corrected: `1.96 × sd/√5` is not a 95% CI at five seeds (needs t(4) = 2.776, ~29% wider), and 12 cells of a results table were stale numbers from an earlier run. Both harmless to the conclusions, both exactly the kind of thing that makes a reader stop trusting everything else.
+- The whole run-1 stop is worth keeping too: no network in the execution sandbox, so it hit Gate A and wrote a `gated_out` manifest instead of a plausible-looking number.
+
+**Next:** Finish the convergence test — converged probes, L2 selected per arm *and* per scaling on an interior grid, agreement judged only when both estimates are individually precise. Then, and only then, ask whether conjunctive latents are the mechanism. Independent template families before any of it generalises.
+
+
 ## 2026-07-20 — Experiment 02: does superposition help a downstream readout?
 
 **Goal:** Turn the exp1 bridge thought into a real, falsifiable test — is mixed/superposed coding just a storage compromise, or does it also keep nonlinear computation linearly readable (Rigotti's mixed-selectivity claim), measured in a toy model with ground truth?
