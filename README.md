@@ -1,16 +1,69 @@
 # mech-interp-lab
 
 Self-directed mechanistic-interpretability research, run from a computational-neuroscience starting
-point (probabilistic inference, stochastic modeling, primate V1 electrophysiology). Everything here is
-a toy model with fully observable ground truth — CPU-only, reproducible end to end — chosen so that a
-question can be *settled* instead of argued about. The through-line is a question systems neuroscience
-has asked for a decade and interpretability now asks in its own vocabulary: **when many features share
-few non-orthogonal directions, is that a problem to undo or a computation to explain?**
+point (probabilistic inference, stochastic modeling, primate V1 electrophysiology). CPU-only and
+reproducible end to end, starting from toy models with fully observable ground truth — chosen so a
+question can be *settled* instead of argued about — and then carrying the same question to a real
+model. The through-line is one systems neuroscience has asked for a decade and interpretability now
+asks in its own vocabulary: **when many features share few non-orthogonal directions, is that a
+problem to undo or a computation to explain?**
 
-Two experiments so far. One replicates the *storage* account of superposition; the other tests whether
-the same geometry also has a *computation* account, and finds that it does — under a nonlinearity held
-fixed across arms, a monosemantic code reads a feature interaction at `0.494 ± 0.005`, exactly chance
-and provably so, while mixed codes reach `0.81`. It also produced a null, reported below in full.
+Three experiments. One replicates the *storage* account of superposition. The second tests whether the
+same geometry also has a *computation* account and finds that it does — under a nonlinearity held fixed
+across arms, a monosemantic code reads a feature interaction at `0.494 ± 0.005`, exactly chance and
+provably so, while mixed codes reach `0.81`. The third takes that question to real SAE features on
+GPT-2-small and **fails to settle it** — for a reason worth reading, and reported as unsettled rather
+than dressed up. Two of the three produced results I did not want; all three are reported in full.
+
+---
+
+## Experiment 03 — a real SAE on the shattering × CCGP plane, and a result I had to give back
+
+[Full writeup](experiments/03_ccgp_on_sae_features/writeup.md) · [code](experiments/03_ccgp_on_sae_features/ccgp_sae.py) · [per-seed results](experiments/03_ccgp_on_sae_features/results.json)
+
+Experiment 02's caveats named this one twice: XOR accuracy is a task-specific proxy where shattering
+dimensionality / CCGP (Bernardi et al. 2020) is the task-agnostic measure, and the whole thing was a toy
+model. So this one is measured on a real model, with SAE weights I did not train: GPT-2-small layer 8 and
+the published res-jb SAE from `jbloom/GPT2-Small-SAEs-Reformatted`, loaded straight from safetensors. Then
+a full factorial NUMBER × TENSE × POLARITY over 96 lexical items, read at a sentence-final `.` that is
+byte-identical across all eight conditions. The comparison that matters is
+not SAE versus residual stream — a 768 → 24,576 ReLU expansion wins that by Cover's theorem — but **SAE
+versus a random expansion matched in width, column norm, and L0.**
+
+![Shattering dimensionality against main-effect CCGP for seven arms, full scale with chance lines and a zoomed panel](experiments/03_ccgp_on_sae_features/figures/01_shattering_vs_ccgp.png)
+
+Under one probe convention the SAE reads two-way interactions much better than matched random mixing
+(`+0.121 ± 0.015`); under another it does not (`+0.011 ± 0.022`). Those two conventions are an **invertible
+affine reparameterisation** of a linear probe's input, so the swing measures the probe's inductive bias,
+not the codes. **I report that as not adjudicated** rather than shipping the flattering setting — and the
+width-matched follow-ups that survived (`+0.081 ± 0.008`, `+0.075 ± 0.016`) inherit the same question,
+because they only ever ran under the convention that produces an effect.
+
+Per arm, in overall shattering dimensionality (five seeds, 95% Student-t):
+
+| arm | per-feature z-score | global RMS |
+|---|---:|---:|
+| `sae` (sparse; ~790 latents ever fire here) | 0.718 ± 0.020 | 0.888 ± 0.006 |
+| `rand_exp` (matched random; ~500) | 0.731 ± 0.014 | 0.809 ± 0.008 |
+| `resid` (768, dense) | 0.901 ± 0.009 | 0.902 ± 0.009 |
+| `sae_recon` (768, dense) | 0.877 ± 0.010 | 0.877 ± 0.009 |
+
+What does survive is a methodological result, and it is the part I'd defend: the sensitivity is
+**localised**. The two dense 768-dimensional arms are unmoved by the scaling (0.902 vs 0.901; 0.877 vs
+0.877) while every sparse or very wide arm swings hard — so preprocessing that is harmless for dense
+representations is decisive for sparse over-complete ones, and any SAE-versus-baseline decoding comparison
+that doesn't state its scaling convention is under-determined.
+
+This is a fallback report, and the writeup says so in full. The run that would settle the comparison —
+every headline arm fitted to a stated convergence criterion, with L2 selected per arm *and* per scaling —
+did not complete, so what ships is the earlier completed run. The question counts as adjudicated only when
+both scaling estimates are individually precise *and* agree, not merely when their intervals overlap.
+
+### Scope — what this does not say
+
+An SAE is a read-out lens beside the residual stream. Nothing here substitutes SAE features into GPT-2's
+forward pass, ablates them, or measures model behaviour — so none of it says, or implies, that an SAE
+harms a model's computation. These are properties of a code under a probe.
 
 ---
 
@@ -128,17 +181,20 @@ to you.
 
 ## Next
 
-- **Shattering dimensionality / CCGP** (Bernardi et al. 2020) on these three geometries — the
-  task-agnostic version of the headline. XOR accuracy is a task-specific proxy; CCGP is the native
-  mixed-selectivity measure and does not require picking an interaction.
-- Then leave toy land: ask the same enumeration-versus-computation question of **real SAE features on a
-  small transformer**, with shattering dimensionality / CCGP as the metric.
+- **Finish experiment 03's convergence test** — probes fitted to a stated convergence criterion, L2
+  selected item-disjointly per arm *and* per scaling on an interior grid, with agreement judged only
+  when both estimates are individually precise. That is the one thing standing between experiment 03
+  and an adjudicated result.
+- Independent stimulus template families, before anything in experiment 03 is allowed to generalise.
+- Shattering dimensionality / CCGP on experiment 02's three *toy* geometries — the same metric where
+  the ground truth is fully known, which would calibrate what these numbers mean.
 - A mechanism check on any residual superposition-versus-random effect: correlate each pair's margin
   with the Gram interference among its active features.
 
 ## Reproduce
 
-Python 3.11 (torch has no 3.14 wheels yet). CPU-only, no model downloads.
+Python 3.11 (torch has no 3.14 wheels yet). CPU-only. Experiments 01–02 need no downloads; experiment
+03 pulls GPT-2-small and one ~150 MB res-jb SAE from the HuggingFace hub on first run.
 
 ```bash
 python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
@@ -150,6 +206,10 @@ python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirem
 
 ```bash
 (cd experiments/02_superposition_and_readout && python readout.py)        # ~10-15 min; SMOKE=1 for a ~40s subset
+```
+
+```bash
+(cd experiments/03_ccgp_on_sae_features && python ccgp_sae.py)           # 19m51s measured on an M1 Pro CPU; SMOKE=1 gives a fast plumbing subset
 ```
 
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
