@@ -13,29 +13,32 @@ same geometry also has a *computation* account and finds that it does — under 
 across arms, a monosemantic code reads a feature interaction at `0.494 ± 0.005`, exactly chance and
 provably so, while mixed codes reach `0.81`. The third takes that question to real SAE features on
 GPT-2-small and **fails to settle it** — for a reason worth reading, and reported as unsettled rather
-than dressed up. The fourth removes the instrument that failed, asks the question causally, gets a large
-and stable answer, and then **declines to certify it** because a threshold fixed weeks earlier missed by
-0.006. Most of these produced results I did not want; all of them are reported in full.
+than dressed up. The fourth removes the instrument that failed and asks the question causally instead —
+and then **declines to certify what it measured**, because a faithfulness threshold fixed before the run
+was missed by 0.006. Most of these produced results I did not want; all of them are reported in full.
 
 ---
 
 ## Experiment 04 — the causal version, and a gate that refused to certify a result I liked
 
-[Full writeup](experiments/04_causal_feature_interchange/writeup.md) · [pre-registration + 3 dated amendments](experiments/04_causal_feature_interchange/DESIGN.md) · [code](experiments/04_causal_feature_interchange/run_experiment.py) · [raw results](experiments/04_causal_feature_interchange/run_results.json)
+[Full writeup](experiments/04_causal_feature_interchange/writeup.md) · [pre-registration, plus three dated amendments — the last written after unblinding and non-adjudicating](experiments/04_causal_feature_interchange/DESIGN.md) · [code](experiments/04_causal_feature_interchange/run_experiment.py) · [raw results](experiments/04_causal_feature_interchange/run_results.json)
 
 Experiment 03 stalled because a linear probe's L2 penalty is not invariant to rescaling its inputs, so
 the answer moved with a preprocessing choice. The fix is not a better probe. It is no probe: edit
 coordinates of a code, write the edit back into GPT-2-small's residual stream, and let **the model's own
 next-token logits** report the effect. Rescale the code by a positive diagonal and the decoder inversely
-and the written edit is *bit-for-bit identical* — the knob that made experiment 03 unanswerable is
-exactly zero here, and the test asserting that passes bitwise in every run.
+and the written edit is algebraically unchanged — the knob that made experiment 03 unanswerable is
+exactly zero here. The implementation asserts one instance of that with `torch.equal`, bit-for-bit, in
+the pilot and in the main run.
 
 The task is subject–verb number agreement on single-flip minimal pairs. The control is **PCA** of the
-same activations — equally unsupervised, same data distribution, lacking only the sparse
-dictionary-learning objective. (The originally planned control, a width/norm/L0-matched random expansion,
-failed its own faithfulness gate; a diagnostic showed that was structural rather than a fitting artifact,
-and the control changed family. All of that is in the amendments, committed before the diagnostic was
-read.)
+same activations — equally unsupervised, same kind of data, without the sparse dictionary-learning
+objective. It is not otherwise matched, and every difference favours the SAE: 768 components against
+24,576 latents, one 8,192-token fit per seed against a dictionary trained on the order of 10⁸ tokens.
+(The originally planned control, a width/norm/L0-matched random expansion, failed its own faithfulness
+gate; a diagnostic showed that was structural rather than a fitting artifact, and the control changed
+family. All of that is in the amendments, each committed before the commit containing the output it
+governs — commit order, which is not the same as proof of read order, and the writeup says so.)
 
 ![Causal recovery against the number of edited coordinates, for SAE, PCA, neuron and random-expansion bases](experiments/04_causal_feature_interchange/figures/01_recovery_curves.png)
 
@@ -46,27 +49,34 @@ read.)
 | `rand_exp` | 0.179 ± 0.024 | 0.117 ± 0.016 | never reached |
 | `neuron` | 0.157 ± 0.005 | 0.157 ± 0.005 | never reached |
 
-**Sixteen SAE coordinates recover half of that basis's causal effect, in every seed; PCA needs 64 to 128
-and once never gets there.** The paired gap is `+0.304 ± 0.023` within-basis and `+0.146 ± 0.022` under
-the conservative normalisation — positive in all five seeds under both.
+**The frozen rule returns `inconclusive`, so nothing in that table is a claimed result.** Gate C requires
+each adjudicated basis to write back at least `0.70` of the residual-stream effect; the SAE's trained
+decoder measured `0.694 ± 0.014`, passing in two seeds of five, and the design says a basis that fails
+Gate C yields no headline. I did not move the threshold. Checking afterwards, moving it would not have
+worked anyway — a second gate blocks independently in one seed.
 
-**And the frozen rule returns `inconclusive`.** Gate C requires each adjudicated basis to write back at
-least `0.70` of the residual-stream effect; the SAE's trained decoder measured `0.694 ± 0.014`, passing
-in two seeds of five. I did not move the threshold. Checking afterwards, moving it would not have worked
-anyway — a second gate blocks independently in one seed.
+What the table *is*: an uncertified measurement, reported in full because hiding it would be worse.
+Sixteen SAE coordinates reach half of that basis's causal effect in every seed while PCA needs 64 to 128
+and once never gets there; the paired gap is `+0.304 ± 0.023` within-basis and `+0.146 ± 0.022` absolute,
+positive in all five seeds under both denominators.
 
-The obvious deflation is tested rather than waved off: restricting to pairs whose subject noun never
-appears in the ranking-training split leaves the result unchanged (`0.594` against `0.588`), the five
-seeds' top-16 latents share a 12-latent intersection, and the matched random expansion — same 24,576-wide
-pool, same pre-filter, same ranking rule — finishes *last*, so pool width alone buys nothing. What keeps
-the result honest-sized: a single **supervised** direction recovers `0.549` on its own while the SAE's
-best single latent recovers `0.072`. No unsupervised basis here puts this factor in one coordinate.
+The obvious deflations are tested rather than waved off, all post-hoc and recomputable from the manifest:
+restricting to pairs whose subject noun never appears in the ranking-training split moves the number by
+`+0.005` (`0.594` against `0.588`, on 150 edits, with no equivalence test), and the five seeds' top-16
+latents share a 12-latent intersection. The matched random expansion — same nominal 24,576-wide pool,
+same pre-filter, same ranking rule — finishes *last*, which points away from a pure pool-width story
+without settling it, since that arm failed Gate C too. The 32× width advantage stays a live alternative
+reading. What keeps the whole thing honest-sized: a single **supervised** direction recovers `0.549` on
+its own while the SAE's best single latent recovers `0.072`. No unsupervised basis here puts this factor
+in one coordinate.
 
 ### Scope — what this does not say
 
-The model is never modified. The edit is a *difference of two reconstructions*, so the SAE's
-reconstruction error cancels and never enters the forward pass. Low recovery in a basis means a factor
-is not concentrated in few coordinates of that basis — never that an SAE harms a model's computation.
+The model is never modified: the base residual is left exactly as GPT-2 produced it and one vector is
+added to it, so no reconstruction is ever substituted for the model's own state. (The *difference* of
+reconstruction errors does not cancel — an earlier draft said it did, and that was wrong; Gate C is
+precisely the measurement of how large it is.) Low recovery in a basis means a factor is not concentrated
+in few coordinates of that basis — never that an SAE harms a model's computation.
 
 ---
 

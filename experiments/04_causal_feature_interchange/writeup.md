@@ -5,8 +5,10 @@
 seeds). **Raw results:** `pilot_results.json`, `gate_c_diagnostic.json`, `run_results.json`,
 `robustness_results.json`. **Figures:** `figures/`.
 
-Every number below is recomputed from those manifests as a two-sided 95% Student-t interval,
-`t(4) = 2.776` on five seeds, matching experiment 03's convention.
+Every **five-seed summary** below is recomputed from those manifests as a two-sided 95% Student-t
+interval, `t(4) = 2.776`, matching experiment 03's convention. Single-run diagnostics, pre-declared
+thresholds, `k50` values, and wall-clock times are raw values, not intervals, and are not covered by that
+sentence.
 
 ## The question, and why it is asked this way
 
@@ -26,18 +28,39 @@ The claim that makes this worth doing:
 resid' = resid_base + W_dec (f' − f_base)
 ```
 
-Rescale every latent by a positive diagonal `D` and the matching decoder by `D⁻¹`. The product is
-unchanged, so `resid'` is bit-for-bit identical. **The knob that made experiment 03 unanswerable cannot
-move this measure at all** — and that is asserted in code, not argued: the D-rescale self-test compares
-bitwise and passes, in every run, alongside a zero-selection edit that reproduces the clean logits
-bitwise and a prompt-swap exactness check at `5.72e-06`.
+Rescale every latent by a positive diagonal `D` and the matching decoder by `D⁻¹`. In exact arithmetic
+the product `W_dec (f' − f_base)` is unchanged, so **the knob that made experiment 03 unanswerable cannot
+move this measure at all.** That much is algebra.
+
+What is *tested*, rather than argued, is narrower and worth stating exactly: the self-test builds one
+random power-of-two diagonal over the selected coordinates, rescales the code and the decoder rows
+inversely, and compares the written delta with `torch.equal` — bit-for-bit, so float32 rounding does not
+even enter. It passes in the pilot and in the main run, the two places it is recorded. Alongside it, a
+zero-selection edit reproduces the clean logits bitwise, and a prompt-swap exactness check comes in at
+`5.72e-06`. A single power-of-two instance is not a proof over all positive diagonals; the algebra is,
+and the test is there to catch an implementation that fails to realise it.
 
 ## Scope — what this does not say
 
 The model is never modified. No SAE is inserted into GPT-2's forward pass, no component is replaced by
-its reconstruction, nothing is ablated. The edit is `+ W_dec (f' − f_base)`, a *difference of two
-reconstructions*, so the SAE's reconstruction error cancels exactly and never enters the forward pass.
-GPT-2 runs unmodified apart from one additive vector at one hook.
+its reconstruction, nothing is ablated. The edit is *additive*: `resid_base` is left exactly as the model
+produced it and one vector is added to it, so no reconstruction of the base state is ever substituted for
+the base state.
+
+**A correction to an earlier draft of this paragraph, because it was wrong and the manifests refute it.**
+That draft said the SAE's reconstruction error "cancels exactly". It does not. With `recon(x) = x − e(x)`,
+the written vector is
+
+```
+W_dec (f_src − f_base) = (x_src − x_base) − (e_src − e_base)
+```
+
+so the decoder *bias* cancels and the *difference* of reconstruction errors does not. The written delta is
+an approximation of the true residual delta, and the size of that approximation is precisely what Gate C
+measures: had it cancelled, `E(full)/E_resid` would be 1, and for the SAE it is `0.694 ± 0.014`.
+
+What survives, and is the part the scope rule needs, is the non-substitution: the base residual is
+untouched and GPT-2 runs unmodified apart from one additive vector at one hook.
 
 A low recovery score in any basis therefore says that a factor is not concentrated in few coordinates
 *of that basis*. It does not say — and may not be read as saying — that an SAE harms, degrades, removes,
@@ -84,23 +107,34 @@ roughly **doubled**, from the SAE's measured 72.76 to 144, before it writes back
 The control therefore changed family, to bases that pass Gate C **by construction** — a complete
 orthonormal basis has `decode ∘ encode = identity`, so no decoder is fitted and nothing can be tuned.
 Sparsity is matched where the dependent variable lives: the intervention budget. PCA became the control
-because it has seen the same data distribution and is equally unsupervised; the only thing it lacks is
-the sparse dictionary-learning objective. The measured PCA identity residual on the effect is `4.77e-07`
-against a threshold of `4.22e-03`.
+because it has seen the same kind of data and is equally unsupervised, and lacks the sparse
+dictionary-learning objective. It is **not** matched to the SAE otherwise, and the differences all favour
+the SAE: 768 components against 24,576 latents, one 8,192-token fit per seed against a dictionary trained
+on the order of 10⁸ tokens, and — as the robustness section shows — a spectrum that has not converged at
+that budget. The measured PCA identity residual on the effect is `4.77e-07` against a threshold of
+`4.22e-03`.
 
-That decision, and its decision rule, were written into `DESIGN.md` and committed **before the diagnostic
-output was read** — the commit history shows the order.
+That decision and its decision rule were written into `DESIGN.md` and committed before the commit that
+first contains the diagnostic output. **What the commit history establishes is the order of the commits,
+not the order in which files were read or computed** — an honest statement of the evidence, since no
+external timestamp or append-only run log exists here. The stronger claim is not supported and is
+withdrawn.
 
 ## Result 1 — the verdict, which is `inconclusive`
 
 > Under the frozen decision rule this run is **inconclusive**: Gate C requires each adjudicated basis to
 > write back at least `0.70` of the residual-stream effect, and the SAE's trained decoder measured
-> `0.694 ± 0.014`, passing in two of five seeds (`0.7046, 0.7072, 0.6854, 0.6832, 0.6893`). The
-> measurement the rule withholds judgement on is nevertheless large and stable: ranked SAE coordinates
-> concentrate the number-agreement interchange effect into far fewer coordinates than ranked PCA
-> components — paired AUC difference `+0.304 ± 0.023` within-basis, `+0.146 ± 0.022` under the
-> conservative absolute normalisation, `k50` of 16 against 64-to-beyond-128, positive in all five seeds
-> under both conventions.
+> `0.694 ± 0.014`, passing in two of five seeds (`0.7046, 0.7072, 0.6854, 0.6832, 0.6893`). The design
+> says a basis that fails Gate C yields no headline, so **there is no result claimed here.** What there
+> is, is a descriptive measurement the rule declines to certify: in this write-back measurement and under
+> both normalisations, ranked SAE coordinates reach a given fraction of their basis's causal effect with
+> far fewer coordinates than ranked PCA components — paired AUC difference `+0.304 ± 0.023` within-basis,
+> `+0.146 ± 0.022` absolute, `k50` of 16 against 64-to-beyond-128, positive in all five seeds under both
+> conventions.
+
+Everything in the next section is that uncertified measurement. It is reported in full because hiding a
+measurement is worse than reporting one the rule would not certify — but it is not a finding about SAE
+bases, and it is not written as one.
 
 The verdict is double-locked, and it was checked for exactly that. No aggregation rescues Gate C: the
 pooled five-seed mean is `0.6939`, still under the floor. Independently, in seed `20260803` PCA never
@@ -111,7 +145,7 @@ separate frozen gates would have to be re-read to overturn this.
 moving it by 0.006 after seeing a favourable effect is the failure this experiment was built to avoid.
 Experiment 03 is in this repository because I already made the softer version of that mistake once.
 
-## Result 2 — the measurement the rule withholds judgement on
+## Result 2 — the uncertified measurement, in full
 
 ![Recovery curves per basis against the number of edited coordinates](figures/01_recovery_curves.png)
 
@@ -126,13 +160,15 @@ Sixteen SAE coordinates recover half of that basis's own causal effect, in every
 128 and in one seed never gets there within the grid; the model's own residual-stream coordinates and a
 matched random expansion never reach half at any `k` on the grid.
 
-**Two normalisations, reported as a bracket rather than a choice.** Within-basis normalisation divides by
-each basis's own full effect; since the SAE writes back `0.694` and PCA writes back exactly `1.000`, the
-SAE gets a denominator 31% smaller. That is the mirror image of the inflation the design was written to
-prevent. The absolute normalisation gives the unwritten 31% no credit at all. The two conventions bracket
-the truth from opposite sides, PCA's number is identical under both, and **both endpoints are positive in
-all five seeds**. The frozen statistic happens to be the larger of the two, which is why the smaller one
-is stated in the same sentence.
+**Two normalisations, both reported, neither chosen.** Within-basis normalisation divides by each basis's
+own full effect; since the SAE writes back `0.694` and PCA writes back exactly `1.000`, the SAE gets a
+denominator 31% smaller. That is the mirror image of the inflation the design was written to prevent. The
+absolute normalisation gives the unwritten 31% no credit at all. These are two different denominators,
+and it would overstate them to say the truth is bracketed between: nothing here establishes that the
+unwritten 31% is distributed like the written part, and Gate C's `0.694` is an aggregate rather than a
+per-`k` scaling. What can be said is that PCA's number is identical under both conventions, only the
+SAE's moves, and **both versions are positive in all five seeds**. The frozen statistic is the larger of
+the two, which is why the smaller is stated in the same sentence.
 
 ## The obvious deflation, tested
 
@@ -142,16 +178,23 @@ all reproducible from `run_results.json`:
 
 - **Noun-disjoint transfer.** Restricting evaluation to pairs whose subject noun never appears as a
   subject in that seed's ranking-training split gives `R_sae(16) = 0.594` across 150 directed edits,
-  against `0.588` on the full set. No difference.
+  against `0.588` on the full set — a point-estimate difference of `+0.005`. No equivalence margin was
+  pre-declared and none is tested, and the qualifying subset is small and unevenly distributed across
+  seeds (8, 58, 16, 36, 32 edits), so this says the two point estimates are close, not that transfer is
+  established.
 - **Cross-seed stability.** The five seeds' top-16 latent sets share a 12-latent intersection, with mean
   pairwise overlap 13.3 of 16 — the ranking finds nearly the same latents from independent draws.
 - **Sign consistency at `k = 16`.** `sae` 1.0000, `pca` 0.9993, `neuron` 0.9993, `rand_exp` 0.9627.
 
-The candidate-pool objection — the SAE ranks 128 coordinates out of 24,576, PCA out of 768 — is answered
-by `rand_exp`, which is that null hypothesis implemented: the same 24,576-wide pool, the same pre-filter,
-the same ranking rule, L0-matched. It finishes **last** in absolute terms. Pool width alone does not buy
-concentration. Neither does the SAE's pre-filter: `sae_randk`, drawing at random from the SAE's own 128
-causally pre-filtered candidates, scores 0.15–0.18 — below PCA's ranked curve.
+The candidate-pool objection — the SAE ranks 128 coordinates out of 24,576, PCA out of 768 — is the one
+place where a comparison would be most useful and where the available arm is weakest. `rand_exp` is that
+null hypothesis implemented (same nominal 24,576-wide pool, same pre-filter, same ranking rule,
+L0-matched) and it finishes **last** in absolute terms. But `rand_exp` failed Gate C and is designated
+`reported_not_adjudicated`, so it cannot *answer* the objection — it is a non-adjudicated sensitivity that
+happens to point away from a pure pool-width explanation, and the 32× width advantage remains a live
+alternative reading of the whole comparison. Similarly `sae_randk`, drawing at random from the SAE's own
+128 causally pre-filtered candidates, scores 0.15–0.18, below PCA's ranked curve — suggestive about the
+pre-filter, not decisive.
 
 ## Robustness — specified after unblinding, never adjudicating
 
@@ -163,10 +206,12 @@ covariance, about 10.7 samples per dimension, against an SAE trained on the orde
 noise rotates axes inside near-degenerate eigenvalue subspaces, which would spread a direction a
 converged PCA could concentrate and bias the control downward. Measured: `AUC(pca)` is `0.195 ± 0.008` at
 2,048 tokens and `0.213 ± 0.023` at 8,192, a change of `+0.018 ± 0.025` whose interval crosses zero.
-Four times the data moves the control by about 0.018 against a gap of 0.304. **That bounds the objection;
-it does not retire it** — no flatness threshold was pre-declared, so this is not adjudicated, and the
-eigenvalue spectrum is still moving (the top-64 variance share falls from 0.530 to 0.462), so the basis
-is not converged. A larger fit remains the honest way to close it.
+Four times the data moves the control by about 0.018 against a gap of 0.304. **That is an empirical
+difference between two budgets and nothing more** — it is not a convergence bound, no flatness threshold
+was pre-declared, and the eigenvalue spectrum is still moving (the top-64 variance share falls from 0.530
+to 0.462), so the basis is not converged. Extrapolating from two points to "the control is fair" would be
+exactly the kind of step this experiment exists to refuse. A larger fit is the honest way to close it, and
+it has not been done.
 
 **The `sae_ridge` arm** takes the SAE's own code with a ridge decoder, which clears every gate. Its
 ordering agrees: `AUC(sae_ridge) − AUC(pca)` is `+0.348 ± 0.037` within-basis and `+0.285 ± 0.031`
@@ -192,9 +237,13 @@ the slice. Both figures describe one additive write-back of a code difference at
 measures any effect of an SAE on the model's computation. I reported the uncorrected version to myself
 before running the control, which is the argument for running it.
 
-The certificate still does its job: an 8k ridge reaches `0.887` on SAE codes and only `0.652 ± 0.039` on
-the matched random codes, so the estimator is not the bottleneck and the random arm's shortfall belongs
-to the code.
+The certificate still does part of its job: under identical fitting conditions an 8k ridge reaches
+`0.887` on SAE codes and `0.652 ± 0.039` on the matched random codes, so the estimator is not uniformly
+throttling every code. That is weaker than "the shortfall belongs to the code", which is the sentence an
+earlier draft used and which the pure-generic result does not support — under a *clean* fit the SAE code
+itself only reaches `0.414`, so fitting conditions are a first-order term for both arms. What is
+supported is narrow: at matched fitting conditions the two codes behave differently, and the difference
+is not explained by the estimator being too weak to decode anything.
 
 ## The scale, stated soberly
 
@@ -222,12 +271,27 @@ run: zero-selection bitwise, D-rescale bitwise, `start_at_layer=8` max abs `0.0`
 
 ## A by-product, reported as method validation
 
-The Gate B layer × position scan is not a discovery, but it is a clean picture. At layer 4 the causal
-handle sits **entirely at the subject position** (0.677 against 0.005 at the final position). By layer 8
-it has divided roughly evenly (0.398 against 0.406, 0.840 together, slightly super-additive). That is a
-direct trace of attention moving the number signal between those layers, and it is why the position set
-is `both`. It comes with a limitation: the cached SAE pins the intervention to layer 8, mid-transport,
-while layer 4's subject position alone already carries 0.68 — and there is no SAE there.
+The Gate B layer × position scan is not a discovery, but it is a clean picture. Five-seed values of
+`E_resid/d_gap` from the main run:
+
+| layer | subject position | final position | both |
+|---|---:|---:|---:|
+| 4 | 0.662 ± 0.012 | 0.011 ± 0.002 | 0.686 ± 0.011 |
+| 6 | 0.424 ± 0.015 | 0.066 ± 0.003 | 0.525 ± 0.014 |
+| 8 | 0.366 ± 0.015 | 0.423 ± 0.006 | 0.827 ± 0.010 |
+| 10 | 0.260 ± 0.014 | 0.694 ± 0.012 | 0.961 ± 0.002 |
+
+At layer 4 the causal handle sits almost entirely at the subject position; by layer 8 it has divided
+roughly evenly; by layer 10 it has largely arrived at the final position. **What is measured is where a
+residual-stream interchange has an effect, at each layer and position — no attention pattern, head, or
+path was measured**, so this is consistent with the number signal being progressively relocated toward
+the readout position, and it is not evidence about which mechanism relocates it. It is why the position
+set is `both`. (An earlier draft called it a "direct trace of attention moving the signal". Nothing here
+measured attention; that phrasing is withdrawn — and identifying the mechanism is exactly what the next
+experiment is for.)
+
+It comes with a limitation: the cached SAE pins the intervention to layer 8, mid-transport, while layer
+4's subject position alone already carries 0.66 — and there is no SAE there.
 
 ## What actually ran
 
@@ -241,7 +305,10 @@ measurement supersedes the projection.
 Two runs stopped at a numerical assertion on the complete-basis identity (`1.34e-4` against an absolute
 `1e-4` bound) and refused to loosen it. The bound was mis-specified by me — an absolute tolerance on
 activations whose entries run to tens is a float32 round-off test, not a test of the claim — and
-Amendment 1a restates it relatively and on the effect itself. No scientific threshold moved.
+Amendment 1a restates it relatively and on the effect itself. No scientific threshold moved. **That
+`1.34e-4` is narrated in Amendment 1a and is not recoverable from any shipped manifest**, because the
+aborted runs wrote no result file; it is the one number in this writeup that a reader cannot check
+against the raw data.
 
 ## Caveats
 
