@@ -49,7 +49,7 @@ Caption — with the same ReLU nonlinearity in every arm, only the mixed geometr
 
 | arm | XOR readout accuracy (across `S`) |
 |---|---|
-| monosemantic | **0.494 ± 0.005** at every sparsity — flat on the chance line (flat by construction — this arm's W does not depend on S; the finding is the level, not the flatness) |
+| monosemantic | **0.494 ± 0.005** at every sparsity — flat on the chance line (flat by construction — this arm's W does not depend on S; the finding is the level, not the flatness). The interval lies just below 0.50 rather than astride it, which is expected: the theorem forbids *above*-chance performance, and a fitted probe evaluated on held-out data scores a little under chance from finite-sample variance. |
 | random | 0.79 → 0.81 |
 | superposition | 0.78 → 0.81 (0.815 peak at S=0.9; a dip to 0.74 at S=0.7 — see the note below) |
 

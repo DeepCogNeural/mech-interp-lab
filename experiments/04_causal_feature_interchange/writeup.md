@@ -1,6 +1,7 @@
 # Experiment 04 — Is an SAE basis a *causal* basis?
 
-**Design:** [`DESIGN.md`](DESIGN.md), frozen before implementation, with three dated amendments.
+**Design:** [`DESIGN.md`](DESIGN.md), frozen before implementation, with three dated amendments and one
+dated correction that retracts three claims made in the frozen text.
 **Code:** `pilot.py`, `gate_c_diagnostic.py`, `run_experiment.py`, `robustness.py` (offline CPU, five
 seeds). **Raw results:** `pilot_results.json`, `gate_c_diagnostic.json`, `run_results.json`,
 `robustness_results.json`. **Figures:** `figures/`.
@@ -56,8 +57,11 @@ W_dec (f_src − f_base) = (x_src − x_base) − (e_src − e_base)
 ```
 
 so the decoder *bias* cancels and the *difference* of reconstruction errors does not. The written delta is
-an approximation of the true residual delta, and the size of that approximation is precisely what Gate C
-measures: had it cancelled, `E(full)/E_resid` would be 1, and for the SAE it is `0.694 ± 0.014`.
+an approximation of the true residual delta. Gate C measures the *behavioural consequence* of that
+approximation rather than its size — a ratio of 1 would not by itself prove the error difference is zero,
+since an error orthogonal to the readout direction would leave the logits alone — but the implication runs
+one way and that is enough here: had the error difference cancelled, `E(full)/E_resid` would be 1, and for
+the SAE it is `0.694 ± 0.014`.
 
 What survives, and is the part the scope rule needs, is the non-substitution: the base residual is
 untouched and GPT-2 runs unmodified apart from one additive vector at one hook.
@@ -144,7 +148,8 @@ pooled five-seed mean is `0.6939`, still under the floor. Independently, in seed
 reached `R ≥ 0.5`, so Gate D is unevaluable there and blocks an adjudicated positive on its own. Two
 separate frozen gates would have to be re-read to overturn this.
 
-**A Gate C relaxation was considered and refused.** The threshold was fixed before the number existed;
+**A Gate C relaxation was considered and refused.** The threshold was frozen in a commit that precedes
+any commit containing this experiment's implementation or output;
 moving it by 0.006 after seeing a favourable effect is the failure this experiment was built to avoid.
 Experiment 03 is in this repository because I already made the softer version of that mistake once.
 
@@ -181,8 +186,8 @@ an artifact of a 20-noun vocabulary. Three recomputations from the existing mani
 all reproducible from `run_results.json`:
 
 - **Noun-disjoint transfer.** Restricting evaluation to pairs whose subject noun never appears as a
-  subject in that seed's ranking-training split gives `R_sae(16) = 0.594` across 150 directed edits,
-  against `0.588` on the full set — a point-estimate difference of `+0.005`. No equivalence margin was
+  subject in that seed's ranking-training split gives `R_sae(16) = 0.5936` across 150 directed edits,
+  against `0.5882` on the full set — a point-estimate difference of `+0.0054`. No equivalence margin was
   pre-declared and none is tested, and the qualifying subset is small and unevenly distributed across
   seeds (8, 58, 16, 36, 32 edits), so this says the two point estimates are close, not that transfer is
   established.
