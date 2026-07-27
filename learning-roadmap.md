@@ -10,18 +10,22 @@ Rough pace: one section per week, ~8-12 hrs/week. Slip freely — the notebook r
 
 ---
 
-## Current plan (2026-07-26)
+## Current plan (updated 2026-07-27)
 
-Three experiments are done and the audit is in `lab-notebook.md`. The finding that reorders this roadmap: **every result so far is linear decodability of a representation, and none of it is causal.** Week 3 below is the part that was skipped, and it is the part that matters most — the field's premise is that structure is causal structure, and the one experiment run on a real model stalled precisely because a fitted readout carries a regularisation geometry that a code comparison cannot separate itself from.
+Four experiments are done; the audits are in `lab-notebook.md`. The finding that reordered this roadmap on 2026-07-26 was that **every result up to that point was linear decodability of a representation, and none of it was causal.** Week 3 below is the part that had been skipped and it was the part that mattered most.
 
-So the order from here is:
+`experiments/04_causal_feature_interchange/` closed part of that gap: a causal interchange intervention on GPT-2-small, readout on the model's own logits, run under a frozen pre-registration. Its rule returned **inconclusive** — a faithfulness gate fixed before the run was missed by 0.006 — so the repository still contains **no adjudicated real-model finding**, and experiment 04 is a causal *basis comparison* rather than a mechanism.
 
-1. **Experiment 04 — causal feature interchange.** [Design](experiments/04_causal_feature_interchange/DESIGN.md), pre-registered before implementation. Edit SAE coordinates, write the edit back into GPT-2-small's residual stream, and let the model's own agreement logits be the readout. No probe, therefore no scaling convention and no L2 prior — the confound that stopped experiment 03 is absent by construction, not by tuning. Doubles as the Week 3 causal exercise on a question this project already owns.
-2. **Week 3 proper — activation patching and IOI**, using whatever tooling experiment 04 forces me to build. Doing it in this order means the patching machinery arrives attached to a question I care about rather than as an exercise.
-3. **Week 5–6 — train an SAE.** Everything so far uses a published one. Training a small one is the only way to know which of an SAE's properties are the objective's and which are the training run's.
-4. Then the deferred items: independent stimulus template families for experiment 03, shattering/CCGP on experiment 02's toy geometries where ground truth is known, and the Gram-interference mechanism check.
+That distinction sets what comes next.
+
+1. **The number-agreement circuit.** Which attention heads transport the subject's number to the verb and produce the `is`/`are` logit difference, and do experiment 04's recurring layer-8 SAE latents sit on that causal path? It reuses experiment 04's stimuli and patching machinery, it grows out of that experiment's own Gate B by-product (the causal handle relocating from the subject position toward the readout position between layers 4 and 10), and — unlike a basis comparison — both of its honest outcomes are claims: the effect is localised in a few heads, or it is diffuse.
+2. **Week 3 proper — activation patching and IOI**, on whatever tooling that experiment forces me to build, so the machinery arrives attached to a question rather than as an exercise.
+3. **Week 5–6 — train an SAE.** Everything so far uses a published one. Training a small one is the only way to separate an SAE's objective from its particular training run.
+4. Then the deferred items: re-registering experiment 04's Gate C on a decoder each arm actually ships with, a larger PCA fit, a second stimulus family, shattering/CCGP on experiment 02's toy geometries, and the Gram-interference mechanism check.
 
 Weeks 1–2 material (transformer internals, TransformerLens) is being picked up in service of these rather than as a separate pass.
+
+**Under review, not yet acted on:** whether this repository's stated through-line — superposition versus mixed selectivity — should remain the organising story. The measured quantity drifted, across experiments 03 and 04, into a question about SAE basis quality, which is a different and more crowded question. Notes are private; the README still carries the original framing.
 
 ---
 
