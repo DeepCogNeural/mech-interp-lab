@@ -10,6 +10,21 @@ Rough pace: one section per week, ~8-12 hrs/week. Slip freely — the notebook r
 
 ---
 
+## Current plan (2026-07-26)
+
+Three experiments are done and the audit is in `lab-notebook.md`. The finding that reorders this roadmap: **every result so far is linear decodability of a representation, and none of it is causal.** Week 3 below is the part that was skipped, and it is the part that matters most — the field's premise is that structure is causal structure, and the one experiment run on a real model stalled precisely because a fitted readout carries a regularisation geometry that a code comparison cannot separate itself from.
+
+So the order from here is:
+
+1. **Experiment 04 — causal feature interchange.** [Design](experiments/04_causal_feature_interchange/DESIGN.md), pre-registered before implementation. Edit SAE coordinates, write the edit back into GPT-2-small's residual stream, and let the model's own agreement logits be the readout. No probe, therefore no scaling convention and no L2 prior — the confound that stopped experiment 03 is absent by construction, not by tuning. Doubles as the Week 3 causal exercise on a question this project already owns.
+2. **Week 3 proper — activation patching and IOI**, using whatever tooling experiment 04 forces me to build. Doing it in this order means the patching machinery arrives attached to a question I care about rather than as an exercise.
+3. **Week 5–6 — train an SAE.** Everything so far uses a published one. Training a small one is the only way to know which of an SAE's properties are the objective's and which are the training run's.
+4. Then the deferred items: independent stimulus template families for experiment 03, shattering/CCGP on experiment 02's toy geometries where ground truth is known, and the Gram-interference mechanism check.
+
+Weeks 1–2 material (transformer internals, TransformerLens) is being picked up in service of these rather than as a separate pass.
+
+---
+
 ## Week 0 — Orientation (before anything else)
 
 | Item | Link | What you get from it |
