@@ -151,3 +151,35 @@ An earlier attempt was blocked at Gate A because the execution sandbox had no DN
 - If it adjudicates positively, the mechanism question opens: are conjunctive latents responsible? That needs a preregistered feature-level analysis, not a post-hoc hunt.
 - Independent template families, to see whether any of this survives a change of stimulus distribution.
 - A causal design — patching SAE features and measuring model behaviour — is a different experiment with a different scope statement, and this one licenses no claims about it.
+
+## Addendum — 2026-07-26: converged SD scaling test
+
+This addendum runs the one outstanding SD-only convergence check without altering the shipped manifest, script, figures, headline, or `Next` section. It reuses the published stimuli, layer 8, and four shared arm definitions (`resid`, `sae`, `sae_recon`, `rand_exp`); it deliberately omits CCGP, `rand_exp_dense`, and the width controls. Full raw rows, fold-local masks, every L2 trace, and timing are in [convergence_results.json](convergence_results.json).
+
+Each probe minimised mean logistic loss plus `0.5 × λ × ||w||²` (bias unpenalised) with full-batch L-BFGS and strong-Wolfe line search. It stopped only when relative training-objective change was below `1e-3` over ten accepted iterations; the cap was 500. L2 was selected separately for each arm, scaling, seed, and outer fold from item-disjoint inner main-effect validation loss, choosing the largest `λ >= 1e-5` within `1e-2` nats/example of the best loss. The all-zero feature mask was refit inside each outer training fold. All intervals below are two-sided Student-t(4) 95% intervals.
+
+| scaling | arm | main effect | two-way XOR | three-way parity | unstructured | overall SD |
+|---|---|---:|---:|---:|---:|---:|
+| z-score | resid | 1.000 ± 0.000 | 0.858 ± 0.023 | 0.631 ± 0.021 | 0.910 ± 0.012 | 0.905 ± 0.011 |
+| z-score | sae | 0.948 ± 0.050 | 0.795 ± 0.038 | 0.626 ± 0.023 | 0.838 ± 0.041 | 0.837 ± 0.041 |
+| z-score | sae_recon | 0.986 ± 0.003 | 0.817 ± 0.021 | 0.620 ± 0.028 | 0.874 ± 0.013 | 0.871 ± 0.013 |
+| z-score | rand_exp | 0.953 ± 0.011 | 0.737 ± 0.016 | 0.588 ± 0.026 | 0.772 ± 0.010 | 0.780 ± 0.009 |
+| global RMS | resid | 1.000 ± 0.000 | 0.861 ± 0.025 | 0.637 ± 0.021 | 0.912 ± 0.011 | 0.907 ± 0.010 |
+| global RMS | sae | 0.988 ± 0.004 | 0.849 ± 0.015 | 0.643 ± 0.008 | 0.895 ± 0.009 | 0.892 ± 0.009 |
+| global RMS | sae_recon | 0.985 ± 0.003 | 0.812 ± 0.022 | 0.620 ± 0.027 | 0.873 ± 0.010 | 0.870 ± 0.011 |
+| global RMS | rand_exp | 0.974 ± 0.003 | 0.734 ± 0.016 | 0.583 ± 0.021 | 0.819 ± 0.013 | 0.818 ± 0.012 |
+
+The corresponding overall train−test gaps were `resid` +0.094 ± 0.011, `sae` +0.121 ± 0.034, `sae_recon` +0.094 ± 0.023, and `rand_exp` +0.032 ± 0.012 under z-score; under global RMS they were +0.093 ± 0.010, +0.099 ± 0.019, +0.093 ± 0.019, and +0.146 ± 0.030. The JSON records the same gap by dichotomy type.
+
+| scaling | paired `sae − rand_exp` two-way-XOR SD |
+|---|---:|
+| z-score | +0.0580 ± 0.0414 |
+| global RMS | +0.1151 ± 0.0192 |
+
+The dense-arm diagnostic behaved: every SD-family shift between scalings was at most 0.0058 for `resid` and `sae_recon` (predeclared tolerance 0.010). But the two SAE−random estimates are not close (their means differ by 0.0571) and the z-score estimate is not individually precise (half-width 0.0414, predeclared precision threshold 0.025). The small interval overlap is therefore not evidence of agreement. **Verdict: still not adjudicated; this confirms the shipped conclusion that L2 prior geometry prevents this probe family from resolving the code comparison.**
+
+Every outer-SD fit converged. The observed L-BFGS iteration ranges (minimum–maximum; mean over 25 outer fits) were: z-score `resid` 151–175; 159.0, `sae` 13–65; 31.4, `sae_recon` 41–235; 157.7, `rand_exp` 12–21; 12.4; global RMS `resid` 157–186; 168.2, `sae` 41–230; 160.5, `sae_recon` 43–257; 170.1, `rand_exp` 26–115; 70.9. One z-score SAE inner-selection fold (seed 3, outer fold 2) remained at the high grid edge after four predeclared expansions and used the documented `1e19` fallback; it is flagged in the raw result rather than hidden. No other selection sat on an edge.
+
+Selected L2 values, ordered as `[outer fold 0, 1, 2, 3, 4]` for seeds 0 through 4, were: z-score `resid`: all five `[0.001, 0.001, 0.001, 0.001, 0.001]`; `sae`: `[0.1, 0.001, 0.1, 0.001, 0.1]`, `[0.1, 0.1, 0.001, 0.1, 0.1]`, `[0.1, 0.1, 0.1, 0.1, 0.1]`, `[0.1, 0.1, 1e19*, 10, 0.001]`, `[0.1, 0.1, 10, 0.001, 0.001]`; `sae_recon`: `[0.1, 0.001, 0.1, 0.001, 0.001]`, `[0.001, 0.001, 0.001, 0.001, 0.001]`, `[0.001, 0.001, 0.1, 0.1, 0.1]`, `[0.1, 0.1, 0.001, 0.001, 0.1]`, `[0.001, 0.001, 0.001, 0.001, 0.001]`; `rand_exp`: `[10, 10, 10, 10, 10]`, `[10, 10, 10, 10, 10]`, `[0.1, 10, 10, 10, 10]`, `[10, 10, 10, 10, 10]`, `[10, 10, 10, 10, 10]`. Global-RMS `resid`: all five `[0.001, 0.001, 0.001, 0.001, 0.001]`; `sae`: `[0.1, 0.001, 0.001, 0.001, 0.001]`, `[0.001, 0.001, 0.001, 0.001, 0.001]`, `[0.001, 0.001, 0.1, 0.1, 0.1]`, `[0.001, 0.001, 0.001, 0.001, 0.001]`, `[0.001, 0.001, 0.001, 0.001, 0.001]`; `sae_recon`: `[0.1, 0.001, 0.1, 0.001, 0.001]`, `[0.1, 0.001, 0.001, 0.001, 0.001]`, `[0.001, 0.001, 0.1, 0.1, 0.1]`, `[0.1, 0.1, 0.001, 0.001, 0.001]`, `[0.001, 0.001, 0.001, 0.001, 0.001]`; `rand_exp`: `[0.001, 0.001, 0.1, 0.001, 0.1]`, `[0.1, 0.001, 0.1, 0.001, 0.1]`, `[0.1, 0.001, 0.001, 0.001, 0.1]`, `[0.001, 0.001, 0.1, 0.001, 0.001]`, `[0.001, 0.1, 0.1, 0.1, 0.1]`. `*` is the sole documented edge fallback.
+
+The seed-0 timing pilot took 30.1 s and extrapolated to about 2.5 min, so the planned five seeds, five folds, 35 dichotomies, and both scalings were retained; no extra scope was cut. Actual cumulative CPU wall clock was 144.8 s.
