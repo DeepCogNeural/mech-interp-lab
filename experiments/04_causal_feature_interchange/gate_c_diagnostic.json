@@ -1,0 +1,744 @@
+{
+  "configuration": {
+    "exact_dual_fit_row_cap": 8000,
+    "generic_train_fraction": 0.8,
+    "layer": 8,
+    "nominal_task_matched_l0": 72,
+    "pair_construction": "pilot.py single-flip pairs, both directions",
+    "patching": "additive residual delta only",
+    "pilot_actual_matched_l0": 75,
+    "position_set": "both",
+    "random_encoder_seed": 20260727,
+    "train_split_template_rows": 160
+  },
+  "elapsed_seconds": 647.0207914580242,
+  "forward_records": [
+    {
+      "batch": 60,
+      "label": "diagnostic_resid_full",
+      "path": "start_at_layer_8",
+      "seconds": 0.11888154200278223
+    },
+    {
+      "batch": 60,
+      "label": "diagnostic_sae_full",
+      "path": "start_at_layer_8",
+      "seconds": 0.1009511660085991
+    },
+    {
+      "batch": 60,
+      "label": "A budget=2048",
+      "path": "start_at_layer_8",
+      "seconds": 0.09744104195851833
+    },
+    {
+      "batch": 60,
+      "label": "A budget=8192",
+      "path": "start_at_layer_8",
+      "seconds": 0.10388237499864772
+    },
+    {
+      "batch": 60,
+      "label": "B L0=75",
+      "path": "start_at_layer_8",
+      "seconds": 0.09897866600658745
+    },
+    {
+      "batch": 60,
+      "label": "B L0=144",
+      "path": "start_at_layer_8",
+      "seconds": 0.0981925840023905
+    },
+    {
+      "batch": 60,
+      "label": "B L0=288",
+      "path": "start_at_layer_8",
+      "seconds": 0.10165783297270536
+    },
+    {
+      "batch": 60,
+      "label": "B L0=576",
+      "path": "start_at_layer_8",
+      "seconds": 0.10522650001803413
+    },
+    {
+      "batch": 60,
+      "label": "B L0=768",
+      "path": "start_at_layer_8",
+      "seconds": 0.1000143329729326
+    },
+    {
+      "batch": 60,
+      "label": "B L0=1536",
+      "path": "start_at_layer_8",
+      "seconds": 0.09899395902175456
+    }
+  ],
+  "generic_generation": {
+    "actual_generated_tokens": 8192,
+    "chunking": "four independent 2k-token GPT-2 continuations to stay below the 1024-position limit",
+    "chunks": [
+      {
+        "actual_generated_tokens": 2048,
+        "chunk_index": 0,
+        "generation_batch": 8,
+        "generation_seconds": 26.699614625016693,
+        "generation_seconds_per_token": 0.013036921203621432,
+        "requested_tokens": 2048,
+        "seed": 20260727,
+        "tokens_per_sequence": 256
+      },
+      {
+        "actual_generated_tokens": 2048,
+        "chunk_index": 1,
+        "generation_batch": 8,
+        "generation_seconds": 26.02709883399075,
+        "generation_seconds_per_token": 0.012708544352534545,
+        "requested_tokens": 2048,
+        "seed": 20270727,
+        "tokens_per_sequence": 256
+      },
+      {
+        "actual_generated_tokens": 2048,
+        "chunk_index": 2,
+        "generation_batch": 8,
+        "generation_seconds": 25.984108500008006,
+        "generation_seconds_per_token": 0.012687552978519534,
+        "requested_tokens": 2048,
+        "seed": 20280727,
+        "tokens_per_sequence": 256
+      },
+      {
+        "actual_generated_tokens": 2048,
+        "chunk_index": 3,
+        "generation_batch": 8,
+        "generation_seconds": 26.009776165999938,
+        "generation_seconds_per_token": 0.012700086018554657,
+        "requested_tokens": 2048,
+        "seed": 20290727,
+        "tokens_per_sequence": 256
+      }
+    ],
+    "generation_seconds": 104.72059812501539,
+    "requested_tokens": 8192
+  },
+  "headline_statistic": "not_computed",
+  "not_run": [
+    {
+      "generated_token_budget": 32768,
+      "per_sample_l0": 75,
+      "reason": "Not run: pilot exact dual ridge would materialize a 26374x26374 float32 Gram (2.59 GiB) and a 6554x26374 heldout-cross matrix (0.64 GiB), before the lambda systems and solver workspace; this exceeds the exact-dual diagnostic cap of 8000 fit rows. No alternate/primal/approximate decoder was substituted.",
+      "section": "A",
+      "status": "not_run"
+    },
+    {
+      "generated_token_budget": 131072,
+      "per_sample_l0": 75,
+      "reason": "Not run: pilot exact dual ridge would materialize a 105017x105017 float32 Gram (41.08 GiB) and a 26215x105017 heldout-cross matrix (10.26 GiB), before the lambda systems and solver workspace; this exceeds the exact-dual diagnostic cap of 8000 fit rows. No alternate/primal/approximate decoder was substituted.",
+      "section": "A",
+      "status": "not_run"
+    }
+  ],
+  "purpose": "Diagnostic for the random control-arm design decision; not an experiment result.",
+  "reference_points": {
+    "E_resid_mean_aligned_effect": 4.8390984535217285,
+    "gate_c_directed_edit_count": 60,
+    "gate_c_pair_indices": [
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
+    "sae_E_full_over_E_resid": 0.7311725826675831,
+    "sae_mean_l0_on_gate_c_stimulus_positions": 72.75833129882812
+  },
+  "schema": "exp04-gate-c-diagnostic-v1; faithfulness-only; CPU float32; no headline statistics",
+  "status": "completed",
+  "sweep_A_ridge_fitting_power": {
+    "131072": {
+      "generated_token_budget": 131072,
+      "per_sample_l0": 75,
+      "reason": "Not run: pilot exact dual ridge would materialize a 105017x105017 float32 Gram (41.08 GiB) and a 26215x105017 heldout-cross matrix (10.26 GiB), before the lambda systems and solver workspace; this exceeds the exact-dual diagnostic cap of 8000 fit rows. No alternate/primal/approximate decoder was substituted.",
+      "status": "not_run"
+    },
+    "2048": {
+      "E_full_over_E_resid": 0.5875599175233351,
+      "elapsed_seconds": 2.076318875013385,
+      "evaluation_active_unit_count": 1586,
+      "evaluation_active_unit_coverage": 0.9716267585754395,
+      "fit_sample_size": 1798,
+      "generated_token_budget": 2048,
+      "generic_fit_rows": 1638,
+      "heldout_generic_reconstruction_r2": 0.2972390999590525,
+      "heldout_generic_relative_reconstruction_error": 0.37728726863861084,
+      "heldout_generic_rows": 410,
+      "lambda_grid": [
+        {
+          "heldout_generic_r2": 0.2910709509437881,
+          "lambda": 0.0001,
+          "solver": "torch.linalg.lstsq_gelsd_after_singular_solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.29107100876295766,
+          "lambda": 0.001,
+          "solver": "torch.linalg.lstsq_gelsd_after_singular_solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.29107141349714505,
+          "lambda": 0.01,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.29107199168884124,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.2910786408933478,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.2911446125658864,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.2917905105097326,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.2972390999590525,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 2.8432602882385254,
+      "numeric_lambda_skips": 0,
+      "per_sample_l0": 75,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    },
+    "32768": {
+      "generated_token_budget": 32768,
+      "per_sample_l0": 75,
+      "reason": "Not run: pilot exact dual ridge would materialize a 26374x26374 float32 Gram (2.59 GiB) and a 6554x26374 heldout-cross matrix (0.64 GiB), before the lambda systems and solver workspace; this exceeds the exact-dual diagnostic cap of 8000 fit rows. No alternate/primal/approximate decoder was substituted.",
+      "status": "not_run"
+    },
+    "8192": {
+      "E_full_over_E_resid": 0.5535417913793655,
+      "elapsed_seconds": 62.69408716697944,
+      "evaluation_active_unit_count": 1586,
+      "evaluation_active_unit_coverage": 0.993064284324646,
+      "fit_sample_size": 6713,
+      "generated_token_budget": 8192,
+      "generic_fit_rows": 6553,
+      "heldout_generic_reconstruction_r2": 0.2298731087967184,
+      "heldout_generic_relative_reconstruction_error": 0.42709416151046753,
+      "heldout_generic_rows": 1639,
+      "lambda_grid": [
+        {
+          "lambda": 0.0001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "heldout_generic_r2": 0.07900593079622853,
+          "lambda": 0.01,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.07902988271114098,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.07926821505367065,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.08163546264418353,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.10350615035544852,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.2298731087967184,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 2.678643226623535,
+      "numeric_lambda_skips": 2,
+      "per_sample_l0": 75,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    }
+  },
+  "sweep_B_sparsity_ceiling": {
+    "144": {
+      "E_full_over_E_resid": 0.7040162785484304,
+      "elapsed_seconds": 63.5379877910018,
+      "evaluation_active_unit_count": 2588,
+      "evaluation_active_unit_coverage": 0.9961360096931458,
+      "fit_sample_size": 6713,
+      "generated_token_budget": 8192,
+      "generic_fit_rows": 6553,
+      "heldout_generic_reconstruction_r2": 0.40692949397803546,
+      "heldout_generic_relative_reconstruction_error": 0.3289029002189636,
+      "heldout_generic_rows": 1639,
+      "lambda_grid": [
+        {
+          "lambda": 0.0001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "heldout_generic_r2": 0.3528930568577461,
+          "lambda": 0.01,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.3528998000770346,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.35296507443974634,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.35361700888055003,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.35991183105916014,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.40692949397803546,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 3.406804084777832,
+      "numeric_lambda_skips": 2,
+      "per_sample_l0": 144,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    },
+    "1536": {
+      "E_full_over_E_resid": 0.888013145026396,
+      "elapsed_seconds": 112.5047492919839,
+      "evaluation_active_unit_count": 11786,
+      "evaluation_active_unit_coverage": 0.9997454881668091,
+      "fit_sample_size": 6713,
+      "generated_token_budget": 8192,
+      "generic_fit_rows": 6553,
+      "heldout_generic_reconstruction_r2": 0.8669473284444095,
+      "heldout_generic_relative_reconstruction_error": 0.0737878605723381,
+      "heldout_generic_rows": 1639,
+      "lambda_grid": [
+        {
+          "lambda": 0.0001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.01,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "heldout_generic_r2": 0.8659405927775267,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.8659415772875427,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.8659513010097566,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.866047917855721,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.8669473284444095,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 4.297183036804199,
+      "numeric_lambda_skips": 3,
+      "per_sample_l0": 1536,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    },
+    "288": {
+      "E_full_over_E_resid": 0.7857061140631582,
+      "elapsed_seconds": 64.96715037501417,
+      "evaluation_active_unit_count": 4213,
+      "evaluation_active_unit_coverage": 0.9995253086090088,
+      "fit_sample_size": 6713,
+      "generated_token_budget": 8192,
+      "generic_fit_rows": 6553,
+      "heldout_generic_reconstruction_r2": 0.5797684000876079,
+      "heldout_generic_relative_reconstruction_error": 0.23305049538612366,
+      "heldout_generic_rows": 1639,
+      "lambda_grid": [
+        {
+          "lambda": 0.0001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "heldout_generic_r2": 0.5623903417679319,
+          "lambda": 0.01,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.562392121977824,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.5624104635342885,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.5625938521260561,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.564395667292797,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.5797684000876079,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 3.8021092414855957,
+      "numeric_lambda_skips": 2,
+      "per_sample_l0": 288,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    },
+    "576": {
+      "E_full_over_E_resid": 0.8321567352247785,
+      "elapsed_seconds": 68.46119587501744,
+      "evaluation_active_unit_count": 6637,
+      "evaluation_active_unit_coverage": 0.9983426332473755,
+      "fit_sample_size": 6713,
+      "generated_token_budget": 8192,
+      "generic_fit_rows": 6553,
+      "heldout_generic_reconstruction_r2": 0.7245340974929251,
+      "heldout_generic_relative_reconstruction_error": 0.1527668684720993,
+      "heldout_generic_rows": 1639,
+      "lambda_grid": [
+        {
+          "lambda": 0.0001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "heldout_generic_r2": 0.719135799805148,
+          "lambda": 0.01,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.7191362043983052,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.7191416798923674,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.719195328945026,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.7197262900317956,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.7245340974929251,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 4.026888370513916,
+      "numeric_lambda_skips": 2,
+      "per_sample_l0": 576,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    },
+    "75": {
+      "E_full_over_E_resid": 0.5535417913793655,
+      "elapsed_seconds": 62.793399290996604,
+      "evaluation_active_unit_count": 1586,
+      "evaluation_active_unit_coverage": 0.993064284324646,
+      "fit_sample_size": 6713,
+      "generated_token_budget": 8192,
+      "generic_fit_rows": 6553,
+      "heldout_generic_reconstruction_r2": 0.2298731087967184,
+      "heldout_generic_relative_reconstruction_error": 0.42709416151046753,
+      "heldout_generic_rows": 1639,
+      "lambda_grid": [
+        {
+          "lambda": 0.0001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "heldout_generic_r2": 0.07900593079622853,
+          "lambda": 0.01,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.07902988271114098,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.07926821505367065,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.08163546264418353,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.10350615035544852,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.2298731087967184,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 2.678643226623535,
+      "numeric_lambda_skips": 2,
+      "per_sample_l0": 75,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    },
+    "768": {
+      "E_full_over_E_resid": 0.8409890302094188,
+      "elapsed_seconds": 100.08739479200449,
+      "evaluation_active_unit_count": 7937,
+      "evaluation_active_unit_coverage": 0.9989920854568481,
+      "fit_sample_size": 6713,
+      "generated_token_budget": 8192,
+      "generic_fit_rows": 6553,
+      "heldout_generic_reconstruction_r2": 0.7739436881849088,
+      "heldout_generic_relative_reconstruction_error": 0.1253654807806015,
+      "heldout_generic_rows": 1639,
+      "lambda_grid": [
+        {
+          "lambda": 0.0001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.001,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "lambda": 0.01,
+          "solver_error": "_LinAlgError: torch.linalg.lstsq: The least squares solution could not be computed because the input matrix does not have full rank (error code: 12).",
+          "status": "not_solved_float32"
+        },
+        {
+          "heldout_generic_r2": 0.7706435566651598,
+          "lambda": 0.1,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.7706468473561725,
+          "lambda": 1.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.770679241781634,
+          "lambda": 10.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.7710000571824995,
+          "lambda": 100.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        },
+        {
+          "heldout_generic_r2": 0.7739436881849088,
+          "lambda": 1000.0,
+          "solver": "torch.linalg.solve",
+          "status": "solved"
+        }
+      ],
+      "mean_aligned_E_full": 4.069628715515137,
+      "numeric_lambda_skips": 3,
+      "per_sample_l0": 768,
+      "selected_lambda": 1000.0,
+      "selected_solver": "torch.linalg.solve",
+      "status": "completed",
+      "train_split_template_rows": 160
+    },
+    "fit_budget_selection": {
+      "rule": "largest completed A fitting budget; not selected on a Gate-C outcome",
+      "selected_generated_token_budget": 8192
+    },
+    "summary": {
+      "l0_closest_to_sae_reference": 144,
+      "sae_reference_E_full_over_E_resid": 0.7311725826675831,
+      "smallest_l0_in_sweep_passing_gate_C": 144
+    }
+  }
+}

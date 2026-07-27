@@ -16,6 +16,30 @@ Template for a new entry:
 
 ---
 
+## 2026-07-27 — Experiment 04: the first causal result, and a gate that refused to certify it
+
+**Goal:** Run the pre-registered causal interchange experiment and let the frozen rule decide, whatever it decides.
+
+**Did:** Pilot (42 s), Gate C diagnostic (647 s), five-seed main run (1,760 s), robustness arms (1,344 s). All CPU, offline. Three dated amendments to `DESIGN.md`, each committed before the measurement it governs.
+
+**Expected:** Genuinely open on the science. On the process I expected the run to either adjudicate or fail a gate cleanly. I did not expect it to do both at once.
+
+**Happened:** The measurement is the strongest thing in this repository and the verdict is `inconclusive`.
+
+Sixteen SAE coordinates recover half of that basis's own causal effect on subject–verb number agreement, in every seed. PCA needs 64 to 128 and in one seed never gets there. The paired gap is `+0.304 ± 0.023` within-basis and `+0.146 ± 0.022` absolute, positive in all five seeds under both conventions. And the SAE's trained decoder writes back `0.694 ± 0.014` of the residual-stream effect, against a Gate C floor of `0.70` fixed weeks before the number existed. It passes in two seeds of five. So the rule declines to certify, and I am not moving the threshold by 0.006 to buy a headline.
+
+**Confused about / open:**
+- The best thing about this run is the part nobody would notice: **the D-rescale invariance passes bitwise.** Rescale the code by a positive diagonal, the decoder inversely, and the vector written into the residual stream is *identical*. The knob that made experiment 03 unanswerable is not "small" here — it is exactly zero, asserted in code. That is what it feels like to fix a problem structurally instead of statistically.
+- Three separate times the process caught me rather than the other way round. The pilot's single-seed Gate C was `0.731`, comfortably passing; five seeds gave `0.694`, and the pilot number was luck. The diagnostic I ran to check whether the random control's failure was an under-powered fit came back *worse* with four times the data, which is the answer I did not want but the one that redirected the whole control arm. And the certificate that made the SAE look bad — a small ridge writing back `0.887` against the trained decoder's `0.694` — reversed completely once I ran the clean control: a *generic-only* ridge manages `0.414`, far below the trained decoder. The 0.887 depended on 4.7% of its fitting rows being template activations. I had already told a colleague the uncorrected version. That is the argument for running the control.
+- The refusal that cost the most to keep: I could have adjudicated by defining Gate C on the `sae_ridge` arm, which clears every gate and shows the same ordering (`+0.348` within-basis). But I had already seen the headline, so calling that pre-registered would have been false advertising. It is in the writeup labelled "specified after unblinding, never adjudicating", and the verdict stands at inconclusive. Checking afterwards, it would not even have worked — seed `20260803`'s Gate D blocks independently, so rescuing it needed two goalposts moved, not one.
+- The sober number I keep coming back to: a *single supervised direction* recovers `0.549` of the effect, while the SAE's single best latent recovers `0.072`. No unsupervised basis here puts this factor in one coordinate. The finding is only that ranked SAE coordinates approach a supervised direction with four to eight times fewer coordinates than PCA does. That is a real result and it is much smaller than "the SAE found the number feature".
+- Still open and honestly unresolved: PCA is fitted on 8,192 tokens for a 768-dimensional covariance, against an SAE trained on ~10⁸. Quadrupling the budget moved `AUC(pca)` by `+0.018 ± 0.025` against a gap of `0.304`, which bounds the objection but does not retire it — the eigenvalue spectrum is still moving, so the control is not converged. If this result is wrong, that is where it is wrong.
+- A small process note worth keeping: two runs stopped dead at a numerical assertion and refused to loosen it. The threshold was mine and it was wrong — an absolute `1e-4` bound on activations whose entries run to tens is a float32 round-off test, not a test of anything. I fixed it as a dated amendment rather than editing it in place, because the difference between "repaired a bad assertion" and "loosened a threshold when the result was inconvenient" is exactly what the record has to be able to show.
+
+**Next:** Re-register a Gate C that the SAE arm can clear on its own decoder, with the floor pre-declared from a pilot on a *different* stimulus family so it cannot be tuned to this one. Then a second template family. The mechanism question — what are the 12 latents that recur across all five seeds — needs its own pre-registration, not a post-hoc hunt.
+
+---
+
 ## 2026-07-26 — Stepping back: what three experiments actually established, and the decision to leave probes
 
 **Goal:** Stop running and audit. Three experiments are done; decide whether the next one finishes experiment 03 or changes the question.

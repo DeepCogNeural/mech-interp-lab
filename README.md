@@ -8,12 +8,65 @@ model. The through-line is one systems neuroscience has asked for a decade and i
 asks in its own vocabulary: **when many features share few non-orthogonal directions, is that a
 problem to undo or a computation to explain?**
 
-Three experiments. One replicates the *storage* account of superposition. The second tests whether the
+Four experiments. One replicates the *storage* account of superposition. The second tests whether the
 same geometry also has a *computation* account and finds that it does — under a nonlinearity held fixed
 across arms, a monosemantic code reads a feature interaction at `0.494 ± 0.005`, exactly chance and
 provably so, while mixed codes reach `0.81`. The third takes that question to real SAE features on
 GPT-2-small and **fails to settle it** — for a reason worth reading, and reported as unsettled rather
-than dressed up. Two of the three produced results I did not want; all three are reported in full.
+than dressed up. The fourth removes the instrument that failed, asks the question causally, gets a large
+and stable answer, and then **declines to certify it** because a threshold fixed weeks earlier missed by
+0.006. Most of these produced results I did not want; all of them are reported in full.
+
+---
+
+## Experiment 04 — the causal version, and a gate that refused to certify a result I liked
+
+[Full writeup](experiments/04_causal_feature_interchange/writeup.md) · [pre-registration + 3 dated amendments](experiments/04_causal_feature_interchange/DESIGN.md) · [code](experiments/04_causal_feature_interchange/run_experiment.py) · [raw results](experiments/04_causal_feature_interchange/run_results.json)
+
+Experiment 03 stalled because a linear probe's L2 penalty is not invariant to rescaling its inputs, so
+the answer moved with a preprocessing choice. The fix is not a better probe. It is no probe: edit
+coordinates of a code, write the edit back into GPT-2-small's residual stream, and let **the model's own
+next-token logits** report the effect. Rescale the code by a positive diagonal and the decoder inversely
+and the written edit is *bit-for-bit identical* — the knob that made experiment 03 unanswerable is
+exactly zero here, and the test asserting that passes bitwise in every run.
+
+The task is subject–verb number agreement on single-flip minimal pairs. The control is **PCA** of the
+same activations — equally unsupervised, same data distribution, lacking only the sparse
+dictionary-learning objective. (The originally planned control, a width/norm/L0-matched random expansion,
+failed its own faithfulness gate; a diagnostic showed that was structural rather than a fitting artifact,
+and the control changed family. All of that is in the amendments, committed before the diagnostic was
+read.)
+
+![Causal recovery against the number of edited coordinates, for SAE, PCA, neuron and random-expansion bases](experiments/04_causal_feature_interchange/figures/01_recovery_curves.png)
+
+| basis | AUC, within-basis | AUC, absolute | `k50` per seed |
+|---|---:|---:|---|
+| `sae` | **0.517 ± 0.002** | **0.359 ± 0.007** | 16, 16, 16, 16, 16 |
+| `pca` | 0.213 ± 0.023 | 0.213 ± 0.023 | 64, 128, —, 128, 64 |
+| `rand_exp` | 0.179 ± 0.024 | 0.117 ± 0.016 | never reached |
+| `neuron` | 0.157 ± 0.005 | 0.157 ± 0.005 | never reached |
+
+**Sixteen SAE coordinates recover half of that basis's causal effect, in every seed; PCA needs 64 to 128
+and once never gets there.** The paired gap is `+0.304 ± 0.023` within-basis and `+0.146 ± 0.022` under
+the conservative normalisation — positive in all five seeds under both.
+
+**And the frozen rule returns `inconclusive`.** Gate C requires each adjudicated basis to write back at
+least `0.70` of the residual-stream effect; the SAE's trained decoder measured `0.694 ± 0.014`, passing
+in two seeds of five. I did not move the threshold. Checking afterwards, moving it would not have worked
+anyway — a second gate blocks independently in one seed.
+
+The obvious deflation is tested rather than waved off: restricting to pairs whose subject noun never
+appears in the ranking-training split leaves the result unchanged (`0.594` against `0.588`), the five
+seeds' top-16 latents share a 12-latent intersection, and the matched random expansion — same 24,576-wide
+pool, same pre-filter, same ranking rule — finishes *last*, so pool width alone buys nothing. What keeps
+the result honest-sized: a single **supervised** direction recovers `0.549` on its own while the SAE's
+best single latent recovers `0.072`. No unsupervised basis here puts this factor in one coordinate.
+
+### Scope — what this does not say
+
+The model is never modified. The edit is a *difference of two reconstructions*, so the SAE's
+reconstruction error cancels and never enters the forward pass. Low recovery in a basis means a factor
+is not concentrated in few coordinates of that basis — never that an SAE harms a model's computation.
 
 ---
 
@@ -201,29 +254,16 @@ to you.
 
 ---
 
-## Next — experiment 04, the causal version of the same question
+## Next
 
-[Full design](experiments/04_causal_feature_interchange/DESIGN.md), written before any of it is run.
-
-Everything above measures a *code under a probe*. That is the honest description of all three
-experiments, and it is also the reason experiment 03 stalled: the confound lives entirely in the
-trainable readout, whose L2 penalty is not invariant to a rescaling of the features. Fitting a better
-probe cannot remove a confound that is a property of having a fitted probe at all.
-
-So experiment 04 removes the probe. It asks whether the SAE's coordinates are a **causal** basis for one
-factor the model demonstrably computes — subject–verb number agreement — by editing SAE coordinates,
-writing the edit back into the residual stream, and letting **GPT-2's own next-token logits** be the
-readout. That readout has no free parameters, so there is no scaling convention and no regulariser to
-confound: rescaling a latent and inversely rescaling its decoder column leaves the written edit
-bit-for-bit identical. The measure exp03 could not stabilise becomes invariant by construction.
-
-The comparison stays the one that matters — the SAE against a width/norm/L0-matched random expansion,
-reused from experiment 03 — and the decision rule is pre-declared, including what counts as an
-adjudicated null. It also closes this repo's largest gap: nothing here is causal yet.
-
-Still open, and deliberately behind experiment 04:
-
-- Independent stimulus template families, before anything in experiment 03 is allowed to generalise.
+- **Re-register experiment 04's Gate C so the SAE arm can clear it on its own decoder** — defining
+  faithfulness per arm on the decoder that arm actually ships with, with the floor pre-declared from a
+  pilot measured on a *different* stimulus family, so the threshold cannot be tuned to this one. That is
+  the one thing between experiment 04 and an adjudicated causal claim.
+- Close the PCA fitting-budget objection with a fit an order of magnitude larger, or with real corpus
+  text instead of model-generated text. If experiment 04's comparison is wrong, this is where.
+- A second stimulus family, before anything in experiment 04 generalises beyond number agreement — and
+  independent template families for experiment 03 on the same principle.
 - Shattering dimensionality / CCGP on experiment 02's three *toy* geometries — the same metric where
   the ground truth is fully known, which would calibrate what these numbers mean.
 - A mechanism check on any residual superposition-versus-random effect: correlate each pair's margin
@@ -231,8 +271,8 @@ Still open, and deliberately behind experiment 04:
 
 ## Reproduce
 
-Python 3.11 (torch has no 3.14 wheels yet). CPU-only. Experiments 01–02 need no downloads; experiment
-03 pulls GPT-2-small and one ~150 MB res-jb SAE from the HuggingFace hub on first run.
+Python 3.11 (torch has no 3.14 wheels yet). CPU-only. Experiments 01–02 need no downloads; experiments
+03–04 pull GPT-2-small and one ~150 MB res-jb SAE from the HuggingFace hub on first run.
 
 ```bash
 python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
@@ -250,7 +290,14 @@ python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirem
 (cd experiments/03_ccgp_on_sae_features && python ccgp_sae.py)           # 19m51s measured on an M1 Pro CPU; SMOKE=1 gives a fast plumbing subset
 ```
 
+```bash
+(cd experiments/04_causal_feature_interchange && python pilot.py && python run_experiment.py)  # 42s + 29m20s measured on an M1 Pro CPU
+```
+
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
-not. [`lab-notebook.md`](lab-notebook.md) is the dated process record, including the traps I nearly
+not. Experiment 04 additionally ships its
+[pre-registration](experiments/04_causal_feature_interchange/DESIGN.md) with three dated amendments, so
+the order in which decisions were made is checkable against the commit history rather than asserted.
+[`lab-notebook.md`](lab-notebook.md) is the dated process record, including the traps I nearly
 fell into and the pilot-versus-full-run story behind the null.
 [`learning-roadmap.md`](learning-roadmap.md) is where this is going next.
