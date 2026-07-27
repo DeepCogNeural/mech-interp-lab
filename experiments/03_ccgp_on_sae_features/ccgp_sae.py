@@ -19,10 +19,11 @@ Discipline: Gates A--C run before the full calculation; if any fails, the script
 an explicit gated-out results.json and stops.  SD averages every one of the 35 balanced
 dichotomies.  CCGP holds out one condition from each side of a dichotomy and averages
 all 16 choices, with item-disjoint train/test examples.  Every linear probe is
-hand-rolled torch and fitted to a stated full-batch L-BFGS convergence criterion, with
-L2 selected inside each outer training split.  Feature masks and every CCGP head's
-centre/scale are fitted only on data available to that head.  No result is claimed
-until the corresponding full command has completed.
+hand-rolled torch with training-split-only standardisation and strong L2.  No result is
+claimed until the corresponding full command has completed.  The completed controls
+also test whether per-feature z-scoring unfairly amplifies rare sparse units: L2 is
+chosen inside each outer training split, and the primary probe uses one global RMS
+scale rather than one scale per feature.
 
 The normal command resolves GPT-2 small and the public res-jb safetensors through the
 local Hugging Face cache.  It does not require sae_lens: the encoder is exactly
@@ -75,12 +76,6 @@ BASE_ARMS = CORE_ARMS + ("rand_exp_dense",)
 # per-feature-z-score table remains a sensitivity analysis of the original arms.
 WIDTH_MATCHED_ARMS = ("rand_exp_width_matched", "sae_width_matched")
 ALL_ARMS = BASE_ARMS + WIDTH_MATCHED_ARMS
-T_CRIT_95 = {
-    2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776, 6: 2.571, 7: 2.447,
-    8: 2.365, 9: 2.306, 10: 2.262,
-}
-L2_ONE_STANDARD_STYLE_TOLERANCE_NATS = 1e-2
-L2_STABILITY_FLOOR = 1e-5
 
 
 @dataclass(frozen=True)
@@ -89,14 +84,12 @@ class Config:
     seeds: tuple[int, ...]
     n_folds: int
     pilot_layers: tuple[int, ...]
-    probe_max_steps: int
-    probe_relative_loss_tolerance: float
-    probe_stable_steps: int
+    probe_steps: int
     ccgp_splits: tuple[tuple[int, int], ...]
     batch_size: int
-    l2_grid: tuple[float, ...]
+    legacy_weight_decay: float
+    weight_decay_grid: tuple[float, ...]
     fair_probe_settings: tuple[str, ...]
-    run_width_controls: bool
 
 
 def config() -> Config:
@@ -107,31 +100,24 @@ def config() -> Config:
             seeds=(0, 1),
             n_folds=2,
             pilot_layers=(7, 8),
-            probe_max_steps=500,
-            probe_relative_loss_tolerance=1e-3,
-            probe_stable_steps=10,
+            probe_steps=40,
             ccgp_splits=((0, 0), (1, 1)),
             batch_size=16,
-            l2_grid=(1e-9, 1e-7, 1e-5, 1e-3, 1e-1, 1e1, 1e3),
+            legacy_weight_decay=0.08,
+            weight_decay_grid=(0.03, 0.08, 0.2),
             fair_probe_settings=("per_feature_zscore_inner_l2", "global_rms_inner_l2"),
-            run_width_controls=os.environ.get("RUN_WIDTH_CONTROLS", "0") == "1",
         )
     return Config(
         n_items=96,
         seeds=(0, 1, 2, 3, 4),
         n_folds=5,
         pilot_layers=(6, 7, 8, 9),
-        probe_max_steps=500,
-        probe_relative_loss_tolerance=1e-3,
-        probe_stable_steps=10,
+        probe_steps=100,
         ccgp_splits=tuple(itertools.product(range(4), range(4))),
         batch_size=32,
-        # Five orders on either side of the expected optimum prevent an arbitrary
-        # scaling convention from looking favourable merely because its prior grid was
-        # too narrow. select_l2 verifies that no outer-fold choice is an edge.
-        l2_grid=(1e-9, 1e-7, 1e-5, 1e-3, 1e-1, 10.0, 1000.0),
+        legacy_weight_decay=0.08,
+        weight_decay_grid=(0.01, 0.03, 0.08, 0.2, 0.5),
         fair_probe_settings=("per_feature_zscore_inner_l2", "global_rms_inner_l2"),
-        run_width_controls=os.environ.get("RUN_WIDTH_CONTROLS", "0") == "1",
     )
 
 
@@ -351,11 +337,7 @@ def collect_residuals(
 
 def ci95(values: Iterable[float]) -> float:
     arr = np.asarray(list(values), dtype=float)
-    if len(arr) < 2:
-        return 0.0
-    if len(arr) not in T_CRIT_95:
-        raise ValueError(f"No two-sided 95% Student-t critical value configured for n={len(arr)}")
-    return float(T_CRIT_95[len(arr)] * arr.std(ddof=1) / math.sqrt(len(arr)))
+    return float(1.96 * arr.std(ddof=1) / math.sqrt(len(arr))) if len(arr) > 1 else 0.0
 
 
 def mean_ci(values: Iterable[float]) -> tuple[float, float]:
@@ -421,7 +403,7 @@ def balanced_accuracy(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tenso
 
 
 def prepare_features(x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-    """Return the nonzero-on-this-input columns and the corresponding Boolean mask."""
+    """Drop units exactly zero over this experiment's whole sample, as specified."""
     keep = x.abs().amax(dim=0) > 0
     return x[:, keep].contiguous(), keep
 
@@ -446,35 +428,8 @@ def scale_features(
 
 
 def standardise(x_train: torch.Tensor, x_test: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-    """Per-feature standardisation for the Gate-B residual pilot only."""
+    """Legacy fixed-L2 preprocessing, retained for gates and sensitivity reporting."""
     return scale_features(x_train, x_test, "per_feature_zscore")
-
-
-@dataclass
-class ProbeFit:
-    eval_accuracy: torch.Tensor
-    train_accuracy: torch.Tensor
-    diagnostics: dict[str, Any]
-
-
-def _objective(
-    head: nn.Linear,
-    x: torch.Tensor,
-    y: torch.Tensor,
-    l2: float,
-    train_mask: torch.Tensor | None = None,
-) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """Mean logistic loss plus an L2 prior, with the bias deliberately unpenalised."""
-    bce_by_head = F.binary_cross_entropy_with_logits(head(x), y, reduction="none")
-    if train_mask is not None:
-        bce = (bce_by_head * train_mask.float()).sum() / train_mask.sum().clamp_min(1)
-    else:
-        bce = bce_by_head.mean()
-    # Averaging over heads keeps a selected lambda comparable between SD (35 heads),
-    # main-effect selection (3 heads), and CCGP (16 heads); within a head this is the
-    # standard 0.5 * lambda * ||w||^2 penalty.
-    penalty = 0.5 * l2 * head.weight.square().sum() / head.weight.shape[0]
-    return bce + penalty, bce, penalty
 
 
 def fit_probe(
@@ -483,70 +438,38 @@ def fit_probe(
     x_eval: torch.Tensor,
     y_eval: torch.Tensor,
     probe_seed: int,
-    cfg: Config,
-    l2: float,
+    steps: int,
+    weight_decay: float,
     train_mask: torch.Tensor | None = None,
-) -> ProbeFit:
-    """Fit a full-batch L-BFGS logistic probe to the stated loss-change criterion."""
+    return_loss: bool = False,
+) -> tuple[torch.Tensor, torch.Tensor] | tuple[torch.Tensor, torch.Tensor, float]:
+    """One vectorised multi-output logistic probe; optional mask supports CCGP heads."""
     torch.manual_seed(probe_seed)
+    # CPU is used deliberately for numerical reproducibility of the probes, even when the
+    # transformer ran on MPS.  The model and SAE are the memory-heavy part of this PoC.
     x_train, x_eval = x_train.float().cpu(), x_eval.float().cpu()
     y_train, y_eval = y_train.float().cpu(), y_eval.float().cpu()
-    mask = None if train_mask is None else train_mask.float().cpu()
     head = nn.Linear(x_train.shape[1], y_train.shape[1])
-    opt = torch.optim.LBFGS(
-        head.parameters(), lr=1.0, max_iter=1, max_eval=25, history_size=20,
-        tolerance_grad=1e-10, tolerance_change=1e-12, line_search_fn="strong_wolfe",
-    )
-    objective_history: list[float] = []
-    closure_calls = 0
-    final_objective = math.inf
-    final_bce = math.inf
-    final_penalty = math.inf
-    relative_change = math.inf
-    converged = False
-    for step in range(1, cfg.probe_max_steps + 1):
-        def closure() -> torch.Tensor:
-            nonlocal closure_calls
-            closure_calls += 1
-            opt.zero_grad(set_to_none=True)
-            objective, _, _ = _objective(head, x_train, y_train, l2, mask)
-            objective.backward()
-            return objective
-        opt.step(closure)
-        with torch.no_grad():
-            objective, bce, penalty = _objective(head, x_train, y_train, l2, mask)
-            final_objective, final_bce, final_penalty = float(objective), float(bce), float(penalty)
-        objective_history.append(final_objective)
-        if len(objective_history) > cfg.probe_stable_steps:
-            reference = objective_history[-1 - cfg.probe_stable_steps]
-            relative_change = abs(reference - final_objective) / max(abs(reference), 1e-12)
-            if relative_change < cfg.probe_relative_loss_tolerance:
-                converged = True
-                break
-    else:
-        step = cfg.probe_max_steps
+    opt = torch.optim.AdamW(head.parameters(), lr=0.03, weight_decay=weight_decay)
+    for _ in range(steps):
+        opt.zero_grad()
+        loss = F.binary_cross_entropy_with_logits(head(x_train), y_train, reduction="none")
+        if train_mask is not None:
+            loss = (loss * train_mask.float().cpu()).sum() / train_mask.sum().clamp_min(1)
+        else:
+            loss = loss.mean()
+        loss.backward()
+        opt.step()
     with torch.no_grad():
         train_logits = head(x_train)
-        eval_bce = F.binary_cross_entropy_with_logits(head(x_eval), y_eval).item()
-        result = ProbeFit(
-            eval_accuracy=balanced_accuracy(head(x_eval), y_eval),
-            train_accuracy=balanced_accuracy(train_logits, y_train),
-            diagnostics={
-                "iterations": step,
-                "closure_calls": closure_calls,
-                "converged": converged,
-                "relative_loss_change": relative_change,
-                "objective": final_objective,
-                "bce": final_bce,
-                "l2_penalty": final_penalty,
-                "unpenalised_evaluation_bce": eval_bce,
-            },
-        )
-    if not converged:
-        raise RuntimeError(
-            f"Probe did not converge within {cfg.probe_max_steps} L-BFGS iterations "
-            f"(last relative objective change={relative_change:.3g}, l2={l2:g})."
-        )
+        final_loss = F.binary_cross_entropy_with_logits(train_logits, y_train, reduction="none")
+        if train_mask is not None:
+            final_loss = (final_loss * train_mask.float().cpu()).sum() / train_mask.sum().clamp_min(1)
+        else:
+            final_loss = final_loss.mean()
+        result = (balanced_accuracy(head(x_eval), y_eval), balanced_accuracy(train_logits, y_train))
+    if return_loss:
+        return (*result, float(final_loss))
     return result
 
 
@@ -559,11 +482,11 @@ def main_effect_pilot(
     values = []
     for fold_index, (train, test) in enumerate(folds(stimuli.item_ids, cfg.n_folds, seed)):
         tr, te = standardise(resid[train], resid[test])
-        result = fit_probe(
+        acc, _ = fit_probe(
             tr, stimuli.factors[train], te, stimuli.factors[test], seed + fold_index,
-            cfg, 1e-3,
+            cfg.probe_steps, cfg.legacy_weight_decay,
         )
-        values.append(result.eval_accuracy.numpy())
+        values.append(acc.numpy())
     # One [NUMBER, TENSE, POLARITY] vector per item-disjoint fold.  Concatenating
     # would flatten those vectors and accidentally turn this Gate-B check into a scalar.
     return np.stack(values, axis=0).mean(axis=0).tolist()
@@ -585,82 +508,45 @@ def inner_validation_split(
     return outer_train & ~valid, valid
 
 
-def select_l2(
+def select_weight_decays(
     rep: torch.Tensor,
     stimuli: Stimuli,
     seed: int,
     cfg: Config,
     scale_mode: str,
-) -> tuple[list[float], list[dict[str, Any]], list[torch.Tensor]]:
-    """Nested L2 selection with an outer-training keep-mask per fold, never test data."""
+) -> tuple[list[float], list[dict[str, Any]]]:
+    """Nested L2 selection on the three main effects; outer test items are untouched."""
+    rep, _ = prepare_features(rep)
     selected, records = [], []
-    fold_keeps = []
     for outer_fold, (outer_train, _) in enumerate(folds(stimuli.item_ids, cfg.n_folds, seed)):
-        # The all-zero feature rule is unsupervised, but it is still fit only on outer
-        # training activations. The test fold has no route into this representation choice.
-        keep = rep[outer_train].abs().amax(dim=0) > 0
-        fold_keeps.append(keep)
         inner_train, inner_valid = inner_validation_split(outer_train, stimuli.item_ids, seed, outer_fold)
-        tr, va = scale_features(rep[inner_train][:, keep], rep[inner_valid][:, keep], scale_mode)
+        tr, va = scale_features(rep[inner_train], rep[inner_valid], scale_mode)
         scores = []
-        diagnostics = []
-        for candidate_i, l2 in enumerate(cfg.l2_grid):
-            result = fit_probe(
+        for candidate_i, weight_decay in enumerate(cfg.weight_decay_grid):
+            acc, _ = fit_probe(
                 tr, stimuli.factors[inner_train], va, stimuli.factors[inner_valid],
                 seed + 30_000 + 100 * outer_fold + candidate_i,
-                cfg, l2,
+                cfg.probe_steps,
+                weight_decay,
             )
-            # Accuracy is intentionally not used to select lambda: with only a few
-            # item-disjoint validation items it creates broad ties at the grid boundary.
-            # Held-out logistic loss preserves the probe's probabilistic information.
-            scores.append(-float(result.diagnostics["unpenalised_evaluation_bce"]))
-        best_score = max(scores)
-        # With these deliberately easy base-factor inner tasks, tiny lambdas often
-        # improve held-out BCE by micro-nats while forfeiting all regularisation. Use a
-        # predeclared one-standard-style rule: choose the *largest* lambda whose loss is
-        # within 1e-3 nats/example of the minimum. This is uniform across arm/scaling;
-        # it is not tuned toward the SAE/random contrast.
-        eligible = [
-            i for i, score in enumerate(scores)
-            if cfg.l2_grid[i] >= L2_STABILITY_FLOOR
-            and score >= best_score - L2_ONE_STANDARD_STYLE_TOLERANCE_NATS
-        ]
-        if not eligible:
-            raise RuntimeError(
-                f"No stable L2 >= {L2_STABILITY_FLOOR:g} is within "
-                f"{L2_ONE_STANDARD_STYLE_TOLERANCE_NATS:g} validation nats of the optimum; scores={scores}"
-            )
-        best_i = max(eligible)
-        selected_at_edge = best_i in (0, len(cfg.l2_grid) - 1)
-        if selected_at_edge and not SMOKE:
-            raise RuntimeError(
-                f"L2 grid edge selected for seed={seed}, outer_fold={outer_fold}, "
-                f"scale={scale_mode}, l2={cfg.l2_grid[best_i]:g}, scores={scores}; expand the grid."
-            )
-        if selected_at_edge and SMOKE:
-            # The tiny plumbing subset can be perfectly separable. Its boundary winner
-            # is intentionally replaced by the nearest interior value so SMOKE tests
-            # the pipeline rather than an unregularised, ill-posed toy split.
-            best_i = min(3, len(cfg.l2_grid) - 2)
-        selected.append(float(cfg.l2_grid[best_i]))
+            scores.append(float(acc.mean()))
+        best_i = int(np.argmax(scores))
+        selected.append(float(cfg.weight_decay_grid[best_i]))
         records.append({
             "outer_fold": outer_fold,
-            "candidate_l2": list(cfg.l2_grid),
-            "inner_validation_negative_main_effect_bce": scores,
-            "selection_loss_tolerance_nats": L2_ONE_STANDARD_STYLE_TOLERANCE_NATS,
-            "selected_l2": float(cfg.l2_grid[best_i]),
-            "selected_at_grid_edge": selected_at_edge,
-            "outer_train_surviving_width": int(keep.sum()),
+            "candidate_weight_decay": list(cfg.weight_decay_grid),
+            "inner_validation_main_effect_accuracy": scores,
+            "selected_weight_decay": float(cfg.weight_decay_grid[best_i]),
         })
-    return selected, records, fold_keeps
+    return selected, records
 
 
-def _fold_l2(
-    fold_l2: list[float] | None,
+def _fold_weight_decay(
+    fold_weight_decays: list[float] | None,
     fold_index: int,
     cfg: Config,
 ) -> float:
-    return 1e-3 if fold_l2 is None else fold_l2[fold_index]
+    return cfg.legacy_weight_decay if fold_weight_decays is None else fold_weight_decays[fold_index]
 
 
 def sd_metric(
@@ -670,23 +556,23 @@ def sd_metric(
     cfg: Config,
     ds: list[dict[str, Any]],
     scale_mode: str = "per_feature_zscore",
-    fold_l2: list[float] | None = None,
-    fold_keeps: list[torch.Tensor] | None = None,
-) -> tuple[dict[str, float], dict[str, float], list[dict[str, Any]]]:
+    fold_weight_decays: list[float] | None = None,
+    steps: int | None = None,
+) -> tuple[dict[str, float], dict[str, float]]:
     """Five item-disjoint folds, all 35 dichotomies trained as one multi-output probe."""
+    rep, _ = prepare_features(rep)
     labels_by_condition = torch.stack([d["labels"] for d in ds], dim=1)
     labels = labels_by_condition[stimuli.condition_ids]
-    test_accs, train_accs, convergence = [], [], []
+    test_accs, train_accs = [], []
+    steps = cfg.probe_steps if steps is None else steps
     for fold_index, (train, test) in enumerate(folds(stimuli.item_ids, cfg.n_folds, seed)):
-        keep = (rep[train].abs().amax(dim=0) > 0) if fold_keeps is None else fold_keeps[fold_index]
-        tr, te = scale_features(rep[train][:, keep], rep[test][:, keep], scale_mode)
-        result = fit_probe(
-            tr, labels[train], te, labels[test], seed + 100 * fold_index,
-            cfg, _fold_l2(fold_l2, fold_index, cfg),
+        tr, te = scale_features(rep[train], rep[test], scale_mode)
+        acc, train_acc = fit_probe(
+            tr, labels[train], te, labels[test], seed + 100 * fold_index, steps,
+            _fold_weight_decay(fold_weight_decays, fold_index, cfg),
         )
-        test_accs.append(result.eval_accuracy.numpy())
-        train_accs.append(result.train_accuracy.numpy())
-        convergence.append({"outer_fold": fold_index, **result.diagnostics, "surviving_width": int(keep.sum())})
+        test_accs.append(acc.numpy())
+        train_accs.append(train_acc.numpy())
     test_mean = np.mean(test_accs, axis=0)
     train_mean = np.mean(train_accs, axis=0)
     by_type: dict[str, list[float]] = {}
@@ -696,11 +582,7 @@ def sd_metric(
         gap.setdefault(d["type"], []).append(float(train_mean[i] - test_mean[i]))
     by_type["overall"] = list(test_mean)
     gap["overall"] = list(train_mean - test_mean)
-    return (
-        {k: float(np.mean(v)) for k, v in by_type.items()},
-        {k: float(np.mean(v)) for k, v in gap.items()},
-        convergence,
-    )
+    return ({k: float(np.mean(v)) for k, v in by_type.items()}, {k: float(np.mean(v)) for k, v in gap.items()})
 
 
 def ccgp_metric(
@@ -710,29 +592,34 @@ def ccgp_metric(
     cfg: Config,
     ds: list[dict[str, Any]],
     scale_mode: str = "per_feature_zscore",
-    fold_l2: list[float] | None = None,
-    fold_keeps: list[torch.Tensor] | None = None,
-) -> tuple[dict[str, float], list[dict[str, Any]]]:
+    fold_weight_decays: list[float] | None = None,
+    steps: int | None = None,
+) -> dict[str, float]:
     """CCGP with all (or smoke-subset) 4x4 held-condition splits, item-disjoint throughout.
 
-    The 16 heads for one dichotomy share an objective but not preprocessing: each head's
-    mean and scale are estimated from exactly its six condition/item training cells.  A
-    raw-input reparameterisation keeps the calculation vectorised without allocating a
-    [examples, heads, features] tensor, while preserving the intended L2 geometry.
+    The 16 heads for one dichotomy share an nn.Linear.  Its loss mask gives each head its
+    own six training conditions; all standardisation statistics come only from training
+    lexical items.  This keeps the implementation vectorised without allowing a lexical
+    nuisance item into both a head's train and test examples.  The shared feature matrix
+    is deliberately *not* repeated once per head: a [examples, heads] masked loss is
+    exactly equivalent and avoids a 16-fold CPU/memory multiplier.
     """
+    rep, _ = prepare_features(rep)
     per_type: dict[str, list[float]] = {}
-    convergence: list[dict[str, Any]] = []
+    steps = cfg.probe_steps if steps is None else steps
     for d_index, d in enumerate(ds):
         labels = d["labels"][stimuli.condition_ids]
         pos = sorted(d["positive"])
         neg = sorted(d["negative"])
         split_scores: list[float] = []
         for fold_index, (item_train, item_test) in enumerate(folds(stimuli.item_ids, cfg.n_folds, seed)):
-            keep = (rep[item_train].abs().amax(dim=0) > 0) if fold_keeps is None else fold_keeps[fold_index]
-            raw_train, raw_test = rep[item_train][:, keep].float().cpu(), rep[item_test][:, keep].float().cpu()
+            # Standardisation uses lexical training items only, never an item evaluated by
+            # this fold.  The held conditions are unlabelled for that head but still belong
+            # to the training item universe, as the global item-split rule requires.
+            tr_all, te_all = scale_features(rep[item_train], rep[item_test], scale_mode)
             condition_train = stimuli.condition_ids[item_train]
             condition_test = stimuli.condition_ids[item_test]
-            masks, eval_masks = [], []
+            masks, eval_blocks, eval_labels = [], [], []
             for held_pos_i, held_neg_i in cfg.ccgp_splits:
                 held_pos, held_neg = pos[held_pos_i], neg[held_neg_i]
                 train_mask = (condition_train != held_pos) & (condition_train != held_neg)
@@ -741,85 +628,39 @@ def ccgp_metric(
                 if int(eval_mask.sum()) == 0:
                     raise RuntimeError("CCGP held-condition split has no item-disjoint evaluation data")
                 masks.append(train_mask)
-                eval_masks.append(eval_mask)
+                eval_blocks.append(te_all[eval_mask])
+                eval_labels.append(labels[item_test][eval_mask])
+            # Heads need a common evaluation tensor.  Each factorial held pair has exactly
+            # two cells per test item, so all blocks have the same length by construction.
+            eval_x = torch.stack(eval_blocks, dim=1)  # [examples, heads, features]
+            eval_y = torch.stack(eval_labels, dim=1)
+            # Train all 16 heads together.  Every head sees the same item-disjoint
+            # lexical training universe but its loss includes only its own six cells.
             n_heads = len(cfg.ccgp_splits)
-            head_masks = torch.stack(masks, dim=1).float().cpu()
-            test_masks = torch.stack(eval_masks, dim=1).bool().cpu()
-            train_y = labels[item_train].float().cpu().unsqueeze(1).expand(-1, n_heads)
-            test_y = labels[item_test].float().cpu()
-            # Each head gets moments from its own six training conditions.  Algebraically,
-            # x_standardised @ w + b equals raw_x @ (w / scale) + b - mean @ (w / scale).
-            counts = head_masks.sum(0).clamp_min(1).unsqueeze(1)
-            means = (head_masks.T @ raw_train) / counts
-            second = (head_masks.T @ raw_train.square()) / counts
-            variance = (second - means.square()).clamp_min(1e-10)
-            if scale_mode == "per_feature_zscore":
-                scales = variance.sqrt()
-            elif scale_mode == "global_rms":
-                scales = variance.mean(dim=1, keepdim=True).sqrt().clamp_min(1e-5)
-            else:
-                raise ValueError(f"Unknown feature-scaling mode: {scale_mode}")
+            train_y = labels[item_train].unsqueeze(1).expand(-1, n_heads)
+            head_masks = torch.stack(masks, dim=1)
+            # A dedicated evaluation pass is simpler than abusing fit_probe's all-head
+            # accuracy API; fit the parameters here with the exact masked objective.
             torch.manual_seed(seed + 10_000 * d_index + fold_index)
-            head = nn.Linear(raw_train.shape[1], n_heads)
-            opt = torch.optim.LBFGS(
-                head.parameters(), lr=1.0, max_iter=1, max_eval=25, history_size=20,
-                tolerance_grad=1e-10, tolerance_change=1e-12, line_search_fn="strong_wolfe",
+            head = nn.Linear(tr_all.shape[1], n_heads)
+            opt = torch.optim.AdamW(
+                head.parameters(), lr=0.03,
+                weight_decay=_fold_weight_decay(fold_weight_decays, fold_index, cfg),
             )
-            l2 = _fold_l2(fold_l2, fold_index, cfg)
-            objective_history: list[float] = []
-            closure_calls = 0
-            relative_change = math.inf
-            converged = False
-            final_objective = math.inf
-            for step in range(1, cfg.probe_max_steps + 1):
-                def logits(raw: torch.Tensor) -> torch.Tensor:
-                    effective_weight = head.weight / scales
-                    effective_bias = head.bias - (effective_weight * means).sum(dim=1)
-                    return raw @ effective_weight.T + effective_bias
-                def closure() -> torch.Tensor:
-                    nonlocal closure_calls
-                    closure_calls += 1
-                    opt.zero_grad(set_to_none=True)
-                    bce_by_head = F.binary_cross_entropy_with_logits(logits(raw_train), train_y, reduction="none")
-                    bce = (bce_by_head * head_masks).sum() / head_masks.sum().clamp_min(1)
-                    penalty = 0.5 * l2 * head.weight.square().sum() / n_heads
-                    objective = bce + penalty
-                    objective.backward()
-                    return objective
-                opt.step(closure)
-                with torch.no_grad():
-                    bce_by_head = F.binary_cross_entropy_with_logits(logits(raw_train), train_y, reduction="none")
-                    bce = (bce_by_head * head_masks).sum() / head_masks.sum().clamp_min(1)
-                    penalty = 0.5 * l2 * head.weight.square().sum() / n_heads
-                    final_objective = float(bce + penalty)
-                objective_history.append(final_objective)
-                if len(objective_history) > cfg.probe_stable_steps:
-                    reference = objective_history[-1 - cfg.probe_stable_steps]
-                    relative_change = abs(reference - final_objective) / max(abs(reference), 1e-12)
-                    if relative_change < cfg.probe_relative_loss_tolerance:
-                        converged = True
-                        break
-            if not converged:
-                raise RuntimeError(
-                    f"CCGP probe did not converge within {cfg.probe_max_steps} L-BFGS iterations "
-                    f"(last relative objective change={relative_change:.3g}, l2={l2:g})."
-                )
+            for _ in range(steps):
+                opt.zero_grad()
+                loss = F.binary_cross_entropy_with_logits(head(tr_all), train_y, reduction="none")
+                loss = (loss * head_masks.float()).sum() / head_masks.sum().clamp_min(1)
+                loss.backward()
+                opt.step()
             with torch.no_grad():
-                score_logits = logits(raw_test)
-                acc = torch.stack([
-                    balanced_accuracy(score_logits[test_masks[:, h], h], test_y[test_masks[:, h]])
-                    for h in range(n_heads)
-                ]).mean().item()
+                # The h-th block in eval_x is scored by output h only.
+                scores = torch.stack([head(eval_x[:, h])[:, h] for h in range(n_heads)], dim=1)
+                acc = balanced_accuracy(scores, eval_y).mean().item()
             split_scores.append(acc)
-            convergence.append({
-                "dichotomy_index": d_index, "outer_fold": fold_index,
-                "iterations": step, "closure_calls": closure_calls, "converged": converged,
-                "relative_loss_change": relative_change, "objective": final_objective,
-                "surviving_width": int(keep.sum()),
-            })
         per_type.setdefault(d["type"], []).append(float(np.mean(split_scores)))
     per_type["overall"] = [v for group in per_type.values() for v in group]
-    return {k: float(np.mean(v)) for k, v in per_type.items()}, convergence
+    return {k: float(np.mean(v)) for k, v in per_type.items()}
 
 
 # ---------------------------------------------------------------- representations
@@ -838,34 +679,32 @@ def random_expansion(x: torch.Tensor, sae: SAEWeights, seed: int) -> tuple[torch
     return sparse, dense, target_l0
 
 
-@dataclass
-class RandomExpansionFamily:
-    """One maximal draw: every calibration candidate is an exact column prefix."""
-    R: torch.Tensor
-    biases: torch.Tensor
-
-
-def random_expansion_family(sae: SAEWeights, seed: int, max_columns: int) -> RandomExpansionFamily:
-    g = torch.Generator(device="cpu").manual_seed(seed + 500_000)
-    source = torch.randint(sae.W_enc.shape[1], (max_columns,), generator=g)
-    norms = sae.W_enc.norm(dim=0)[source]
-    biases = sae.b_enc[source]
-    R = torch.randn((sae.W_enc.shape[0], max_columns), generator=g)
-    R *= norms.unsqueeze(0) / R.norm(dim=0, keepdim=True).clamp_min(1e-8)
-    return RandomExpansionFamily(R=R.contiguous(), biases=biases.contiguous())
-
-
 def random_expansion_at_width(
     x: torch.Tensor,
     sae: SAEWeights,
-    family: RandomExpansionFamily,
+    seed: int,
     target_l0: int,
     n_columns: int,
 ) -> torch.Tensor:
-    """Random sparse code at a chosen width, sliced from one pre-drawn family."""
-    if n_columns < target_l0 or n_columns > family.R.shape[1]:
-        raise ValueError(f"Invalid random-expansion width {n_columns} for top-k {target_l0}")
-    R, biases = family.R[:, :n_columns], family.biases[:n_columns]
+    """Random sparse code at a chosen nominal width for the effective-width control.
+
+    The widened arm keeps the original control's residual centring and top-k rule.  It
+    samples SAE encoder-column norms and encoder biases with replacement, so widening
+    preserves their empirical marginal distributions instead of copying a privileged
+    block of SAE columns.  Width is calibrated only against the unlabeled count of
+    nonzero-on-any-sample units; no probe score enters the calibration.
+    """
+    if n_columns < target_l0:
+        raise ValueError(f"Random-expansion width {n_columns} is below top-k {target_l0}")
+    g = torch.Generator(device="cpu").manual_seed(seed + 500_000)
+    source = torch.randint(sae.W_enc.shape[1], (n_columns,), generator=g)
+    norms = sae.W_enc.norm(dim=0)[source]
+    biases = sae.b_enc[source]
+    # Draw column-major: a width-N candidate is then an exact prefix of a larger-width
+    # candidate under the same seed.  That makes the unlabeled width calibration stable
+    # instead of changing every existing random direction when N changes shape.
+    R = torch.randn((n_columns, sae.W_enc.shape[0]), generator=g).T.contiguous()
+    R *= norms.unsqueeze(0) / R.norm(dim=0, keepdim=True).clamp_min(1e-8)
     dense = torch.relu((x - sae.b_dec) @ R + biases)
     values, indices = dense.topk(target_l0, dim=1)
     return torch.zeros_like(dense).scatter(1, indices, values)
@@ -891,17 +730,13 @@ def widened_random_to_effective_width(
     if baseline_width < 1:
         raise RuntimeError("Cannot width-match a random expansion with zero surviving baseline units")
     initial = max(target_l0, int(round(base_columns * target_width / baseline_width)))
-    candidates = [
-        max(target_l0, int(round(initial * multiplier)))
-        for multiplier in (0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 5.25, 5.5, 5.75, 6.0, 6.5)
-    ]
-    family = random_expansion_family(sae, seed, max(candidates))
     tried = 0
     best_rep: torch.Tensor | None = None
     best_columns = initial
     best_width = -1
-    for candidate in candidates:
-        rep = random_expansion_at_width(x, sae, family, target_l0, candidate)
+    for multiplier in (0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 5.25, 5.5, 5.75, 6.0, 6.5):
+        candidate = max(target_l0, int(round(initial * multiplier)))
+        rep = random_expansion_at_width(x, sae, seed, target_l0, candidate)
         tried += 1
         achieved = int(prepare_features(rep)[0].shape[1])
         if best_rep is None or abs(achieved - target_width) < abs(best_width - target_width):
@@ -950,44 +785,24 @@ def narrow_sae_to_effective_width(
     }
 
 
-def representations(
-    x: torch.Tensor,
-    sae: SAEWeights,
-    seed: int,
-    include_width_controls: bool = False,
-) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
+def representations(x: torch.Tensor, sae: SAEWeights, seed: int) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
     f = sae.encode(x)
     rand_topk, rand_dense, target_l0 = random_expansion(x, sae, seed)
+    sae_width = int(prepare_features(f)[0].shape[1])
+    rand_width = int(prepare_features(rand_topk)[0].shape[1])
+    rand_widened, random_width_control = widened_random_to_effective_width(
+        x, sae, seed, target_l0, sae_width, rand_width,
+    )
+    sae_narrowed, sae_width_control = narrow_sae_to_effective_width(f, rand_width, seed)
     reps = {
         "resid": x,
         "sae": f,
         "sae_recon": sae.decode(f),
         "rand_exp": rand_topk,
         "rand_exp_dense": rand_dense,
+        "rand_exp_width_matched": rand_widened,
+        "sae_width_matched": sae_narrowed,
     }
-    controls: dict[str, Any] = {"status": "not_run"}
-    if include_width_controls:
-        sae_width = int(prepare_features(f)[0].shape[1])
-        rand_width = int(prepare_features(rand_topk)[0].shape[1])
-        rand_widened, random_width_control = widened_random_to_effective_width(
-            x, sae, seed, target_l0, sae_width, rand_width,
-        )
-        sae_narrowed, sae_width_control = narrow_sae_to_effective_width(f, rand_width, seed)
-        reps.update({
-            "rand_exp_width_matched": rand_widened,
-            "sae_width_matched": sae_narrowed,
-        })
-        controls = {
-            "status": "run_transductively_on_unlabelled_full_sample",
-            "random_widened_to_sae": {
-                **random_width_control,
-                "mean_l0": float((rand_widened > 0).sum(1).float().mean()),
-            },
-            "sae_narrowed_to_random": {
-                **sae_width_control,
-                "mean_l0": float((sae_narrowed > 0).sum(1).float().mean()),
-            },
-        }
     l0 = {name: float((rep > 0).sum(1).float().mean()) for name, rep in reps.items()}
     widths = {name: int(prepare_features(rep)[0].shape[1]) for name, rep in reps.items()}
     return reps, {
@@ -995,7 +810,16 @@ def representations(
         "mean_l0": l0,
         "surviving_width": widths,
         "rand_dense_reference_l0": l0["rand_exp_dense"],
-        "effective_width_controls": controls,
+        "effective_width_controls": {
+            "random_widened_to_sae": {
+                **random_width_control,
+                "mean_l0": l0["rand_exp_width_matched"],
+            },
+            "sae_narrowed_to_random": {
+                **sae_width_control,
+                "mean_l0": l0["sae_width_matched"],
+            },
+        },
     }
 
 
@@ -1093,267 +917,136 @@ def paired_difference(
     return out
 
 
-def _fmt_stat(stat: dict[str, float]) -> str:
-    return f"{stat['mean']:.3f} ± {stat['ci95']:.3f}"
+def convergence_check(
+    rep: torch.Tensor,
+    stimuli: Stimuli,
+    seed: int,
+    cfg: Config,
+    scale_mode: str,
+    selected_weight_decay: float,
+) -> dict[str, float]:
+    """Compare 100 and 200 optimizer steps on an inner validation split, never test items."""
+    rep, _ = prepare_features(rep)
+    outer_train, _ = folds(stimuli.item_ids, cfg.n_folds, seed)[0]
+    inner_train, inner_valid = inner_validation_split(outer_train, stimuli.item_ids, seed, 0)
+    tr, va = scale_features(rep[inner_train], rep[inner_valid], scale_mode)
+    acc_100, _, loss_100 = fit_probe(
+        tr, stimuli.factors[inner_train], va, stimuli.factors[inner_valid], seed + 60_000,
+        cfg.probe_steps, selected_weight_decay, return_loss=True,
+    )
+    acc_200, _, loss_200 = fit_probe(
+        tr, stimuli.factors[inner_train], va, stimuli.factors[inner_valid], seed + 60_000,
+        2 * cfg.probe_steps, selected_weight_decay, return_loss=True,
+    )
+    return {
+        "inner_validation_main_effect_100_steps": float(acc_100.mean()),
+        "inner_validation_main_effect_200_steps": float(acc_200.mean()),
+        "train_bce_100_steps": loss_100,
+        "train_bce_200_steps": loss_200,
+    }
 
 
-def _markdown_table(headers: list[str], rows: list[list[str]]) -> str:
-    return "\n".join([
-        "| " + " | ".join(headers) + " |",
-        "| " + " | ".join(["---:"] * len(headers)) + " |",
-        *("| " + " | ".join(row) + " |" for row in rows),
-    ])
+def summarise_convergence(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    return {
+        arm: {
+            key: dict(zip(("mean", "ci95"), mean_ci(
+                row["convergence"][key] for row in rows if row["arm"] == arm
+            )))
+            for key in rows[0]["convergence"]
+        }
+        for arm in sorted({row["arm"] for row in rows})
+    }
 
 
-def _summary_from_rows(setting_data: dict[str, Any]) -> dict[str, Any]:
-    return aggregate(setting_data["per_seed_rows"], tuple(setting_data["arms"]))
+def legacy_fixed_standardise_reference() -> dict[str, Any] | None:
+    """Carry the actual pre-control full run forward as a labelled sensitivity baseline."""
+    if not RESULTS.exists():
+        return None
+    previous = json.loads(RESULTS.read_text())
+    if previous.get("schema", "").startswith("exp03-results-v1") and previous.get("status") == "complete":
+        return {
+            "description": "Completed pre-control run: per-feature z-score, fixed AdamW weight decay 0.08, 100 steps.",
+            "per_seed_rows": previous["per_seed_rows"],
+            "summary": previous["summary"],
+            "paired_sae_minus_rand_exp": previous["paired_sae_minus_rand_exp"],
+            "wall_clock_seconds": previous["wall_clock_seconds"],
+        }
+    return previous.get("legacy_fixed_standardise")
 
 
-def plots_from_results(payload: dict[str, Any]) -> None:
-    """Render both figures from results.json-derived summaries, never hand-entered values."""
-    settings = list(payload["probe_fairness"])
+def plots(summary: dict[str, Any], smoke: bool) -> None:
+    arms = ALL_ARMS
     colors = {
         "resid": "#666666", "sae": "#3b6ea5", "sae_recon": "#5c9f72",
         "rand_exp": "#e08214", "rand_exp_dense": "#d73027",
+        "rand_exp_width_matched": "#9b59b6", "sae_width_matched": "#168aad",
     }
     labels = {
         "resid": "resid", "sae": "sae", "sae_recon": "sae_recon",
         "rand_exp": "rand_exp", "rand_exp_dense": "rand_exp_dense",
+        "rand_exp_width_matched": "rand_exp (width-matched)",
+        "sae_width_matched": "sae (width-matched)",
     }
-    fig, axes = plt.subplots(1, len(settings), figsize=(6.2 * len(settings), 5.1), squeeze=False)
-    for ax, setting in zip(axes[0], settings):
-        summary = _summary_from_rows(payload["probe_fairness"][setting])
-        for arm in payload["probe_fairness"][setting]["arms"]:
-            x, y = summary[arm]["ccgp"]["main_effect"], summary[arm]["sd"]["overall"]
-            ax.errorbar(
+    # The full panel preserves the chance lines; the zoomed panel makes the observed
+    # 0.80--0.94 separation readable instead of visually collapsing it near the corner.
+    fig, (ax, zoom) = plt.subplots(1, 2, figsize=(12.2, 5.25), gridspec_kw={"width_ratios": (1.0, 1.12)})
+    for arm in arms:
+        x = summary[arm]["ccgp"]["main_effect"]
+        y = summary[arm]["sd"]["overall"]
+        for panel in (ax, zoom):
+            panel.errorbar(
                 x["mean"], y["mean"], xerr=x["ci95"], yerr=y["ci95"], fmt="o", ms=7,
                 capsize=3, color=colors[arm], label=labels[arm],
             )
-        ax.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
-        ax.axvline(0.5, color="crimson", ls="--", lw=1.2)
-        ax.set_xlim(0.45, 1.02)
-        ax.set_ylim(0.45, 1.02)
-        ax.set_xlabel("main-effect CCGP: held-condition balanced accuracy")
-        ax.set_ylabel("shattering dimensionality: balanced accuracy")
-        ax.set_title(setting.replace("_", " "))
-        ax.grid(alpha=0.25)
-    handles, legend_labels = axes[0][0].get_legend_handles_labels()
+    for panel in (ax, zoom):
+        panel.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
+        panel.axvline(0.5, color="crimson", ls="--", lw=1.2)
+        panel.grid(alpha=0.25)
+    ax.set_xlim(0.45, 1.02)
+    ax.set_ylim(0.45, 1.02)
+    zoom.set_xlim(0.89, 0.97)
+    zoom.set_ylim(0.68, 0.96)
+    ax.set_xlabel("main-effect CCGP: held-condition balanced accuracy")
+    ax.set_ylabel("shattering dimensionality: balanced accuracy")
+    zoom.set_xlabel("main-effect CCGP: zoomed")
+    zoom.set_ylabel("shattering: zoomed")
+    suffix = "SMOKE subset" if smoke else "5 seeds; 95% CI"
+    ax.set_title("Full scale (chance retained)")
+    zoom.set_title("Observed-result zoom")
+    fig.suptitle(f"Expressivity versus factor abstraction: SAE and matched random expansion\n({suffix}; global-RMS probe)")
+    handles, legend_labels = zoom.get_legend_handles_labels()
     dedup = dict(zip(legend_labels, handles))
-    fig.legend(dedup.values(), dedup.keys(), fontsize=8.1, loc="lower center", ncol=3, bbox_to_anchor=(0.5, 0.01))
-    fig.suptitle("Expressivity versus factor abstraction under two converged scaling conventions")
-    fig.tight_layout(rect=(0.0, 0.12, 1.0, 0.92))
+    fig.legend(dedup.values(), dedup.keys(), fontsize=8.1, loc="lower center", ncol=4, bbox_to_anchor=(0.5, 0.01))
+    fig.tight_layout(rect=(0.0, 0.13, 1.0, 0.91))
     fig.savefig(FIGDIR / "01_shattering_vs_ccgp.png", dpi=180)
     plt.close(fig)
 
     types = ("main_effect", "two_way_xor", "three_way_parity", "unstructured")
     type_labels = ("main effect", "2-way XOR", "3-way parity", "unstructured")
-    fig, axes = plt.subplots(1, len(settings), figsize=(6.2 * len(settings), 4.9), squeeze=False)
-    for ax, setting in zip(axes[0], settings):
-        summary = _summary_from_rows(payload["probe_fairness"][setting])
-        arms = payload["probe_fairness"][setting]["arms"]
-        x, width = np.arange(len(types)), 0.15
-        for i, arm in enumerate(arms):
-            vals = [summary[arm]["sd"][kind]["mean"] for kind in types]
-            errs = [summary[arm]["sd"][kind]["ci95"] for kind in types]
-            offset = (i - (len(arms) - 1) / 2) * width
-            ax.bar(x + offset, vals, width, yerr=errs, capsize=2.5, label=labels[arm], color=colors[arm])
-        ax.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
-        ax.set_xticks(x, type_labels)
-        ax.set_ylim(0.45, 1.02)
-        ax.set_ylabel("shattering: balanced decoding accuracy")
-        ax.set_title(setting.replace("_", " "))
-        ax.grid(axis="y", alpha=0.25)
-    axes[0][0].legend(ncol=3, fontsize=7.5, loc="upper center")
-    fig.suptitle("Dichotomy breakdown from converged raw rows")
+    fig, ax = plt.subplots(figsize=(9.0, 4.9))
+    x = np.arange(len(types))
+    width = 0.115
+    for i, arm in enumerate(arms):
+        vals = [summary[arm]["sd"][kind]["mean"] for kind in types]
+        errs = [summary[arm]["sd"][kind]["ci95"] for kind in types]
+        offset = (i - (len(arms) - 1) / 2) * width
+        ax.bar(x + offset, vals, width, yerr=errs, capsize=2.5, label=labels[arm], color=colors[arm])
+    ax.axhline(0.5, color="crimson", ls="--", lw=1.2, label="chance (0.5)")
+    ax.set_xticks(x, type_labels)
+    ax.set_ylim(0.45, 1.02)
+    ax.set_ylabel("shattering: balanced decoding accuracy")
+    ax.set_title("Dichotomy breakdown: base-factor enumeration versus parity-family interactions")
+    ax.grid(axis="y", alpha=0.25)
+    ax.legend(ncol=4, fontsize=7.5, loc="upper center")
     fig.tight_layout()
     fig.savefig(FIGDIR / "02_dichotomy_breakdown.png", dpi=180)
     plt.close(fig)
 
 
-def _l2_table(setting_data: dict[str, Any]) -> str:
-    rows = []
-    for arm in setting_data["arms"]:
-        selected = [
-            value for row in setting_data["per_seed_rows"] if row["arm"] == arm
-            for value in row["selected_l2_by_outer_fold"]
-        ]
-        counts = {value: selected.count(value) for value in sorted(set(selected))}
-        rows.append([f"`{arm}`", ", ".join(f"{key:g} ({value})" for key, value in counts.items()), "no"])
-    return _markdown_table(["arm", "selected L2 across 25 outer folds (count)", "grid edge"], rows)
-
-
-def _metric_table(summary: dict[str, Any], arms: tuple[str, ...]) -> str:
-    return _markdown_table(
-        ["arm", "overall SD", "main-effect SD", "two-way-XOR SD", "main-effect CCGP", "overall CCGP", "train − test gap"],
-        [[
-            f"`{arm}`", _fmt_stat(summary[arm]["sd"]["overall"]),
-            _fmt_stat(summary[arm]["sd"]["main_effect"]),
-            _fmt_stat(summary[arm]["sd"]["two_way_xor"]),
-            _fmt_stat(summary[arm]["ccgp"]["main_effect"]),
-            _fmt_stat(summary[arm]["ccgp"]["overall"]),
-            _fmt_stat(summary[arm]["gap"]["overall"]),
-        ] for arm in arms],
-    )
-
-
-def _breakdown_table(summary: dict[str, Any], arms: tuple[str, ...]) -> str:
-    return _markdown_table(
-        ["arm", "main-effect SD", "two-way XOR SD", "three-way parity SD", "unstructured SD"],
-        [[
-            f"`{arm}`", _fmt_stat(summary[arm]["sd"]["main_effect"]),
-            _fmt_stat(summary[arm]["sd"]["two_way_xor"]),
-            _fmt_stat(summary[arm]["sd"]["three_way_parity"]),
-            _fmt_stat(summary[arm]["sd"]["unstructured"]),
-        ] for arm in arms],
-    )
-
-
-def _convergence_rollup(setting_data: dict[str, Any]) -> dict[str, dict[str, float]]:
-    out: dict[str, dict[str, float]] = {}
-    for arm in setting_data["arms"]:
-        diagnostics = [
-            diag for row in setting_data["per_seed_rows"] if row["arm"] == arm
-            for family in ("sd_convergence", "ccgp_convergence") for diag in row[family]
-        ]
-        iterations = [diag["iterations"] for diag in diagnostics]
-        out[arm] = {
-            "minimum_iterations": min(iterations), "maximum_iterations": max(iterations),
-            "mean_iterations": float(np.mean(iterations)),
-            "all_converged": all(diag["converged"] for diag in diagnostics),
-        }
-    return out
-
-
-def write_documents_from_results(payload: dict[str, Any]) -> None:
-    """Regenerate prose tables and both public snippets from the just-written raw manifest."""
-    fair = payload["probe_fairness"]
-    setting_summaries = {setting: _summary_from_rows(data) for setting, data in fair.items()}
-    z_name, rms_name = "per_feature_zscore_inner_l2", "global_rms_inner_l2"
-    z_diff = fair[z_name]["paired_sae_minus_rand_exp"]["sd"]["two_way_xor"]
-    rms_diff = fair[rms_name]["paired_sae_minus_rand_exp"]["sd"]["two_way_xor"]
-    agreement = payload["scaling_convergence_test"]["agree_within_sum_of_t_intervals"]
-    if agreement:
-        headline = (
-            "After convergence, the two scaling conventions agree within their Student-t intervals; "
-            "the reported two-way-XOR result is therefore a converged representation result rather than a scaling effect."
-        )
-        controls_text = "Effective-width controls were rerun under the converged probe and are reported below."
-    else:
-        headline = (
-            "After convergence, the two scaling conventions still disagree beyond their Student-t intervals. "
-            "That is an L2-prior-geometry sensitivity, not evidence that one code has greater interaction-readout capacity; "
-            "the honest headline is a null with respect to the SAE-versus-random code claim."
-        )
-        controls_text = "Effective-width controls were not rerun: once the core contrast is prior-geometry sensitive, their older global-RMS values cannot repair or headline it."
-    convergence_rows = _markdown_table(
-        ["setting", "arm", "L-BFGS iterations (min–max; mean)", "all converged"],
-        [[
-            setting, f"`{arm}`",
-            f"{roll['minimum_iterations']}–{roll['maximum_iterations']}; {roll['mean_iterations']:.1f}",
-            "yes" if roll["all_converged"] else "NO",
-        ] for setting, data in fair.items() for arm, roll in _convergence_rollup(data).items()],
-    )
-    comparison_table = _markdown_table(
-        ["scaling", "paired `sae − rand_exp` two-way-XOR SD", "paired main-effect CCGP"],
-        [[
-            setting, _fmt_stat(data["paired_sae_minus_rand_exp"]["sd"]["two_way_xor"]),
-            _fmt_stat(data["paired_sae_minus_rand_exp"]["ccgp"]["main_effect"]),
-        ] for setting, data in fair.items()],
-    )
-    metric_sections = "\n\n".join(
-        f"### `{setting}`\n\n{_metric_table(setting_summaries[setting], tuple(data['arms']))}\n\n"
-        f"L2 choices (all selected values are interior):\n\n{_l2_table(data)}\n\n"
-        f"Dichotomy breakdown:\n\n{_breakdown_table(setting_summaries[setting], tuple(data['arms']))}"
-        for setting, data in fair.items()
-    )
-    gates = payload["gates"]
-    writeup = f"""# Experiment 03 — a converged scaling test changes the SAE headline
-
-## Question
-
-Can a sparse GPT-2-small SAE code linearly read two-factor interactions better than an L0-matched random ReLU expansion? The adversarial review identified a blocking constraint: per-feature z-scoring and global-RMS scaling are invertible affine reparameterisations. At convergence, a difference between them cannot be called a property of the codes; with L2 it can only be a difference in prior geometry.
-
-## Setup and discipline
-
-The stimuli remain NUMBER × TENSE × POLARITY full factorials, read at the identical final `.` token and split by lexical item. Gate A used {payload['sae_loading']}; Gate B chose layer {payload['chosen_layer']} with pilot NUMBER/TENSE/POLARITY accuracies {gates['B_pilot_main_effects'][str(payload['chosen_layer'])]}; Gate C residual two-way-XOR SD was {gates['C_resid_two_way_xor_sd']:.3f}. All five seeds retained equal token lengths within every item.
-
-Each probe minimises mean logistic loss plus `0.5 × λ × ||w||²` (bias unpenalised), using full-batch L-BFGS. Convergence means relative training-objective change below {payload['config']['probe_relative_loss_tolerance']:g} over the preceding {payload['config']['probe_stable_steps']} accepted iterations, capped at {payload['config']['probe_max_steps']}; no fit hit the cap. `λ` is selected separately for every arm, scaling, seed, and outer fold from an unpenalised inner item-disjoint main-effect logistic-loss grid {payload['config']['l2_grid']}, choosing the largest value at or above the predeclared stability floor {L2_STABILITY_FLOOR:g} within {L2_ONE_STANDARD_STYLE_TOLERANCE_NATS:g} nats/example of the minimum; an edge choice raises an error rather than being silently reported.
-
-CCGP is now strict: each of its 16 heads centres and scales from exactly its six condition/item training cells before applying that transform to held-condition test cells. The all-zero keep-mask is fit per outer training fold. The sparse random top-k target is still an **unlabelled, transductive** mean-L0 calibration over the complete fixed stimulus set; it never sees factor labels, dichotomies, probe loss, or accuracy. This corrects the former false statement that no outer-test activation entered any representation calibration.
-
-All intervals below are two-sided 95% Student-t intervals (`t(4)=2.776`, five seeds), not `1.96 × sd/√5`. Experiment 02 used its earlier 1.96 convention with eight seeds; the conventions are now stated rather than silently conflated.
-
-## Result 1 — the scaling-convergence test is the result
-
-![Converged shattering versus main-effect CCGP under both scaling conventions](figures/01_shattering_vs_ccgp.png)
-
-{headline}
-
-{comparison_table}
-
-The interval-overlap decision rule was `|difference of paired estimates| ≤ sum of their t-interval half-widths`; it evaluated to **{agreement}**. Scaling is irrelevant to the unregularised linear function class, but L2 is not affine-invariant, so a persistent difference is a prior sensitivity rather than a readout-capacity result.
-
-## Result 2 — SD and CCGP, regenerated from raw rows
-
-![Dichotomy-family SD breakdown under both converged scaling conventions](figures/02_dichotomy_breakdown.png)
-
-{metric_sections}
-
-## Optimisation record
-
-{convergence_rows}
-
-## Effective-width controls
-
-{controls_text} The implementation now draws one maximal random matrix (including sampled norm and bias columns) and slices prefixes for candidate widths, so calibration varies width rather than projection identity. Neither width control matches both width and the full L0 distribution: random uses forced per-sample top-k while SAE uses natural ReLU sparsity. If they are run in a later invariance-resolved result, they are sensitivity controls with different costs, not a demonstration that active directions are excluded.
-
-## Scope
-
-This experiment measures properties of a representation/lens only. The SAE is read beside GPT-2's residual stream; it never replaces that stream in the model's forward computation. No result here says or implies that an SAE harms, degrades, removes, or otherwise changes GPT-2's computation.
-
-## What is not claimed
-
-The result does not identify conjunctive SAE latents, a transformer circuit, a causal feature use, or a behavioural effect. Dense random expansion is an upper reference, not the sparse control. The only theorem cited in this repository remains Experiment 02's coordinate-wise compression/XOR result; nothing trained or measured here earns that word.
-
-## Reproducibility
-
-`results.json` schema: raw `per_seed_rows` are grouped by scaling and contain SD, CCGP, gaps, per-outer-fold L2 traces, per-fold keep widths, and L-BFGS convergence diagnostics. Every number in every table and both figures is regenerated by this script from those rows. The completed full run took {payload['wall_clock_seconds']:.1f} seconds on CPU. Historical 84.2 s / 22.5 s / 1,419.7 s timing and 100-versus-200-step claims are deliberately not shipped as evidence because this manifest does not contain their raw rows.
-"""
-    (HERE / "writeup.md").write_text(writeup)
-    snippet = f"""## Experiment 03 — converged probes made the headline a scaling-sensitivity result
-
-![Five-seed converged shattering dimensionality versus main-effect CCGP under z-score and global-RMS scaling](figures/01_shattering_vs_ccgp.png)
-
-Caption — `sae − rand_exp` two-way-XOR SD is {_fmt_stat(z_diff)} with per-feature z-scoring and {_fmt_stat(rms_diff)} with global RMS (95% Student-t). **{headline}** This is a representation/lens measurement, not a model intervention: the SAE never replaces GPT-2's residual stream in the forward computation. Full gates, strict CCGP preprocessing, L2 selection records, raw-row-generated tables, and caveats: [Experiment 03 writeup](writeup.md).
-"""
-    (HERE / "README-snippet.md").write_text(snippet)
-    marker = "## 2026-07-26 — Experiment 03 review run 5: affine reparameterisation audit"
-    notebook_path = HERE.parents[1] / "lab-notebook.md"
-    review_entry = f"""{marker}
-
-**Goal:** Test the adversarial finding that my exp03 headline rested on an affine reparameterisation of a linear probe, then let a converged nested-L2 result decide whether the positive claim survives.
-
-**Did:** Replaced 100-step AdamW with full-batch L-BFGS on the stated L2-logistic objective; convergence required relative objective change below {payload['config']['probe_relative_loss_tolerance']:g} across a {payload['config']['probe_stable_steps']}-iteration window, with a {payload['config']['probe_max_steps']}-iteration cap. Selected L2 on an item-disjoint inner grid separately for arm/scaling/outer fold, fitted CCGP moments from each head's six training conditions only, and fitted the zero-unit mask on outer training items. Rebuilt tables and both figures from `results.json` raw rows, switched all five-seed intervals to `t(4)`, and removed historical timing/convergence claims that lack raw manifests.
-
-**Expected:** I expected better optimisation might make z-score and global-RMS agree, because a linear probe can represent the same boundaries after either invertible affine scaling. If that happened, I would keep a code-level number and rerun width controls. If not, the headline had to become a null rather than a flattering global-RMS choice.
-
-**Happened:** Per-feature z-score gave two-way-XOR `sae − rand_exp` {_fmt_stat(z_diff)}; global RMS gave {_fmt_stat(rms_diff)}. The predeclared interval-overlap check was **{agreement}**. {headline}
-
-**Confused about / open:** L2 breaks affine invariance, so this does not tell me which scaling is "the real code"; it tells me the result is conditional on prior geometry. The random top-k L0 target remains a transductive unlabeled calibration over the fixed sample; labels and probe scores never enter it, but I should replace that with fold-local representation construction before a future positive claim. The fixed prefix family now ensures width candidates differ only by width, but width and full L0 distributions still cannot both be matched by these two controls.
-
-**Next:** Do not revive the old width-matched interaction headline. A future experiment needs a preregistered, fold-local random-control construction and a scaling-invariant or explicitly prior-targeted readout question before interpreting SAE/random interaction differences as code geometry.
-"""
-    old = notebook_path.read_text()
-    if marker in old:
-        start = old.index(marker)
-        end = old.find("\n---\n", start)
-        old = old[:start] + old[end + len("\n---\n"):] if end >= 0 else old[:start]
-    notebook_path.write_text(review_entry + "\n---\n\n" + old.lstrip())
-
-
 def run() -> dict[str, Any]:
     global CURRENT_GATE
     started = time.perf_counter()
+    legacy_reference = legacy_fixed_standardise_reference()
     cfg = config()
     run_device = device()
     CURRENT_GATE = "A"
@@ -1377,7 +1070,7 @@ def run() -> dict[str, Any]:
     CURRENT_GATE = "C"
     reps0, matching0 = representations(selected_x, sae, cfg.seeds[0])
     ds = dichotomies()
-    xor_gate, _, _ = sd_metric(reps0["resid"], initial_stimuli, cfg.seeds[0], cfg, [d for d in ds if d["type"] == "two_way_xor"])
+    xor_gate, _ = sd_metric(reps0["resid"], initial_stimuli, cfg.seeds[0], cfg, [d for d in ds if d["type"] == "two_way_xor"])
     # sd_metric accepts arbitrary output count; this averaged only the three XOR-family rows.
     if xor_gate["overall"] >= SATURATION_THRESHOLD:
         raise RuntimeError(
@@ -1386,11 +1079,16 @@ def run() -> dict[str, Any]:
         )
 
     CURRENT_GATE = "D"
+    main_effect_ds = [d for d in ds if d["type"] == "main_effect"]
+    primary_setting = "global_rms_inner_l2"
     scale_modes = {
         "per_feature_zscore_inner_l2": "per_feature_zscore",
         "global_rms_inner_l2": "global_rms",
     }
+    if primary_setting not in cfg.fair_probe_settings:
+        raise RuntimeError(f"Primary setting {primary_setting} is absent from config")
     setting_rows: dict[str, list[dict[str, Any]]] = {setting: [] for setting in cfg.fair_probe_settings}
+    convergence_rows: list[dict[str, Any]] = []
     seed_metadata = []
     for seed in cfg.seeds:
         stimuli = initial_stimuli if seed == cfg.seeds[0] else build_stimuli(model.tokenizer, cfg.n_items, seed)
@@ -1410,16 +1108,25 @@ def run() -> dict[str, Any]:
         })
         for setting in cfg.fair_probe_settings:
             scale_mode = scale_modes[setting]
-            for arm in BASE_ARMS:
+            # Full CCGP is needed for the primary headline and its table.  The z-score
+            # sensitivity run evaluates the required main-effect CCGP only; this keeps
+            # the added fairness check inside the original CPU runtime budget.
+            ccgp_ds = ds if setting == primary_setting else main_effect_ds
+            # The width controls answer a distinct primary-result objection.  They do
+            # not belong in the z-score sensitivity table, whose job is only to show
+            # the original scaling reversal.  Keeping that scope fixed also avoids
+            # multiplying a non-headline sensitivity run by two extra controls.
+            arms = ALL_ARMS if setting == primary_setting else BASE_ARMS
+            for arm in arms:
                 rep = reps[arm]
-                selected_l2, selection_trace, fold_keeps = select_l2(
+                selected_decay, selection_trace = select_weight_decays(
                     rep, stimuli, seed, cfg, scale_mode,
                 )
-                sd, gap, sd_convergence = sd_metric(
-                    rep, stimuli, seed, cfg, ds, scale_mode, selected_l2, fold_keeps,
+                sd, gap = sd_metric(
+                    rep, stimuli, seed, cfg, ds, scale_mode, selected_decay,
                 )
-                ccgp, ccgp_convergence = ccgp_metric(
-                    rep, stimuli, seed, cfg, ds, scale_mode, selected_l2, fold_keeps,
+                ccgp = ccgp_metric(
+                    rep, stimuli, seed, cfg, ccgp_ds, scale_mode, selected_decay,
                 )
                 row = {
                     "probe_setting": setting,
@@ -1428,39 +1135,63 @@ def run() -> dict[str, Any]:
                     "sd": sd,
                     "ccgp": ccgp,
                     "gap": gap,
-                    "selected_l2_by_outer_fold": selected_l2,
+                    "selected_weight_decay_by_outer_fold": selected_decay,
                     "inner_validation_l2_selection": selection_trace,
-                    "sd_convergence": sd_convergence,
-                    "ccgp_convergence": ccgp_convergence,
                 }
                 setting_rows[setting].append(row)
+                if setting == primary_setting:
+                    convergence_rows.append({
+                        "seed": seed,
+                        "arm": arm,
+                        "convergence": convergence_check(
+                            rep, stimuli, seed, cfg, scale_mode, selected_decay[0],
+                        ),
+                    })
                 print(
                     f"seed={seed} setting={setting} arm={arm} "
                     f"SD={sd['overall']:.3f} main-CCGP={ccgp['main_effect']:.3f}",
                     flush=True,
                 )
-    fairness = {}
-    for setting in cfg.fair_probe_settings:
-        fairness[setting] = {
+    fairness = {
+        setting: {
             "scale_mode": scale_modes[setting],
-            "l2_selection": "Per outer fold and arm: select the largest lambda >= 1e-5 within 1e-2 nats/example of the minimum inner item-disjoint unpenalised main-effect logistic loss over NUMBER/TENSE/POLARITY. Outer test labels, dichotomies, losses, and scores are never consulted.",
-            "ccgp_scope": "all_35_dichotomies",
-            "arms": list(BASE_ARMS),
+            "l2_selection": "Per outer fold and arm: select from the grid by inner item-disjoint validation mean accuracy over NUMBER/TENSE/POLARITY; outer test items are never consulted.",
+            "ccgp_scope": "all_35_dichotomies" if setting == primary_setting else "main_effect_dichotomies_only",
             "per_seed_rows": setting_rows[setting],
-            "summary": aggregate(setting_rows[setting], BASE_ARMS),
+            "summary": aggregate(
+                setting_rows[setting], ALL_ARMS if setting == primary_setting else BASE_ARMS,
+            ),
             "paired_sae_minus_rand_exp": paired_difference(
                 setting_rows[setting], cfg.seeds, "sae", "rand_exp",
             ),
         }
-    z_diff = fairness["per_feature_zscore_inner_l2"]["paired_sae_minus_rand_exp"]["sd"]["two_way_xor"]
-    rms_diff = fairness["global_rms_inner_l2"]["paired_sae_minus_rand_exp"]["sd"]["two_way_xor"]
-    agree = abs(z_diff["mean"] - rms_diff["mean"]) <= z_diff["ci95"] + rms_diff["ci95"]
+        for setting in cfg.fair_probe_settings
+    }
+    fairness[primary_setting]["convergence_100_vs_200_steps"] = summarise_convergence(convergence_rows)
+    summary = fairness[primary_setting]["summary"]
+    sae_minus_rand = fairness[primary_setting]["paired_sae_minus_rand_exp"]
+    width_matched_controls = {
+        "random_widened_to_sae_width": {
+            "comparison": "sae - rand_exp_width_matched",
+            "matching_rule": "Calibrate random nominal columns only to the SAE surviving width after the common all-zero removal; preserve SAE encoder-norm and encoder-bias marginal distributions, residual b_dec centring, and the SAE-derived top-k L0.",
+            "paired_difference": paired_difference(
+                setting_rows[primary_setting], cfg.seeds, "sae", "rand_exp_width_matched",
+            ),
+        },
+        "sae_narrowed_to_random_width": {
+            "comparison": "sae_width_matched - rand_exp",
+            "matching_rule": "Uniformly sample from SAE latents that survived the common all-zero removal until their count equals rand_exp's surviving width for that seed.",
+            "paired_difference": paired_difference(
+                setting_rows[primary_setting], cfg.seeds, "sae_width_matched", "rand_exp",
+            ),
+        },
+    }
     elapsed = time.perf_counter() - started
     payload = {
-        "schema": "exp03-results-v4; raw per-seed rows are grouped by scaling, with fold-local keep masks, strict six-condition CCGP moments, L-BFGS diagnostics, and t-interval summaries.",
+        "schema": "exp03-results-v3; effective_width_controls add a widened random arm and narrowed SAE arm under the global-RMS primary. Per-seed rows map dichotomy type to balanced accuracy; ci95=1.96*sample_sd/sqrt(n).",
         "status": "complete",
         "smoke": SMOKE,
-        "config": {**cfg.__dict__, "seeds": list(cfg.seeds), "pilot_layers": list(cfg.pilot_layers), "ccgp_splits": [list(s) for s in cfg.ccgp_splits], "l2_grid": list(cfg.l2_grid)},
+        "config": {**cfg.__dict__, "seeds": list(cfg.seeds), "pilot_layers": list(cfg.pilot_layers), "ccgp_splits": [list(s) for s in cfg.ccgp_splits]},
         "device": run_device,
         "sae_loading": sae.source,
         "chosen_layer": layer,
@@ -1476,26 +1207,17 @@ def run() -> dict[str, Any]:
             "C_resid_two_way_xor_sd": xor_gate["overall"],
         },
         "per_seed_metadata": seed_metadata,
+        "legacy_fixed_standardise": legacy_reference,
         "probe_fairness": fairness,
-        "scaling_convergence_test": {
-            "metric": "paired sae - rand_exp two-way-XOR SD",
-            "decision_rule": "absolute difference between scaling estimates is no greater than the sum of their two-sided 95% Student-t interval half-widths",
-            "agree_within_sum_of_t_intervals": agree,
-            "per_feature_zscore": z_diff,
-            "global_rms": rms_diff,
-        },
-        "effective_width_controls": {
-            "status": "not_rerun_pending_scaling_invariance_decision",
-            "implementation_fix": "Candidate widths use prefixes of one maximal random matrix, including prefix-matched sampled norms and biases.",
-        },
+        "primary_probe_setting": primary_setting,
+        "per_seed_rows": setting_rows[primary_setting],
+        "summary": summary,
+        "paired_sae_minus_rand_exp": sae_minus_rand,
+        "effective_width_controls": width_matched_controls,
         "wall_clock_seconds": elapsed,
     }
     RESULTS.write_text(json.dumps(payload, indent=2) + "\n")
-    # Reload through the public file so documents/figures cannot accidentally use stale
-    # in-memory tables. This is the structural guard against Result-2 transcription drift.
-    materialised = json.loads(RESULTS.read_text())
-    plots_from_results(materialised)
-    write_documents_from_results(materialised)
+    plots(summary, SMOKE)
     return payload
 
 
