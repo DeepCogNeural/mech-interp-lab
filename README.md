@@ -54,10 +54,32 @@ What does survive is a methodological result, and it is the part I'd defend: the
 representations is decisive for sparse over-complete ones, and any SAE-versus-baseline decoding comparison
 that doesn't state its scaling convention is under-determined.
 
-This is a fallback report, and the writeup says so in full. The run that would settle the comparison —
-every headline arm fitted to a stated convergence criterion, with L2 selected per arm *and* per scaling —
-did not complete, so what ships is the earlier completed run. The question counts as adjudicated only when
-both scaling estimates are individually precise *and* agree, not merely when their intervals overlap.
+This is a fallback report, and the writeup says so in full. The run that would settle the comparison in
+full — every headline arm and both metrics fitted to a stated convergence criterion, with L2 selected per
+arm *and* per scaling — did not complete in time for the shipped manifest, so what ships is the earlier
+completed run. The question counts as adjudicated only when both scaling estimates are individually
+precise *and* agree, not merely when their intervals overlap.
+
+### Final state — the convergence test ran, and the answer is still no
+
+A follow-up [convergence test](experiments/03_ccgp_on_sae_features/convergence_test.py) did run that
+criterion for shattering dimensionality on the four shared arms: full-batch L-BFGS with strong-Wolfe line
+search, stopped on a stated relative-objective criterion rather than a step count, with L2 selected
+item-disjointly per arm, per scaling, per seed, and per fold
+([raw rows](experiments/03_ccgp_on_sae_features/convergence_results.json); 145 s of CPU). It closed about
+half the discrepancy and did not close it — `+0.058 ± 0.041` under per-feature z-scoring against
+`+0.115 ± 0.019` under global RMS. The predeclared rule asked for both estimates to be individually
+precise *and* close; neither held, and a small overlap between a precise interval and an uninformative one
+is not agreement. The dense-arm diagnostic passed (largest shift between scalings 0.0058), so the solver
+is sound and what remains is the L2 prior's geometry, not a convergence artifact.
+
+So experiment 03 stands as **an honest non-result with a defensible methodological finding beside it.**
+Whether a real SAE code reads two-way interactions better than matched random mixing is a question this
+probe family cannot answer, because the answer moves with a preprocessing choice that a linear probe
+should be indifferent to. The lesson carried into the next design is that looking for the "fair" scaling
+inside this family is most likely looking for a point that does not exist — the way forward is a question
+setting where regularisation geometry is the object of study or is absent from the estimator, not one more
+attempt to neutralise it.
 
 ### Scope — what this does not say
 
@@ -179,12 +201,28 @@ to you.
 
 ---
 
-## Next
+## Next — experiment 04, the causal version of the same question
 
-- **Finish experiment 03's convergence test** — probes fitted to a stated convergence criterion, L2
-  selected item-disjointly per arm *and* per scaling on an interior grid, with agreement judged only
-  when both estimates are individually precise. That is the one thing standing between experiment 03
-  and an adjudicated result.
+[Full design](experiments/04_causal_feature_interchange/DESIGN.md), written before any of it is run.
+
+Everything above measures a *code under a probe*. That is the honest description of all three
+experiments, and it is also the reason experiment 03 stalled: the confound lives entirely in the
+trainable readout, whose L2 penalty is not invariant to a rescaling of the features. Fitting a better
+probe cannot remove a confound that is a property of having a fitted probe at all.
+
+So experiment 04 removes the probe. It asks whether the SAE's coordinates are a **causal** basis for one
+factor the model demonstrably computes — subject–verb number agreement — by editing SAE coordinates,
+writing the edit back into the residual stream, and letting **GPT-2's own next-token logits** be the
+readout. That readout has no free parameters, so there is no scaling convention and no regulariser to
+confound: rescaling a latent and inversely rescaling its decoder column leaves the written edit
+bit-for-bit identical. The measure exp03 could not stabilise becomes invariant by construction.
+
+The comparison stays the one that matters — the SAE against a width/norm/L0-matched random expansion,
+reused from experiment 03 — and the decision rule is pre-declared, including what counts as an
+adjudicated null. It also closes this repo's largest gap: nothing here is causal yet.
+
+Still open, and deliberately behind experiment 04:
+
 - Independent stimulus template families, before anything in experiment 03 is allowed to generalise.
 - Shattering dimensionality / CCGP on experiment 02's three *toy* geometries — the same metric where
   the ground truth is fully known, which would calibrate what these numbers mean.

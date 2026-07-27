@@ -16,6 +16,28 @@ Template for a new entry:
 
 ---
 
+## 2026-07-26 — Stepping back: what three experiments actually established, and the decision to leave probes
+
+**Goal:** Stop running and audit. Three experiments are done; decide whether the next one finishes experiment 03 or changes the question.
+
+**Did:** Reread all three writeups against a hostile reading of the portfolio as a whole, then wrote `experiments/04_causal_feature_interchange/DESIGN.md` as a pre-registration, before any code exists.
+
+**Expected:** That the sensible next step was to finish experiment 03 — a scaling-invariant criterion, or more samples so the effective feature count stops exceeding the sample count. I had a design half-drafted for a sample-size sweep: push `n` well past the surviving feature count and watch the two scalings converge.
+
+**Happened:** I talked myself out of it, and the argument that did it was not about experiment 03 at all. Every measure in this repo is linear decodability of a representation. Not one result is causal — no patching, no ablation, no intervention on a forward pass. That is representational geometry, which is the analysis style I already had from V1, and it is not what mechanistic interpretability is premised on. The sample-size sweep would have been a fourth decoding experiment, and a clever one, and it would have deepened exactly the weakness. There is an irony I had not noticed until I read the roadmap back: the methodological warning I lean on hardest, Jonas & Kording on the microprocessor, is a warning about trusting decoding results.
+
+Worse, the sweep's own logic has a hole. When features outnumber samples, two codes related by an invertible linear map are close to indistinguishable to a decoder that carries no metric — so the metric has to come from somewhere, and it comes from the regulariser. That is the sharp version of experiment 03's finding, and it says the fair scaling point I would be hunting is probably not there to find.
+
+**Confused about / open:**
+- The honest re-score is that experiment 02 is not a null — it is a theorem-anchored positive result plus a discriminating secondary null. Experiment 03 is the precarious one, because "not adjudicated" is *weaker* than a null: a null answers the question, an instrument failure says the question could not be asked with that instrument. I had been counting both as the same kind of honesty. They are not.
+- The replacement design has a property I like more than its being the missing checklist item. The interchange edit `W_dec (f' − f)` is invariant to the exact rescaling that swung experiment 03 tenfold: rescale the code by `D` and the decoder by `D⁻¹` and the vector written into the residual stream is unchanged. The knob that made the old question unanswerable cannot touch the new one. First time the failure has told me something constructive about what to build next.
+- Named risk: the matched random expansion needs a decoder, and getting a random basis onto equal reconstruction footing with a trained SAE is fiddly. It is gated (Gate C) and prototyped first, with a smaller within-SAE result to fall back on. Better to find that out in twenty minutes than in a week.
+- Watching for the mirror of the experiment 03 mistake. There, three mutually reinforcing controls all sat downstream of one unexamined preprocessing choice. Here the analogous single point of failure is the coordinate ranking rule — so it gets the ranking-free `*_full` anchors and the `*_randk` controls around it, and both bases get the identical rule and the identical budget.
+
+**Next:** Gate A and Gate C on a 20-pair pilot before anything else. If the random basis will not reconstruct, the experiment gets smaller rather than looser.
+
+---
+
 ## 2026-07-26 — Experiment 03 addendum: convergence did not remove the scaling problem
 
 **Goal:** Run the one decisive five-seed test: fit the SAE and sparse-random SD probes to a stated convergence criterion, select L2 item-disjointly for each arm and scaling, then ask whether the paired two-way-XOR difference agrees across the two affine feature scalings.
