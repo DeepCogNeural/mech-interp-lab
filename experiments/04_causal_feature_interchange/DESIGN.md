@@ -631,3 +631,71 @@ of the effect than the SAE's single best latent, and the SAE needs tens of coord
 supervised direction. The finding is that ranked SAE coordinates approach that with roughly four to
 eight times fewer coordinates than ranked PCA components — not that any unsupervised basis puts this
 factor into one coordinate. None of them does.
+
+---
+
+# Correction 1 — 2026-07-27: three retractions against the frozen text above
+
+An independent adversarial verification pass recomputed every five-seed number in this experiment from
+the raw manifests — all of them check out — and then found three things the numbers could not: claims in
+this document that are wrong, retracted elsewhere, or stronger than the evidence.
+
+**The frozen text above is left exactly as written.** Editing a pre-registration in place after the fact
+destroys the only thing it is for. These are retractions appended beneath it, and the writeup states the
+corrected versions.
+
+## C1 — "the SAE's reconstruction error cancels exactly" is false
+
+The Scope section above (and an earlier draft of the writeup and README) says the edit is a difference of
+two reconstructions "so the SAE's reconstruction error cancels exactly and never enters the forward
+pass."
+
+It does not cancel. With `recon(x) = x − e(x)`:
+
+```
+W_dec (f_src − f_base) = (x_src − x_base) − (e_src − e_base)
+```
+
+The decoder *bias* cancels. The *difference of reconstruction errors* does not, and it is exactly what
+Gate C measures — had it cancelled, `E(full)/E_resid` would be 1, and the SAE's is `0.694 ± 0.014`.
+
+**What actually carries the scope guarantee is non-substitution**, and that is unaffected: the base
+residual is left exactly as the model produced it and one vector is added to it, so no reconstruction is
+ever substituted for the model's own state, nothing is ablated, and no claim about an SAE harming a
+model's computation is available from any of this. The guarantee stands; the stated mechanism for it was
+wrong.
+
+## C2 — the "everywhere" in Amendment 2's wording correction was not true when written
+
+Amendment 2 says the claim language is narrowed "everywhere" from "localises the computation" to
+"localises the causal signal present at layer 8 at these positions". At the time it was written, only the
+writeup was changed; this document still carried the old phrasing, so "everywhere" was false. It is
+retracted and restated: **the narrowed phrasing is the one that governs, and any occurrence of the wider
+phrasing above is superseded by this paragraph.**
+
+Related and retracted with it: an earlier writeup draft described the Gate B layer × position scan as a
+"direct trace of attention moving the number signal". **No attention pattern, head, or path was measured
+anywhere in this experiment.** What was measured is where a residual-stream interchange has an effect, at
+each layer and position. Identifying a mechanism is the next experiment's job, not this one's.
+
+## C3 — the blinding claims are downgraded to what Git can establish
+
+Amendment 1 says it was committed "before the diagnostic output was read"; Amendment 2 says the
+robustness arms were specified "before its own computation". The intent was real and the practice was
+followed. But the evidence available to a reader is a commit graph, and **a commit graph establishes the
+order of commits, not the order in which files were read or computed.**
+
+So all such statements are downgraded to: *the amendment commit precedes the commit that first contains
+the output it governs.* Anything stronger would need an immutable external timestamp or an append-only
+run log, neither of which exists here. Claiming a guarantee the artifact cannot support is the same
+category of error as the two above, and it is corrected the same way.
+
+## Smaller items corrected in the writeup rather than here
+
+The "structural" classification of the random arm's Gate C failure is Rule 2's **pre-declared operational
+classification**, not a physical attribution derived from a two-point learning curve. The claim that no
+unsupervised basis concentrates the factor into one coordinate holds only over the **128 proxy-admitted
+candidates per basis** that were actually scored. The SAE's training-corpus size, quoted as "on the order
+of 10⁸ tokens", is **recalled, not verified from the published SAE's card** and is labelled as such. And
+the `1.34e-4` figure narrated in Amendment 1a comes from runs that wrote no manifest, so it is not
+checkable against any shipped raw data.
