@@ -450,3 +450,58 @@ flip) moves the mean readout by `+0.0071` — indistinguishable from nothing —
 largest per-item `ρ_noise` of the three sources at `0.271`. Individual items move and the movement
 does not point in a consistent number direction. This is descriptive, it is pre-registered as
 descriptive, and it will be reported whatever Stage 1 finds.
+
+---
+
+## Amendment 1 — 2026-08-02 — the runtime cap, and why the permitted trim was declined
+
+**Written after Stage 1 was run and read, before Stage 2 — the main run — has started.** Stage 1
+adjudicates nothing and its output feeds a mechanical selection rule, but it has been read, and this
+amendment is dated accordingly rather than presented as blind.
+
+**What changes: one number, the runtime budget. `120` CPU-minutes becomes `180`.** Nothing else in
+this document changes — not a threshold, not a decision rule, not a seed set, not a pair count, not
+an axis.
+
+**Why.** Stage 1 measured what calibration could only project, and the projection was low. The
+calibration priced its enumerated Stage-1 patches at `100.84 s`; the same patches actually cost
+`413.76 s`, a factor of `4.1`. The cause is now understood: the calibration timed one forward per
+logical patch, while the implementation splits `472` directed edits into `15` deterministic
+microbatches, so a logical patch is fifteen forward calls, not one. Rebuilding the projection on
+measured costs — a 144-head sweep at `358.9 s`, a joint patch at `2.3 s`, per-seed fixed overhead at
+`13.0 s` — gives **`≈ 137` CPU-minutes** for the whole experiment, of which Stage 2's two 144-head
+sweeps across eight seeds are `≈ 106`. That is over the frozen cap.
+
+**Why not the permitted trim.** This document permits cutting the pair count per seed to no fewer
+than 100 retained pairs, which would bring the total to `≈ 76` minutes and require no amendment at
+all. **It is declined.** The trim would shrink the data underlying the adjudication *after* Stage 1's
+ranking had been read, and pair count is not an inert knob here: it enters the frozen
+distinguishability rule directly through the width of a bootstrap interval and through the noise
+floor estimated from 144 per-head means. Cutting it would trade a scientific quantity for a
+laptop-convenience one, chosen with partial knowledge of the answer. The cap, by contrast, was a
+planning number I picked before any cost had been measured; it protects no inference. Raising it
+changes no measured quantity and no rule. Between weakening the evidence and admitting that my
+budget estimate was wrong, the second is the honest move and the cheap one.
+
+The permitted trim remains available and unused. If it is ever exercised, that will be its own dated
+amendment stating what was cut and when the decision was taken.
+
+### Recorded observation, no rule change: `E_all` and `d_gap` coincide by construction
+
+Stage 1 measured `E_all = 5.180971145629883` and the clean `d_gap` mean
+`= 5.180971145629883` — equal in every bit. This is an identity, not a coincidence and not an
+implementation artifact, and it is worth stating because § Notation presents `E_all`, `E_ref`, and
+`d_gap` as three distinct denominators when two of them are the same number for this stimulus family.
+
+The reason: a single-flip pair changes only the subject noun, so base and source share identical
+tokens at every other position, including the final one. In the source's own forward pass the
+final-position residual is therefore built entirely from its own attention outputs plus MLPs, and an
+MLP at the final position is a function of the final-position residual alone. Replacing every head's
+final-position output with the source's makes the base run's final-position residual track the
+source's exactly at every layer, so the logits match exactly.
+
+Two consequences, both favourable and neither requiring a rule change. The adjudication denominator
+cannot be pathologically small, unstable across seeds, or sign-ambiguous — it is the full behavioural
+gap. And Q1's `E(S_n)/E_all ≥ 0.50` bar reads, in plain terms, as *"eight or fewer heads carry at
+least half the entire behavioural effect"*, which is what it was intended to mean. The writeup must
+state this identity rather than presenting `E_all` as an independently measured ceiling.
