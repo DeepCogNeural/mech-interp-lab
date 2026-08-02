@@ -2,22 +2,38 @@
 
 Self-directed mechanistic-interpretability research, run from a computational-neuroscience starting
 point (probabilistic inference, stochastic modeling, primate V1 electrophysiology). CPU-only and
-reproducible end to end, starting from toy models with fully observable ground truth — chosen so a
-question can be *settled* instead of argued about — and then carrying the same question to a real
-model. The through-line is one systems neuroscience has asked for a decade and interpretability now
-asks in its own vocabulary: **when many features share few non-orthogonal directions, is that a
-problem to undo or a computation to explain?**
+reproducible end to end.
 
-Four experiments. One replicates the *storage* account of superposition. The second tests whether the
-same geometry also has a *computation* account and finds that it does — under a nonlinearity held fixed
-across arms, a monosemantic code reads a feature interaction at `0.494 ± 0.005` — on the chance line and
-provably unable to leave it, while mixed codes reach `0.81`. (The interval sits a hair below 0.50 rather
-than astride it: the theorem forbids performance *above* chance, and a fitted probe scoring slightly under
-it on held-out data is the expected finite-sample behaviour, not a violation.) The third takes that question to real SAE features on
-GPT-2-small and **fails to settle it** — for a reason worth reading, and reported as unsettled rather
-than dressed up. The fourth removes the instrument that failed and asks the question causally instead —
-and then **declines to certify what it measured**, because a faithfulness threshold fixed before the run
-was missed by 0.006. Most of these produced results I did not want; all of them are reported in full.
+The through-line is not a thesis but an **escalation of method**, and every step was forced by the
+previous step's failure rather than planned in advance: *toy models where the ground truth is fully
+observable → a real model read correlationally → the same question asked causally → the mechanism
+itself.*
+
+Four experiments, and a fifth designed but not yet run. The first replicates the *storage* account of
+superposition. The second tests whether the same geometry also has a *computation* account and finds
+that it does — under a nonlinearity held fixed across arms, a monosemantic code reads a feature
+interaction at `0.494 ± 0.005` — on the chance line and provably unable to leave it, while mixed codes
+reach `0.81`. (The interval sits a hair below 0.50 rather than astride it: the theorem forbids
+performance *above* chance, and a fitted probe scoring slightly under it on held-out data is the
+expected finite-sample behaviour, not a violation.) The third takes that question to real SAE features
+on GPT-2-small and **fails to settle it** — the answer moved by more than tenfold under a rescaling a
+fitted probe is not invariant to, and that is reported as unsettled rather than dressed up. The fourth
+removes the failed instrument entirely, intervening causally so that the rescaling cannot move the
+measure at all — and then **declines to certify what it measured**, because a faithfulness threshold
+frozen in an earlier commit than any of this experiment's output was missed by 0.006. Most of these
+produced results I did not want; all of them are reported in full.
+
+[Experiment 05](experiments/05_number_agreement_circuit/DESIGN.md) is the next step of that escalation
+and asks the mechanism question the first four could not: which attention heads move the number signal,
+and do the twelve SAE latents that recurred across every experiment 04 seed lie on that causal path. Its
+design is written and its decision rules are fixed; nothing has been run.
+
+**A note on the framing this repository started with.** Experiments 01 and 02 were built around
+superposition versus mixed selectivity — whether many features sharing few non-orthogonal directions is
+a problem to undo or a computation to explain. That question is background here, not the organising
+story, and the record is why: by experiment 03 the quantity actually being measured had become *SAE
+basis quality*, a different and far more crowded question. Keeping the original banner would have been
+framing rather than navigation.
 
 ---
 
@@ -73,6 +89,23 @@ without settling it, since that arm failed Gate C too. The 32× width advantage 
 reading. What keeps the whole thing honest-sized: a single **supervised** direction recovers `0.549` on
 its own while the SAE's best single latent recovers `0.072`. Among the 128 candidates scored in each
 unsupervised basis, none puts this factor in one coordinate.
+
+### The by-product that became the next experiment
+
+The design's causal-handle check swept layers × positions, and the picture is the cleanest thing in the
+run. `E_resid/d_gap`, five seeds:
+
+| layer | subject position | final position |
+|---|---:|---:|
+| 4 | 0.662 ± 0.012 | 0.011 ± 0.002 |
+| 8 | 0.366 ± 0.015 | 0.423 ± 0.006 |
+| 10 | 0.260 ± 0.014 | 0.694 ± 0.012 |
+
+At layer 4 the causal handle for number sits almost entirely on the subject; by layer 10 it has largely
+arrived at the readout position. **What is measured is where an interchange has an effect — no attention
+pattern, head, or path was measured**, so this is consistent with the signal being relocated and is not
+evidence about what relocates it. That gap is exactly what [experiment
+05](experiments/05_number_agreement_circuit/DESIGN.md) is for.
 
 ### Scope — what this does not say
 
@@ -252,7 +285,9 @@ co-occur. Five features in two dimensions give
 [the pentagon](experiments/01_toy_models_of_superposition/figures/01_feature_geometry_5x2.png) under
 uniform importance and antipodal pairs under decaying importance — the geometry is set by the loss
 landscape's symmetry, not by a fixed rule. Twenty features in five dimensions go from 7/20 represented
-when dense to all 20/20 by `S ≈ 0.997`.
+when dense to all 20/20 by `S ≈ 0.997`. (This is the one experiment that ships figures but no
+machine-readable results file, so these two counts cannot be re-derived without rerunning it — a gap
+noted here rather than papered over.)
 
 ![Number of represented features climbing from the five-dimensional orthogonal limit up to all 20 as feature sparsity increases](experiments/01_toy_models_of_superposition/figures/03_capacity_vs_sparsity.png)
 
@@ -270,10 +305,17 @@ to you.
 
 ## Next
 
-- **Re-register experiment 04's Gate C so the SAE arm can clear it on its own decoder** — defining
-  faithfulness per arm on the decoder that arm actually ships with, with the floor pre-declared from a
-  pilot measured on a *different* stimulus family, so the threshold cannot be tuned to this one. That is
-  the one thing between experiment 04 and an adjudicated causal claim.
+- **[Experiment 05 — the number-agreement circuit](experiments/05_number_agreement_circuit/DESIGN.md)**,
+  designed and not yet run. Which attention heads carry the subject's number to the verb position, is
+  what they carry *number* rather than any perturbation, does it arrive from the subject position, and
+  do experiment 04's twelve recurring SAE latents span it. Four axes, each with two pre-declared
+  verdicts, so no axis can return `inconclusive`; the latent question is adjudicated on seeds disjoint
+  from the ones that selected those latents. No peer-reviewed head-level baseline exists for this task
+  in GPT-2-small, which is checked and sourced in the design.
+- Re-register experiment 04's Gate C on a decoder each arm actually ships with, with the floor
+  pre-declared from a pilot on a *different* stimulus family so the threshold cannot be tuned to this
+  one. Necessary but **not** sufficient: a rerun still has to clear every other frozen gate, and Gate D
+  blocked independently in one seed.
 - Close the PCA fitting-budget objection with a fit an order of magnitude larger, or with real corpus
   text instead of model-generated text. If experiment 04's comparison is wrong, this is where.
 - A second stimulus family, before anything in experiment 04 generalises beyond number agreement — and

@@ -10,7 +10,7 @@ Rough pace: one section per week, ~8-12 hrs/week. Slip freely — the notebook r
 
 ---
 
-## Current plan (updated 2026-07-27)
+## Current plan (updated 2026-08-02)
 
 Four experiments are done; the audits are in `lab-notebook.md`. The finding that reordered this roadmap on 2026-07-26 was that **every result up to that point was linear decodability of a representation, and none of it was causal.** Week 3 below is the part that had been skipped and it was the part that mattered most.
 
@@ -18,14 +18,16 @@ Four experiments are done; the audits are in `lab-notebook.md`. The finding that
 
 That distinction sets what comes next.
 
-1. **The number-agreement circuit.** Which attention heads transport the subject's number to the verb and produce the `is`/`are` logit difference, and do experiment 04's recurring layer-8 SAE latents sit on that causal path? It reuses experiment 04's stimuli and patching machinery, it grows out of that experiment's own Gate B by-product (the causal handle relocating from the subject position toward the readout position between layers 4 and 10), and — unlike a basis comparison — both of its honest outcomes are claims: the effect is localised in a few heads, or it is diffuse.
+1. **The number-agreement circuit — [designed, not yet run](experiments/05_number_agreement_circuit/DESIGN.md).** Which attention heads transport the subject's number to the verb and produce the `is`/`are` logit difference, and do experiment 04's recurring layer-8 SAE latents sit on that causal path? It reuses experiment 04's stimuli and patching machinery and grows out of that experiment's own Gate B by-product (the causal handle relocating from the subject position toward the readout position between layers 4 and 10). Unlike a basis comparison, every outcome is a claim: the design splits into four axes — localisation, number-specificity, subject-transport, and whether the twelve latents span the delta — each with two pre-declared verdicts, so no axis can end `inconclusive`. It also carries the process change forced by experiment 04: continuous quality measures become reported covariates with sanity floors, and adjudication rests only on effect sizes against nulls that shrink with data.
 2. **Week 3 proper — activation patching and IOI**, on whatever tooling that experiment forces me to build, so the machinery arrives attached to a question rather than as an exercise.
 3. **Week 5–6 — train an SAE.** Everything so far uses a published one. Training a small one is the only way to separate an SAE's objective from its particular training run.
 4. Then the deferred items: re-registering experiment 04's Gate C on a decoder each arm actually ships with, a larger PCA fit, a second stimulus family, shattering/CCGP on experiment 02's toy geometries, and the Gram-interference mechanism check.
 
 Weeks 1–2 material (transformer internals, TransformerLens) is being picked up in service of these rather than as a separate pass.
 
-**Under review, not yet acted on:** whether this repository's stated through-line — superposition versus mixed selectivity — should remain the organising story. The measured quantity drifted, across experiments 03 and 04, into a question about SAE basis quality, which is a different and more crowded question. Notes are private; the README still carries the original framing.
+**Resolved 2026-08-02:** the repository's original through-line — superposition versus mixed selectivity — is now background rather than the organising story, and the README says so explicitly. The reason is in the record: across experiments 03 and 04 the quantity actually being measured drifted into SAE basis quality, a different and far more crowded question. What replaces it is the escalation of method the work actually followed — toy models with observable ground truth, then a real model read correlationally, then causally, then the mechanism. The tools built under the old framing all stay; only the banner changed.
+
+**Longer arc, after the mechanism work:** the place where a V1 background is a genuine edge rather than an analogy is **divisive normalization versus LayerNorm** (bridge question 2 below). It is deliberately queued *after* experiment 05 — the argument for doing it is much stronger from someone who has already reverse-engineered a mechanism in a real model with this field's own methods than from someone importing a familiar tool first.
 
 ---
 
