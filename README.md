@@ -309,12 +309,12 @@ to you.
 ## Next
 
 - **[Experiment 05 — the number-agreement circuit](experiments/05_number_agreement_circuit/DESIGN.md)**,
-  designed and not yet run. Which attention heads carry the subject's number to the verb position, is
+  design frozen 2026-08-02, main run not started. Which attention heads carry the subject's number to the verb position, is
   what they carry *number* rather than any perturbation, does it arrive from the subject position, and
   do experiment 04's twelve recurring SAE latents span it. Four axes, each with two pre-declared
   verdicts, so no axis can return `inconclusive`; the latent question is adjudicated on seeds disjoint
-  from the ones that selected those latents. No peer-reviewed head-level baseline exists for this task
-  in GPT-2-small, which is checked and sourced in the design.
+  from the ones that selected those latents. No peer-reviewed head-level *causal* baseline exists for this
+  task in GPT-2-small, which is checked and sourced in the design.
 - Re-register experiment 04's Gate C on a decoder each arm actually ships with, with the floor
   pre-declared from a pilot on a *different* stimulus family so the threshold cannot be tuned to this
   one. Necessary but **not** sufficient: a rerun still has to clear every other frozen gate, and Gate D
@@ -331,7 +331,8 @@ to you.
 ## Reproduce
 
 Python 3.11 (torch has no 3.14 wheels yet). CPU-only. Experiments 01–02 need no downloads; experiments
-03–04 pull GPT-2-small and one ~150 MB res-jb SAE from the HuggingFace hub on first run.
+03–05 need GPT-2-small and one ~150 MB res-jb SAE. Experiment 03 pulls them from the HuggingFace hub
+on first run; experiments 04 and 05 reuse that cache rather than fetching it themselves.
 
 ```bash
 python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt

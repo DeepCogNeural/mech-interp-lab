@@ -14,7 +14,7 @@ Rough pace: one section per week, ~8-12 hrs/week. Slip freely — the notebook r
 
 Four experiments are done; the audits are in `lab-notebook.md`. The finding that reordered this roadmap on 2026-07-26 was that **every result up to that point was linear decodability of a representation, and none of it was causal.** Week 3 below is the part that had been skipped and it was the part that mattered most.
 
-`experiments/04_causal_feature_interchange/` closed part of that gap: a causal interchange intervention on GPT-2-small, readout on the model's own logits, run under a frozen pre-registration. Its rule returned **inconclusive** — a faithfulness gate fixed before the run was missed by 0.006 — so the repository still contains **no adjudicated real-model finding**, and experiment 04 is a causal *basis comparison* rather than a mechanism.
+`experiments/04_causal_feature_interchange/` closed part of that gap: a causal interchange intervention on GPT-2-small, readout on the model's own logits, run under a frozen pre-registration. Its rule returned **inconclusive** — a faithfulness gate committed before any commit containing this experiment's output was missed by 0.006 — so the repository still contains **no adjudicated real-model finding**, and experiment 04 is a causal *basis comparison* rather than a mechanism.
 
 That distinction sets what comes next.
 
