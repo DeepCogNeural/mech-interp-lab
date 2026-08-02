@@ -354,6 +354,10 @@ Experiment 04 is four stages in the order they were actually run — go/no-go pi
 that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
 Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
+Experiment 05 has nothing to run yet: it ships
+[its pre-registration](experiments/05_number_agreement_circuit/DESIGN.md) and no code, which is the
+intended order.
+
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
 not. Experiment 04 additionally ships its
 [pre-registration](experiments/04_causal_feature_interchange/DESIGN.md) with three dated amendments and a
