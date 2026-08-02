@@ -9,7 +9,7 @@ previous step's failure rather than planned in advance: *toy models where the gr
 observable → a real model read correlationally → the same question asked causally → the mechanism
 itself.*
 
-Four experiments, and a fifth designed but not yet run. The first replicates the *storage* account of
+Four experiments, and a fifth whose design is frozen and whose main run has not started. The first replicates the *storage* account of
 superposition. The second tests whether the same geometry also has a *computation* account and finds
 that it does — under a nonlinearity held fixed across arms, a monosemantic code reads a feature
 interaction at `0.494 ± 0.005` — on the chance line and provably unable to leave it, while mixed codes
@@ -25,8 +25,11 @@ produced results I did not want; all of them are reported in full.
 
 [Experiment 05](experiments/05_number_agreement_circuit/DESIGN.md) is the next step of that escalation
 and asks the mechanism question the first four could not: which attention heads move the number signal,
-and do the twelve SAE latents that recurred across every experiment 04 seed lie on that causal path. Its
-design is written and its decision rules are fixed; nothing has been run.
+and do the twelve SAE latents that recurred across every experiment 04 seed lie on that causal path.
+Its design is **frozen** — decision rules, thresholds, and the boundary sentences for near-threshold
+outcomes are all committed — and the main run has not started. The only thing that has run is a
+calibration pilot restricted to residual-stream measurements, so the design was frozen on evidence
+about the stimuli rather than about the answer.
 
 **A note on the framing this repository started with.** Experiments 01 and 02 were built around
 superposition versus mixed selectivity — whether many features sharing few non-orthogonal directions is
@@ -354,9 +357,13 @@ Experiment 04 is four stages in the order they were actually run — go/no-go pi
 that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
 Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
-Experiment 05 has nothing to run yet: it ships
-[its pre-registration](experiments/05_number_agreement_circuit/DESIGN.md) and no code, which is the
-intended order.
+Experiment 05 has no main run yet. Its
+[pre-registration](experiments/05_number_agreement_circuit/DESIGN.md) is frozen, and the one thing that
+has run is the calibration pilot that froze it:
+
+```bash
+(cd experiments/05_number_agreement_circuit && python calibrate.py)     # 101.8 s measured on an M1 Pro CPU
+```
 
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
 not. Experiment 04 additionally ships its

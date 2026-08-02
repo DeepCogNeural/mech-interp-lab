@@ -1,7 +1,12 @@
 # Experiment 05 — the number-agreement circuit
 
-**Status: designed, not yet run.** [`DESIGN.md`](DESIGN.md) is the pre-registration. There are no
-results in this directory and no code yet; that is the point of the ordering.
+**Status: design frozen 2026-08-02, main run not started.** [`DESIGN.md`](DESIGN.md) is the
+pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02).
+The only thing that has run is the calibration pilot ([`calibrate.py`](calibrate.py) →
+[`calibration_results.json`](calibration_results.json),
+[`CALIBRATION_NOTES.md`](CALIBRATION_NOTES.md)), which measured the two specificity constants and
+priced the runtime. It touched no attention head and no latent span, by construction — so the design
+was frozen on evidence about the stimuli, not about the answer.
 
 ## What it asks
 
@@ -41,6 +46,27 @@ at all.
 **Selection-clean seeds.** The twelve latents were selected post hoc in experiment 04, from the
 intersection of five seeds' top-16 rankings. Q4 is adjudicated on eight *different* seeds, so the
 selection cannot contaminate the test — closed by construction rather than argued about.
+
+## What calibration already established
+
+Measured on seed `20260899`, which is not one of the adjudication seeds:
+
+| source | what it changes | mean readout shift | as fraction of the true flip |
+|---|---|---:|---:|
+| true flip | subject number | `4.46` | `1.000` |
+| A — same number, different noun | subject lexical item | `−0.0078` | `0.00174` |
+| B — attractor flip | the attractor's number | `+0.0071` | `0.00158` |
+| C — cross-template, number-matched | the whole frame | `−0.60` | `0.13492` |
+
+Source A is the reassuring one: changing which noun, without changing its number, does essentially
+nothing to the readout. Source C is the demanding one — a number-matched sentence from a different
+syntactic frame pulls the readout by 13.5% of the true flip *in the wrong direction*, which is a
+systematic bias rather than noise, and it is why the specificity bound for C ends up at `0.270`
+rather than the `0.20` floor.
+
+Source B is the one to watch. Flipping the attractor's number moves the average readout by nothing
+at all, yet it has the largest per-item spread of the three sources. Items move; the movement does
+not point in a consistent direction. That is recorded before any head has been measured.
 
 ## Prior work
 
