@@ -1,11 +1,15 @@
 # Experiment 05 — the number-agreement circuit
 
 **Status: design frozen 2026-08-02, main run not started.** [`DESIGN.md`](DESIGN.md) is the
-pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02).
+pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02)
+and two dated amendments — [Amendment 2](DESIGN.md#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
+corrects three factual errors and repairs five rules that adversarial review found unexecutable.
 The only thing that has run is the calibration pilot ([`calibrate.py`](calibrate.py) →
 [`calibration_results.json`](calibration_results.json),
 [`CALIBRATION_NOTES.md`](CALIBRATION_NOTES.md)), which measured the two specificity constants and
-priced the runtime. It touched no attention head and no latent span, by construction — so the design
+produced a **lower-bound** runtime projection — 34.7 CPU-minutes, with three cost terms it could not
+price before the freeze. Stage 1 later showed the true figure is about 137 CPU-minutes; see
+[Amendment 1](DESIGN.md#amendment-1--2026-08-02--the-runtime-cap-and-why-the-permitted-trim-was-declined). It touched no attention head and no latent span, by construction — so the design
 was frozen on evidence about the stimuli, not about the answer.
 
 ## What it asks
@@ -43,9 +47,12 @@ the twelve latents' decoder span. Nothing is encoded and nothing is reconstructe
 reconstruction-error term that experiment 04 had to publish a correction about does not exist here
 at all.
 
-**Selection-clean seeds.** The twelve latents were selected post hoc in experiment 04, from the
-intersection of five seeds' top-16 rankings. Q4 is adjudicated on eight *different* seeds, so the
-selection cannot contaminate the test — closed by construction rather than argued about.
+**Selection-clean seeds, on both axes where selection happens.** The twelve latents were selected
+post hoc in experiment 04, so Q4 is adjudicated on eight seeds none of which is an experiment 04
+seed. The same problem turned up again in Q1 — the head candidate pool is chosen on seed `20260801`,
+which was also in the adjudication set, making one of the eight seeds pass by construction — and
+Amendment 2 removes it from adjudication. Selection contamination is closed by construction in both
+places rather than argued about.
 
 ## What calibration already established
 
@@ -60,13 +67,16 @@ Measured on seed `20260899`, which is not one of the adjudication seeds:
 
 Source A is the reassuring one: changing which noun, without changing its number, does essentially
 nothing to the readout. Source C is the demanding one — a number-matched sentence from a different
-syntactic frame pulls the readout by 13.5% of the true flip *in the wrong direction*, which is a
-systematic bias rather than noise, and it is why the specificity bound for C ends up at `0.270`
-rather than the `0.20` floor.
+syntactic frame moves the readout by 13.5% of a full flip, in the direction that *reinforces* the
+number both sentences already share. It is a systematic same-number push rather than noise around
+zero, and it is why the specificity bound for C ends up at `0.270` rather than the `0.20` floor.
 
-Source B is the one to watch. Flipping the attractor's number moves the average readout by nothing
-at all, yet it has the largest per-item spread of the three sources. Items move; the movement does
-not point in a consistent direction. That is recorded before any head has been measured.
+Source B is the one to watch. Flipping the attractor's number leaves the average readout essentially
+where it was, while carrying the largest per-item spread of the three sources. Note what that can and
+cannot say: every source is aligned to the *subject*-flip axis, which forces a mean near zero for any
+effect locked to the attractor no matter how consistent it is. So items move, and **whether their
+movement points consistently toward the flipped attractor's number was not measured here.** All of it
+is recorded before any head has been measured.
 
 ## Prior work
 
@@ -74,4 +84,5 @@ No peer-reviewed head-level causal baseline exists for number agreement in GPT-2
 et al. (ACL 2021) is neuron-level; the authors themselves describe their appendix's head-level
 readings as possibly noise. Lepori et al. (COLM 2024) localise to layer 6's attention block —
 layer-level, and the strongest citable prior. The design records a pre-registered layer-range
-prediction against it. Sources are checked and cited in `DESIGN.md`.
+prediction against it. The full source-verified check, with quotes and URLs, is
+[`LITERATURE.md`](LITERATURE.md).

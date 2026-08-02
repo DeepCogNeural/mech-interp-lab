@@ -1,11 +1,28 @@
 # Experiment 05 — Which heads move the number signal, and are the twelve latents on the path?
 
-> **STATUS: FROZEN 2026-08-02.** The calibration constants are filled in below and this is the
-> commit that carries them. From here changes happen only as dated amendments, per the convention
-> of experiments 02–04. **Read [Pre-freeze correction 1](#pre-freeze-correction-1--2026-08-02) at
-> the end of this file before the text above it**: the calibration exposed three omissions and two
-> prose errors in the draft, and it records exactly what changed. No decision rule and no threshold
-> changed.
+> **STATUS: FROZEN 2026-08-02, with one pre-freeze correction and two dated amendments.**
+>
+> **Read the end of this file before the frozen text above it.** The frozen text is preserved
+> unedited on purpose, and parts of it are now known to be wrong:
+>
+> - [Pre-freeze correction 1](#pre-freeze-correction-1--2026-08-02) — what the calibration exposed
+>   at constant fill-in. Two arithmetic/prose errors of mine and three omitted runtime cost terms.
+>   No decision rule and no threshold changed.
+> - [Amendment 1](#amendment-1--2026-08-02--the-runtime-cap-and-why-the-permitted-trim-was-declined)
+>   — the runtime cap moves from 120 to 180 CPU-minutes after Stage 1 measured the real cost, and
+>   the permitted trim of the data is declined. Also records that `E_all` and `d_gap` coincide by
+>   construction for this stimulus family.
+> - [Amendment 2](#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
+>   — **the important one.** Adversarial review found three factual errors and five rules that are
+>   not executable as written. In particular: **§ Wrong-source constructions states source C's
+>   direction backwards** (the measured `−0.60` reinforces the shared number; it does not pull
+>   toward the wrong verb), **§ Order of operations claims no span-level measurement has ever been
+>   run here, which is false** (experiment 04's PCA arm ran exact span projections), the source B
+>   non-result claims more than its statistic can carry, and Q3 contained the certification bar this
+>   design opens by saying it retires. Every rule repair makes a positive verdict harder, none
+>   easier.
+> - The prior-work section cites `notes/lit-check-…`, which is gitignored. That record is now
+>   [`LITERATURE.md`](LITERATURE.md) in this directory.
 
 ## The question
 
@@ -505,3 +522,162 @@ cannot be pathologically small, unstable across seeds, or sign-ambiguous — it 
 gap. And Q1's `E(S_n)/E_all ≥ 0.50` bar reads, in plain terms, as *"eight or fewer heads carry at
 least half the entire behavioural effect"*, which is what it was intended to mean. The writeup must
 state this identity rather than presenting `E_all` as an independently measured ceiling.
+
+---
+
+## Amendment 2 — 2026-08-02 — corrections and rule repairs forced by adversarial review
+
+**Written after Stage 1 was run and read, before Stage 2 — the main run — has started.** A
+multi-agent adversarial review of the freeze commit returned twenty findings that survived an
+independent attempt to refute each one. Three were factual errors about measured constants or about
+this repository's own history; five were decision rules that are not executable as written; the rest
+were accounting and wording. All are handled here rather than by editing the frozen text.
+
+**The check a reader needs first: every rule change below makes a positive verdict harder to reach
+or leaves the difficulty unchanged. None makes one easier.** What was known when they were written:
+Stage 1's 144-head ranking, its top heads, `E_all`, `E_ref`, and the calibration constants. No Stage
+2 or Stage 3 quantity exists.
+
+### A. Factual — source C's direction was stated backwards
+
+§ Wrong-source constructions says the cross-template source shows "a systematic pull toward the
+wrong verb". **That is wrong, and it inverts a measured constant.** The sign convention aligns every
+source to the axis on which a *true* flip is positive, and sources A, B and C are all built with the
+source's subject number equal to the base's. A negative aligned mean therefore means the intervention
+pushed the readout *toward the number both sentences share* — reinforcing the verb that agrees with
+the base's own subject, not the disagreeing one.
+
+The corrected reading of `E(Δd_C) = −0.6018` against the true flip's `+4.4604`: **a number-matched
+sentence from a different syntactic frame pushes the readout 13.5% of a full flip further in the
+direction it was already going.** It is same-number reinforcement, not a pull toward error.
+
+Nothing downstream changes. Q2's rule compares magnitudes, `|E(Δd_C(S*))| ≤ θ_spec^C ·
+|E(Δd_right(S*))|`, so `θ_spec^C = 0.26983` stands and the test is unaffected. What changes is what
+the writeup is allowed to say the number means. The same inversion appears in this directory's
+`README.md` and in `lab-notebook.md`; both are corrected there directly, since neither is frozen.
+
+### B. Factual — the blinding claim was too broad on "span-level"
+
+§ Order of operations claims "**no head-level or span-level measurement has ever been run in this
+repository**". The head-level half is true. The span-level half is false as a universal statement:
+experiment 04's adjudicated PCA arm edits the top `k` coordinates of a complete orthonormal basis,
+which *is* an exact orthogonal projection onto a `k`-dimensional span, and its recovery curves are
+published.
+
+**Narrowed to what is true and still load-bearing:** no measurement of any attention head's causal
+effect, and no measurement of the twelve latents' span, had been run in this repository before the
+freeze commit. That is the claim this design needs, and it is the only one it may make. The broader
+sentence is withdrawn. `lab-notebook.md` propagated the broad version and is corrected there.
+
+This is the fourth time an over-broad claim in this repository has had to be narrowed after the fact,
+and the pattern is the same each time: the *evidence* was fine and the *sentence* reached past it.
+
+### C. Factual — the source B non-result claims more than the statistic can carry
+
+§ Wrong-source constructions and Pre-freeze correction 1 both say of the attractor flip that
+"individual items move and the movement does not point in a consistent number direction". **The
+second clause is not measured.** Every source is aligned to the *subject*-flip axis, and an effect
+locked to the attractor rather than the subject yields a mean near zero on that axis by construction,
+however perfectly consistent it is in its own direction. The observed signature cannot distinguish
+"inconsistent" from "consistent about something this axis does not resolve".
+
+**Corrected statement, frozen here:** on the subject-flip alignment the attractor flip moves the mean
+readout by `+0.0071`, which that alignment forces toward zero for any attractor-locked effect, while
+per-item movement is the largest of the three sources (`ρ_noise = 0.271`). Whether that movement
+points consistently toward the flipped attractor's number **was not measured and is not claimed.**
+
+### D. Rule repair — Q3 had the banned certification bar in it
+
+Q3 read: Subject-transport if the joint path-patched effect reaches `≥ 0.50` of the same set's direct
+`z@final` effect. That is a fixed bar on a continuous ratio with no null and no boundary language —
+**the exact construction this design opens by saying it exists to retire.** It survived my own
+review, the advisor's, and the freeze.
+
+**Replaced, to the shape Q4 already uses.** Per seed, the two-step path patch is *also* run driven by
+**source A**, which carries no number flip, giving a measured transport noise floor `F_path`.
+
+- **Subject-transport**: in `≥ 6 of 8` seeds, the source-driven path-patched joint effect exceeds
+  that seed's `F_path`, with a bootstrap 95% interval on the difference excluding zero.
+- **Final-position-local**: otherwise, with the frozen scope sentence already in § Stage 2 (a head
+  routing number through its QK pattern is invisible to a v-patch) unchanged.
+- The **fraction** of the direct effect that the path patch recovers is reported as a graded effect
+  size with its `t(7)` interval, and **has no threshold**. Pre-declared wording for the middle case:
+  *"the set's effect is partly carried by what these heads read at the subject position, and the
+  recovered fraction is `X`; this is a graded statement, not a certification."*
+
+Adding a null makes Subject-transport strictly harder than the `0.50` bar would have been at the
+Stage-1 magnitudes now known.
+
+### E. Rule repair — the selection seed was also adjudicating
+
+Stage 2's candidate pool `C` is fixed from seed `20260801`, and `20260801` was also one of the eight
+Q1–Q3 adjudication seeds. On that seed Q1's condition (b) — every member individually
+distinguishable — is true by construction, since distinguishability there is what put the head in `C`;
+and condition (a) carries a winner's-curse upward bias. A `≥ 6/8` rule with one guaranteed seed is a
+`≥ 5/7` rule wearing a different number.
+
+**Repaired: `20260801` is removed from the Q1–Q3 adjudication set and `20260809` replaces it.** The
+adjudication seeds become `20260802 … 20260809`, eight seeds, none of which selected the candidate
+pool. Seed `20260801` keeps its Stage 1 role and its results are reported, but it adjudicates
+nothing. The cost is that one fewer adjudication seed overlaps experiment 04's Gate B seeds; four
+still do.
+
+### F. Rule repair — Stage 3's band edge was undefined at 20 draws
+
+The design sets the matched-chance band edge at "the 99th percentile" while running 100 draws on one
+seed and 20 on the rest. At 20 draws that percentile is the sample maximum, it estimates a different
+tail than at 100, its variance is large, and the text never says which seed's edge adjudicates.
+
+**Repaired: 100 draws in every Stage-3 seed, and the edge is the second-largest of that seed's 100
+draws** — an explicit order statistic, identical in construction across seeds, each seed adjudicated
+against its own. Runtime cost is about seven CPU-minutes, which Amendment 1's cap absorbs.
+
+### G. Rule repair — the distinguishability test was not executable as written
+
+"The two-sided 95% bootstrap interval of its mean `Δd/E_all` … Holm-corrected across the 144 heads"
+names an interval and a step-down correction without a family error rate, a p-value construction, or
+a resample count adequate to resolve Holm's strictest level (`0.05/144 = 3.5e-4`, which 10,000
+resamples resolve only to the last digit).
+
+**Frozen specification:** family error rate `0.05`; per-head two-sided bootstrap p-value from the
+pair-resample distribution of the head's **raw mean `Δd`** (not the ratio — dividing by `E_all` does
+not change whether a mean differs from zero, and it removes the question of whether the denominator
+is resampled); Holm step-down across all 144 heads; **100,000 resamples**, unit = retained minimal
+pair with both directions kept together. `E(Δd_h)/E_all` continues to be reported as the effect size.
+
+### H. Rule repair — the fallback tested set could be undefined
+
+Q2 and Q3 test `S* = the claimed set if Localised, else S_8`, but nested sets only reach
+`S_min(8,|C|)`. **Repaired: `S* = S_min(8,|C|)` when Q1 returns Diffuse.** If `|C| = 0`, the frozen
+wording is: *"no candidate head was individually distinguishable in the selection seed, so no set
+exists to test; Q1 returns Diffuse and Q2 and Q3 return their pre-declared negatives with the
+144-head curve shown."*
+
+### I. Accounting — Pre-freeze correction 1 miscounts its own contents
+
+Three defects in the correction record itself, which is the one document where that matters most:
+
+1. It says the calibration "exposed five defects" and splits them "three found by the implementation
+   … two … of mine", but its five numbered items do not partition that way. The implementation's own
+   `design_defects` list has exactly three entries, **all runtime**, and all of them sit inside item 3.
+   Items 4 and 5 are not defects: item 4 records a calibration fill-in the design had already
+   planned, and item 5 states the blinding claim *held*. The honest count is **two errors of mine
+   plus three runtime omissions**, with items 4 and 5 relabelled as records, not defects. The freeze
+   commit message repeats the miscount.
+2. Item 3 says "Two further terms — attention-value caching above all — cannot be priced", but names
+   only one, and attaches the head-level restriction to terms blocked by latent/span access instead.
+   Corrected: **one** further term (attention-value caching) needs head-level access; the PCA fit and
+   the candidate-pool preparation need latent/span access.
+3. Item 5 says the no-op-hook timing method "was specified in advance", and item 4 says of the
+   source-C search that "no reader has to wonder whether a search was hidden". Neither is provable
+   from the record — the method first appears in the freeze commit alongside its implementation, and
+   a commit can show one recorded attempt but not the absence of unrecorded ones. Both are withdrawn,
+   for exactly the reason § Order of operations already gives: the record establishes commit order
+   and commit content, nothing about what happened between commits.
+
+### J. Housekeeping — the literature record is now in the repository
+
+§ Prior-work anchor cites `notes/lit-check-number-agreement-2026-08-02.md`, and `notes/` is
+gitignored, so a frozen portfolio document pointed at a file no reader could open. The note is moved
+to `experiments/05_number_agreement_circuit/LITERATURE.md` and committed. A document cited by a
+pre-registration is part of the portfolio.
