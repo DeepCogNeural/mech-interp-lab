@@ -1,9 +1,11 @@
 # Experiment 05 — Which heads move the number signal, and are the twelve latents on the path?
 
-> **STATUS: DRAFT — not yet frozen.** This design becomes frozen at the commit that first contains
-> it with the calibration constants filled in (§ Order of operations). Until then it may be edited
-> freely. After freezing, changes happen only as dated amendments, per the convention of
-> experiments 02–04.
+> **STATUS: FROZEN 2026-08-02.** The calibration constants are filled in below and this is the
+> commit that carries them. From here changes happen only as dated amendments, per the convention
+> of experiments 02–04. **Read [Pre-freeze correction 1](#pre-freeze-correction-1--2026-08-02) at
+> the end of this file before the text above it**: the calibration exposed three omissions and two
+> prose errors in the draft, and it records exactly what changed. No decision rule and no threshold
+> changed.
 
 ## The question
 
@@ -127,17 +129,37 @@ Three source types, each answering a different question, all built by the reused
 blinding claim is untouched): the pre-freeze calibration pilot measures, at layer 8, positions
 `both`, the full-residual ratios
 `ρ_full^A = |E(Δd_A)| / |E(Δd_right)|` and `ρ_full^C = |E(Δd_C)| / |E(Δd_right)|`.
-The frozen text records their values here:
+The frozen text records their values here, measured on calibration seed `20260899` — deliberately
+not one of the adjudication seeds, so no constant is circular with a seed it later governs
+(`calibration_results.json`, `CALIBRATION_NOTES.md`, produced by `calibrate.py`):
 
-> `ρ_full^A = ` **[TO BE FILLED BY CALIBRATION PILOT BEFORE FREEZE]**
-> `ρ_full^C = ` **[TO BE FILLED BY CALIBRATION PILOT BEFORE FREEZE]**
+> `ρ_full^A = ` **0.00174**, bootstrap 95% CI `[0.00019, 0.01527]` → **`θ_spec^A = 0.200`**
+> `ρ_full^C = ` **0.13492**, bootstrap 95% CI `[0.10909, 0.16230]` → **`θ_spec^C = 0.26983`**
+> (`ρ_full^B = 0.00158`, recorded, never adjudicating.)
 
 Both the bias-type ratio above and the noise-type companion `mean|Δd|` version are recorded; the
 bias-type adjudicates. The specificity bound for Q2 is
-`θ_spec = max(0.20, 2·ρ_full^C)` for source C and `max(0.20, 2·ρ_full^A)` for source A. The `0.20`
-floor is tied to the `0.50` recovery bar: a set that clears both has a number-specific component of
-at least `0.30·E_all`, so the two thresholds jointly guarantee a majority-specific effect rather
-than being two unrelated numbers.
+`θ_spec = max(0.20, 2·ρ_full^C)` for source C and `max(0.20, 2·ρ_full^A)` for source A.
+
+**What these numbers mean, and the disclosure they trigger.** Source A barely moves the readout at
+all: swapping in a different noun of the same number shifts the mean readout by `−0.0078` against
+the true flip's `4.46`, so the `0.20` floor binds and `θ_spec^A` is the floor. Source C is a real
+control: the cross-template number-matched source moves the mean readout by `−0.60`, `13.5%` of the
+true flip's magnitude and *in the opposite direction* — a systematic pull toward the wrong verb, not
+noise around zero. So for source C the measured term binds, not the floor, and Q2's bound is
+`0.26983`.
+
+The `0.20` floor is tied to the `0.50` recovery bar so the two are not unrelated numbers: a set
+clearing both has a number-specific component of at least `(1 − θ_spec^C) · 0.50 = 0.365` of
+`E_all`, i.e. at least `73%` of the set's own effect is number-specific. (The draft asserted
+`0.30·E_all` here; that figure was arithmetically wrong even under the draft's own `0.20` — see
+Pre-freeze correction 1. The bound is corrected, not relaxed.)
+
+Source B is the interesting recorded non-result: flipping the attractor's number moves the mean
+readout by `+0.0071` — essentially nothing — while its per-item `ρ_noise` is `0.271`, the largest of
+the three. Individual items move; the movement does not point in a consistent number direction.
+That is recorded here before Stage 1 exists and is reported descriptively whatever the head-level
+result turns out to be.
 
 ## Stage 1 — coarse ranking: 144 heads, one seed
 
@@ -311,16 +333,22 @@ true at the freeze commit. What the commit record will establish is commit order
 
 ## Runtime budget
 
-Measured basis (experiment 04 `forward_timing_records`): a full hooked forward over a retained
-pair set is ≈ 1.2–1.4 s; a `start_at_layer=8` partial forward ≈ 0.4–0.7 s. Projected forward
-costs: Stage 1 z-sweep ≈ 100–140 s per seed; Stage 2's two 144-head sweeps ≈ 4–5 min per seed,
-nested sets and path patches ≈ 1–2 min per seed; Stage 3 ≈ 2–3 min per seed including draws. Total
-forward budget ≈ 50–70 CPU-minutes across both seed groups, before per-seed fixed overhead —
-which experiment 04 measured at 71% of wall-clock and which the calibration pilot prices
-separately. **Hard cap: 120 CPU-minutes of projected total.** If the calibration projection
-exceeds it, the permitted trim is pair count per seed, to no fewer than 100 retained pairs, and
+**Measured at calibration, and it is a lower bound — read that word.** The pilot timed each patch
+family separately from the per-seed fixed overhead, because experiment 04's pilot under-projected
+its main run by 25× by scaling per-patch cost alone when 71% of the eventual wall clock was
+overhead that does not scale with patches. Enumerating every patch count the design implies gives a
+conservative no-reuse total of **34.7 CPU-minutes** against the 120-minute cap, and **15.9 minutes**
+at the permitted 100-retained-pair floor.
+
+**That number does not certify the design meets the cap**, and the pilot said so rather than
+reporting a total. Three terms are missing and cannot honestly be priced before the freeze:
+attention-value caching for the `z`/`v` implementation (pricing it needs head-level access, which
+the blinding restriction forbids); Stage 3's per-seed PCA fit; and Stage 3's latent-candidate pool
+preparation. The first is the largest unknown. With roughly 3.5× headroom the cap is unlikely to
+bind, but "unlikely" is the claim, not "verified" — and if the real total does exceed 120
+CPU-minutes, the permitted trim is pair count per seed, to no fewer than 100 retained pairs, and
 past that the design must be amended *before* the main run in a dated amendment stating what was
-cut. The projection and the measured total both go in the writeup.
+cut. The projection, its lower-bound status, and the eventual measured total all go in the writeup.
 
 ## Failure modes, named in advance
 
@@ -348,9 +376,13 @@ cut. The projection and the measured total both go in the writeup.
   not met; the verdict is Diffuse, and the curve is shown." No re-reading of the rule.
 - If Q1 is Localised and Q2 fails: the Not-number-selective sentence above, verbatim, adjacent to
   the Localised statement — never a Localised headline with a specificity footnote.
-- If `ρ_full^C` itself exceeds `0.20` at calibration: the bound `θ_spec^C = 2·ρ_full^C` is used as
-  frozen, and the writeup must state that the reference intervention itself moves the readout for
-  number-matched sources by that much, as context for how hard the specificity test is.
+- If the measured term rather than the floor binds `θ_spec^C` — which happens whenever
+  `ρ_full^C > 0.10`, and which is what occurred (`ρ_full^C = 0.13492`, `θ_spec^C = 0.26983`) — the
+  writeup must state that the reference intervention itself moves the readout for number-matched
+  sources by that much, as context for how hard the specificity test is. (The draft wrote the
+  trigger as `ρ_full^C > 0.20`, which does not match its own `max(0.20, 2ρ)` formula: that formula
+  crosses over at `ρ = 0.10`. The disclosure is applied under the stricter reading — see Pre-freeze
+  correction 1.)
 
 ## What would make this worth having done
 
@@ -362,3 +394,59 @@ from IOI-style circuits. Q4 turns experiment 04's uncertified concentration meas
 adjudicated statement about whether those twelve directions carry a causally transported signal,
 on seeds disjoint from the ones that selected them — the question experiment 04's Next section
 said needed a pre-registered design rather than a post-hoc hunt.
+
+---
+
+## Pre-freeze correction 1 — 2026-08-02
+
+The calibration pilot ran against the draft above and exposed five defects in it. All five are
+recorded here rather than silently edited, because the value of a pre-registration is that its
+history is visible. **No decision rule changed and no threshold moved.** Three defects were found by
+the implementation refusing to paper over them; two were arithmetic and prose errors of mine that
+the measured constants made visible.
+
+**1. The `θ_spec^C` disclosure trigger was written at the wrong number.** The draft's boundary
+language said the disclosure fires "if `ρ_full^C` itself exceeds `0.20`", but the frozen formula is
+`max(0.20, 2·ρ_full^C)`, whose crossover is at `ρ = 0.10`. The measured `ρ_full^C = 0.13492` falls
+in the gap: the formula's measured term binds, so the situation the disclosure exists for is exactly
+the one that occurred, while the prose's literal trigger did not fire. **Resolved by applying the
+disclosure** — the stricter reading of the clause's own intent — and rewriting the trigger to match
+the formula. The formula itself is untouched and `θ_spec^C = 0.26983` is what it returns.
+
+**2. The `0.30·E_all` figure was arithmetically wrong.** The draft justified tying the `0.20` floor
+to the `0.50` recovery bar by claiming a set clearing both has a number-specific component of at
+least `0.30·E_all`. Under the draft's own `θ = 0.20` the correct figure is `0.80 × 0.50 = 0.40`;
+under the measured `θ_spec^C = 0.26983` it is `0.365`. The draft understated its own bound. Both the
+statement and the reasoning are corrected in place, and the corrected bound is *stronger* than the
+one claimed, not weaker.
+
+**3. The runtime budget omitted three cost terms, and the projection is a lower bound.** Q2's frozen
+rule requires joint-set patches for sources A and C (and B for reporting) per seed, which the
+draft's runtime prose did not enumerate; Stage 3 requires a per-seed PCA fit and a latent-candidate
+pool preparation, which had no term. Two further terms — attention-value caching above all — cannot
+be priced before the freeze without the head-level access the blinding restriction forbids. The
+runtime section now reports `34.7` CPU-minutes as an explicit **lower bound** with its omissions
+named, instead of a total. This is a weakening of a claim the draft made, and it is the reason the
+pilot's status field reads `completed_with_lower_bound_runtime_projection` rather than `completed`.
+
+**4. Source C's template family is now fixed and named.** `source_C_relative_clause_with_adverb`
+(`The {SUBJ} that the {ATTRACTOR} often {RELVERB}`), retained 240/240 under Gate A with median
+`d_gap` 6.448. It was the first family tried and it passed on the first attempt; the notes record
+that, so no reader has to wonder whether a search was hidden. Its selection criterion was Gate A
+alone, applied before any residual effect was inspected. Cross-template position indexing was
+verified rather than assumed: sequence length and final-position index differed on 468 of 468
+directed edits, confirming that source positions were never reused as base write indices.
+
+**5. Blinding, restated precisely at the freeze.** The pilot timed forward passes with **no-op hooks
+attached at `hook_z` and `hook_v`** — the hooks return the incoming activation unchanged, and no
+attention value, head effect, or head ranking was copied, retained, projected, compared, or emitted.
+This was specified in advance as the way to price head-level cost without acquiring head-level
+information. The claim in § Order of operations therefore still holds literally at this commit: **no
+head-level or span-level measurement has ever been run in this repository.** What was measured here
+is wall-clock time, plus the residual-stream constants above.
+
+Also recorded at freeze, as a fact about the stimuli rather than about heads: source B (attractor
+flip) moves the mean readout by `+0.0071` — indistinguishable from nothing — while carrying the
+largest per-item `ρ_noise` of the three sources at `0.271`. Individual items move and the movement
+does not point in a consistent number direction. This is descriptive, it is pre-registered as
+descriptive, and it will be reported whatever Stage 1 finds.
