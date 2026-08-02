@@ -1,7 +1,9 @@
 # Experiment 04 — Is an SAE basis a *causal* basis?
 
-**Design:** [`DESIGN.md`](DESIGN.md), frozen before implementation, with three dated amendments and one
-dated correction that retracts three claims made in the frozen text.
+**Design:** [`DESIGN.md`](DESIGN.md), committed before any commit containing this experiment's
+implementation or output, with three dated amendments and one dated correction that retracts three
+claims made in the frozen text. (Commit order is what that record establishes; it is not proof of when
+anything was written, read, or run.)
 **Code:** `pilot.py`, `gate_c_diagnostic.py`, `run_experiment.py`, `robustness.py` (offline CPU, five
 seeds). **Raw results:** `pilot_results.json`, `gate_c_diagnostic.json`, `run_results.json`,
 `robustness_results.json`. **Figures:** `figures/`.
@@ -344,5 +346,9 @@ against the raw data.
 - Close the PCA fitting-budget objection with a fit an order of magnitude larger, or with real corpus
   text rather than model-generated text.
 - A second stimulus family, before any of this is allowed to generalise beyond number agreement.
-- The mechanism question the concentration result opens: what are the 12 latents that recur across all
-  five seeds? That needs a pre-registered feature-level analysis, not a post-hoc hunt.
+- The mechanism question motivated by this uncertified descriptive measurement: what are the 12 latents
+  that recur across all five seeds, and do they lie on the causal path that moves the number signal?
+  That needed a pre-registered analysis rather than a post-hoc hunt, and it is now
+  [experiment 05](../05_number_agreement_circuit/DESIGN.md) — which adjudicates that question on seeds
+  disjoint from the five that selected the latents, so the post-hoc selection here cannot contaminate
+  it.

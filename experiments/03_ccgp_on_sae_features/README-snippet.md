@@ -1,6 +1,6 @@
 ## Experiment 03 — a real SAE on the shattering × CCGP plane, and a result I had to give back
 
-[Full writeup](experiments/03_ccgp_on_sae_features/writeup.md) · [code](experiments/03_ccgp_on_sae_features/ccgp_sae.py) · [per-seed results](experiments/03_ccgp_on_sae_features/results.json)
+[Full writeup](writeup.md) · [code](ccgp_sae.py) · [per-seed results](results.json)
 
 Experiment 02's caveats named this one twice: XOR accuracy is a task-specific proxy where shattering
 dimensionality / CCGP (Bernardi et al. 2020) is the task-agnostic measure, and the whole thing was a toy
@@ -9,7 +9,7 @@ at a sentence-final `.` that is byte-identical across all eight conditions. The 
 not SAE versus residual stream — a 768 → 24,576 ReLU expansion wins that by Cover's theorem — but **SAE
 versus a random expansion matched in width, column norm, and L0.**
 
-![Shattering dimensionality against main-effect CCGP for seven arms, full scale with chance lines and a zoomed panel](experiments/03_ccgp_on_sae_features/figures/01_shattering_vs_ccgp.png)
+![Shattering dimensionality against main-effect CCGP for seven arms, full scale with chance lines and a zoomed panel](figures/01_shattering_vs_ccgp.png)
 
 Under one probe convention the SAE reads two-way interactions much better than matched random mixing
 (`+0.121 ± 0.015`); under another it does not (`+0.011 ± 0.022`). Those two conventions are an **invertible
