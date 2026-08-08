@@ -1,8 +1,8 @@
 # Experiment 05 — the number-agreement circuit
 
-**Status: design frozen 2026-08-02 and amended through 2026-08-08 (Amendments 1–9); calibration and
-Stage 1 completed; the remaining runner code is present for review, but no offline contract test,
-selection supplement, Stage 2 run, or Stage 3 run has started.**
+**Status: design frozen 2026-08-02 and amended through 2026-08-08 (Amendments 1–9); calibration,
+Stage 1, and the model-free contract suite are complete; no model-backed selection supplement,
+Stage 2 run, or Stage 3 run has started.**
 [`DESIGN.md`](DESIGN.md) is the pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02)
 and nine dated amendments. [Amendment 2](DESIGN.md#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
 corrects three factual errors and repairs five rules that adversarial review found unexecutable;
@@ -50,7 +50,7 @@ cross-check adds 0 logical forward-equivalents. Neither is a measured wall-clock
 | calibration | complete |
 | shipped Stage 1 scope | complete; descriptive only |
 | selection/core/Stage 2/Stage 3 implementation | present for static and Advisor review |
-| offline contract tests | not written or run |
+| offline contract tests | 11/11 pass; protocol, splits, candidate/Q4 helpers, artifact guards, and the empty-`C` terminal path |
 | model-backed selection supplement | not run; candidate `C` does not exist yet |
 | Stage 2 selection dependency | requires protocol/calibration/selection/candidate; no `--stage1`; not present/run |
 | Q1–Q4 adjudication | not run; no verdict exists |
@@ -63,7 +63,12 @@ Stage 2 requires the completed, self-hashed selection artifact as an explicit in
 artifacts; it no longer takes `--stage1`, because shipped Stage 1 is only a descriptive cross-check
 inside selection. The selection supplement's fresh true/source-A sweeps cost 291 logical FE; the
 historical cross-check costs 0 FE. The selection supplement and all model-backed Stage-2/3 commands
-remain unrun.
+remain unrun. The offline suite is model-free and can be reproduced from the repository root with:
+
+```bash
+./.venv/bin/python -m unittest discover \
+  -s experiments/05_number_agreement_circuit/tests -p 'test_*.py'
+```
 
 ## What it asks
 
