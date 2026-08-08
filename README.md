@@ -9,7 +9,8 @@ previous step's failure rather than planned in advance: *toy models where the gr
 observable → a real model read correlationally → the same question asked causally → the mechanism
 itself.*
 
-Four experiments, and a fifth whose design is frozen and whose main run has not started. The first replicates the *storage* account of
+Four experiments, and a fifth whose design is frozen, whose calibration and Stage 1 are complete, and
+whose Stage 2–3 adjudication runs have not started. The first replicates the *storage* account of
 superposition. The second tests whether the same geometry also has a *computation* account and finds
 that it does — under a nonlinearity held fixed across arms, a monosemantic code reads a feature
 interaction at `0.494 ± 0.005` — on the chance line and provably unable to leave it, while mixed codes
@@ -25,11 +26,14 @@ produced results I did not want; all of them are reported in full.
 
 [Experiment 05](experiments/05_number_agreement_circuit/DESIGN.md) is the next step of that escalation
 and asks the mechanism question the first four could not: which attention heads move the number signal,
-and do the twelve SAE latents that recurred across every experiment 04 seed lie on that causal path.
+and whether the twelve recurring experiment-04 decoder rows span more of the layer-8 transported delta
+than matched 12-dimensional spans.
 Its design is **frozen** — decision rules, thresholds, and the boundary sentences for near-threshold
-outcomes are all committed — and the main run has not started. The only thing that has run is a
-calibration pilot restricted to residual-stream measurements, so the design was frozen on evidence
-about the stimuli rather than about the answer.
+outcomes are all committed. Calibration is complete, and Stage 1 is complete ([`stage1.py`](experiments/05_number_agreement_circuit/stage1.py)
+→ [`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json),
+[`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md)); Stage 1 adjudicates none
+of Q1–Q4, and Stages 2–3 have not started. The design was therefore frozen on evidence about the
+stimuli; the Stage 1 ranking is descriptive and not a Q1–Q4 answer.
 
 **A note on the framing this repository started with.** Experiments 01 and 02 were built around
 superposition versus mixed selectivity — whether many features sharing few non-orthogonal directions is
@@ -309,12 +313,16 @@ to you.
 ## Next
 
 - **[Experiment 05 — the number-agreement circuit](experiments/05_number_agreement_circuit/DESIGN.md)**,
-  design frozen 2026-08-02, main run not started. Which attention heads carry the subject's number to the verb position, is
-  what they carry *number* rather than any perturbation, does it arrive from the subject position, and
-  do experiment 04's twelve recurring SAE latents span it. Four axes, each with two pre-declared
-  verdicts, so no axis can return `inconclusive`; the latent question is adjudicated on seeds disjoint
-  from the ones that selected those latents. No peer-reviewed head-level *causal* baseline exists for this
-  task in GPT-2-small, which is checked and sourced in the design.
+  design frozen 2026-08-02, calibration and Stage 1 complete, Stages 2–3 not started. Which attention
+  heads carry the subject's number to the verb position, is what they carry *number* rather than any
+  perturbation, does it arrive from the subject position, and does experiment 04's twelve-row decoder
+  span exceed matched-span chance at layer 8. Stage 1's [`stage1.py`](experiments/05_number_agreement_circuit/stage1.py) output
+  ([`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json),
+  [`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md)) is descriptive and
+  adjudicates none of Q1–Q4; the later axes retain two pre-declared verdicts each,
+  with the latent question adjudicated on seeds disjoint from the ones that selected those latents. No
+  peer-reviewed head-level *causal* baseline exists for this task in GPT-2-small, which is checked and
+  sourced in the design.
 - Re-register experiment 04's Gate C on a decoder each arm actually ships with, with the floor
   pre-declared from a pilot on a *different* stimulus family so the threshold cannot be tuned to this
   one. Necessary but **not** sufficient: a rerun still has to clear every other frozen gate, and Gate D
@@ -358,13 +366,25 @@ Experiment 04 is four stages in the order they were actually run — go/no-go pi
 that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
 Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
-Experiment 05 has no main run yet. Its
-[pre-registration](experiments/05_number_agreement_circuit/DESIGN.md) is frozen, and the one thing that
-has run is the calibration pilot that froze it:
+Experiment 05's calibration and Stage 1 are complete; Stages 2–3 have not started. Its
+[pre-registration](experiments/05_number_agreement_circuit/DESIGN.md) is frozen. The calibration pilot
+artifacts are [`calibration_results.json`](experiments/05_number_agreement_circuit/calibration_results.json)
+and [`CALIBRATION_NOTES.md`](experiments/05_number_agreement_circuit/CALIBRATION_NOTES.md); Stage 1's
+artifacts are [`stage1.py`](experiments/05_number_agreement_circuit/stage1.py),
+[`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json), and
+[`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md). Stage 1 is deliberately
+non-adjudicating: it does not decide Q1–Q4.
 
 ```bash
 (cd experiments/05_number_agreement_circuit && python calibrate.py)     # 101.8 s measured on an M1 Pro CPU
 ```
+
+```bash
+(cd experiments/05_number_agreement_circuit && HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 MPLBACKEND=Agg python stage1.py)
+```
+
+The Stage 1 command writes [`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json)
+and [`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md); it stops before Stages 2–3.
 
 Each `experiments/NN_*/writeup.md` is self-contained: setup, results, controls, and what the result is
 not. Experiment 04 additionally ships its

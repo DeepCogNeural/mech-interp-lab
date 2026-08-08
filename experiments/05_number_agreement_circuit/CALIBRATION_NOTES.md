@@ -10,7 +10,7 @@
 - Base family: retained 234/240 (both-correct=0.975, median d_gap=5.107); pass=True.
 - Source C winning family: `source_C_relative_clause_with_adverb`; retained 240/240 (both-correct=1.000, median d_gap=6.448); pass=True.
 - Source A changes only the subject lexical item while preserving its number and the base adjective/preposition/attractor. Source B flips only the attractor number while preserving the base subject.
-- Source C is a relative-clause matrix-agreement frame (`The SUBJECT that the ATTRACTOR often RELVERB`), selected because it changes syntax and lexical frame while retaining a one-token subject and a final is/are decision. It was chosen before any residual effect was inspected; Gate A is its only selection criterion.
+- Source C is a relative-clause matrix-agreement frame (`The SUBJECT that the ATTRACTOR often RELVERB`), recorded because it changes syntax and lexical frame while retaining a one-token subject and a final is/are decision. The committed record establishes that this family was recorded and passed Gate A; it does not establish when residual effects were inspected or exclude unrecorded attempts. Gate A is the only selection criterion visible in the committed record.
 - Source-C template search:
   - `source_C_relative_clause_with_adverb`: pass=True; retained=240; reason=selected: passed all unchanged Gate-A thresholds.
 

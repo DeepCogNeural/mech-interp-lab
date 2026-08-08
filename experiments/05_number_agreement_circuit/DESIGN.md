@@ -1,6 +1,7 @@
 # Experiment 05 — Which heads move the number signal, and are the twelve latents on the path?
 
-> **STATUS: FROZEN 2026-08-02, with one pre-freeze correction and two dated amendments.**
+> **STATUS: BASE DESIGN FROZEN 2026-08-02; calibration and Stage 1 complete; Stages 2–3 not
+> started; one pre-freeze correction and three dated amendments.**
 >
 > **Read the end of this file before the frozen text above it.** The frozen text is preserved
 > unedited on purpose, and parts of it are now known to be wrong:
@@ -9,9 +10,10 @@
 >   at constant fill-in. Two arithmetic/prose errors of mine and three omitted runtime cost terms.
 >   No decision rule and no threshold changed.
 > - [Amendment 1](#amendment-1--2026-08-02--the-runtime-cap-and-why-the-permitted-trim-was-declined)
->   — the runtime cap moves from 120 to 180 CPU-minutes after Stage 1 measured the real cost, and
->   the permitted trim of the data is declined. Also records that `E_all` and `d_gap` coincide by
->   construction for this stimulus family.
+>   — the runtime cap moves from 120 to 180 CPU-minutes after Stage 1 measured the dominant head-sweep
+>   costs, and the permitted trim of the data is declined. Its `≈137`-minute total is a planning proxy,
+>   not a complete measured cost. It also records the exact-arithmetic relationship between `E_all`
+>   and `d_gap`; Amendment 3 corrects its false bitwise claim.
 > - [Amendment 2](#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
 >   — **the important one.** Adversarial review found three factual errors and five rules that are
 >   not executable as written. In particular: **§ Wrong-source constructions states source C's
@@ -19,8 +21,13 @@
 >   toward the wrong verb), **§ Order of operations claims no span-level measurement has ever been
 >   run here, which is false** (experiment 04's PCA arm ran exact span projections), the source B
 >   non-result claims more than its statistic can carry, and Q3 contained the certification bar this
->   design opens by saying it retires. Every rule repair makes a positive verdict harder, none
->   easier.
+>   design opens by saying it retires. Its claim that every repair makes a positive verdict harder
+>   is withdrawn in Amendment 3: the old and new Q3 rules are not ordered that way.
+> - [Amendment 3](#amendment-3--2026-08-08--pre-stage-2-executability-and-claim-boundaries)
+>   — **read this before implementing Stages 2–3.** It supplies the missing selection-only source-A
+>   sweep, fixes the candidate, bootstrap, Q3 and Q4 conventions that two competent implementations
+>   could otherwise resolve differently, corrects the runtime and bitwise claims, and narrows all
+>   four public verdict labels to what their rules actually establish.
 > - The prior-work section cites `notes/lit-check-…`, which is gitignored. That record is now
 >   [`LITERATURE.md`](LITERATURE.md) in this directory.
 
@@ -681,3 +688,177 @@ Three defects in the correction record itself, which is the one document where t
 gitignored, so a frozen portfolio document pointed at a file no reader could open. The note is moved
 to `experiments/05_number_agreement_circuit/LITERATURE.md` and committed. A document cited by a
 pre-registration is part of the portfolio.
+
+---
+
+## Amendment 3 — 2026-08-08 — pre-Stage-2 executability and claim boundaries
+
+**Written after Stage 1 was run and read, before either Stage 2 or Stage 3 has run.** This amendment
+therefore has no access to an adjudicating Q1–Q4 result. It does have access to the Stage-1 head
+ranking and per-edit records, including the fact that one unresolved convention changes at least one
+top-10 candidate's eligibility. That fact is disclosed below rather than hidden behind the word
+"clarification."
+
+This amendment has two jobs. First, it fixes choices that the frozen text and Amendment 2 left
+underspecified, such that two competent implementations could return different verdicts. Second, it
+withdraws language that reaches past the rules. Except where a missing estimator is explicitly
+defined, the numerical thresholds, seed sets, retained-pair floor and `≥6/8` aggregation rules remain
+unchanged. None of the new statistical conventions is claimed to be uniformly stricter than every
+reasonable alternative; they are frozen for reproducibility.
+
+### A. Amendment 2's monotonicity claim is withdrawn
+
+Amendment 2 says every one of its rule repairs makes a positive verdict harder or leaves the
+difficulty unchanged. That is false for Q3. For example, a true-source path effect of `0.30`, a
+source-A path effect of `0.05`, and a bootstrap interval on their difference of `[0.20, 0.30]` fail
+the old `0.50`-of-direct-effect rule and pass the replacement control comparison. Conversely, a large
+but noisy effect can pass the old ratio and fail the new interval rule. The rules are not ordered.
+
+The reason for replacing the old rule remains: a fixed recovery ratio without a control distribution
+was the certification shape this experiment set out to avoid. That is a design rationale, not a claim
+that the replacement is always harder.
+
+### B. Stage 1 is complete only for its shipped scope; candidate selection is not
+
+The shipped Stage-1 artifact contains the true-source 144-head `z@final` sweep, the joint `E_all`,
+`E_ref`, and the top-24 `v@subject` measurements. It contains no source-A head sweep and no Stage-2 or
+Stage-3 quantity. Because candidate pool `C` requires the selection seed's source-A noise floor, `C`
+cannot yet be constructed under the frozen rule.
+
+Before any Stage-2 run, seed `20260801` must receive one **selection-only full 144-head source-A
+`z@final` sweep**, using the same retained base minimal pairs, directional alignment, positions,
+microbatching and per-edit manifest fields as the true-source sweep. It adjudicates nothing and is
+reported unconditionally. Its only role is to complete the already-specified filter for `C`. Dropping
+that filter after seeing the true-source ranking is not permitted.
+
+This supplement is new cost. The existing `≈137` and `≈76` CPU-minute totals did not price it, and
+Amendment 2's increase from 240 to 800 Stage-3 matched-span draws was not priced either. They must be
+re-estimated before an experiment run; the 180-minute cap is a planning limit, not a certified total.
+
+### C. Candidate-set and distinguishability conventions
+
+The following conventions apply to the selection supplement and every Stage-2 seed.
+
+1. **Ranking ties.** Signed true-source mean effects rank descending; exact ties break by `(layer,
+   head)` ascending. Stage 1 had no exact effect ties, so this convention does not alter its shipped
+   order.
+2. **Sign consistency.** The unit is the retained minimal pair, not the directed edit. A pair counts
+   as consistent only when **both** sign-aligned directed effects are strictly positive; zero counts
+   as inconsistent. The score is
+   `minimal_pair_both_directions_positive_fraction`, and `C` requires it to be `≥0.90`.
+3. **Known consequence.** For Stage-1 rank 7, L5H2, the directed-edit fraction is `0.9237` while the
+   adopted pair-level fraction is `0.8475`; it therefore fails this component of `C`. This choice was
+   made after those records existed. It is adopted because it matches the resampling unit, not because
+   its effect on the final verdict is known to be conservative.
+4. **Source-A noise edge.** For the 144 absolute source-A head means, the "99th percentile" means
+   `numpy.percentile(values, 99, method="linear")`. No other interpolation or order statistic may be
+   substituted. The source-A edge and the Holm-adjusted true-source test are both required.
+
+All bootstrap resampling introduced before Stage 2 uses retained minimal pairs, with the two directed
+edits kept together. Per-head distinguishability keeps Amendment 2's `100,000` draws and family-wise
+Holm step-down at `α=0.05`; other Stage-2 bootstrap intervals use `10,000` draws. Percentile intervals
+use the `2.5` and `97.5` percentiles with `method="linear"`.
+
+For a per-head raw-mean test with `B=100,000`, the two-sided bootstrap p-value is
+`min(1, 2 × min((n_{μ_b≤0}+1)/(B+1), (n_{μ_b≥0}+1)/(B+1)))`. The 144-head family is the only Holm
+family within each seed. Dividing by `E_all` remains an effect-size report and does not enter that
+p-value.
+
+Every resample uses `numpy.random.default_rng(experiment_seed × 1000 + test_id)`. The constant test-id
+table is part of the implementation and the result manifest: `1…144` are flat head ids
+`12×layer+head+1`; `301` is the Q3 true-minus-source-A interval; `401` is the Q4 matched-subset draw.
+No iteration-order-derived seed is allowed.
+
+### D. Q3's `F_path` and decision statistic
+
+The phrase "transport noise floor `F_path`" in Amendment 2 did not define an estimator. It is now the
+**signed source-A control mean**, not an absolute-value floor:
+
+- for the same tested set `S*` and seed, run the same two-step path patch once with the true number-flip
+  source and once with source A;
+- retain per-edit sign-aligned raw logit-difference changes for both arms on their common retained
+  minimal pairs;
+- `F_path = mean(Δd_A^path)` in raw logit-difference units;
+- `D_path = mean(Δd_right^path) − mean(Δd_A^path)`;
+- resample common minimal pairs, retaining both directions and both arms together, for `10,000`
+  draws under `test_id=301`.
+
+A seed supports **Subject-value transport shown** exactly when `D_path > 0` and the percentile 95%
+interval of `D_path` has lower bound `>0`. The Q3 positive verdict still requires this in `≥6/8`
+adjudication seeds. The direct-effect recovery fraction is reported with its across-seed interval but
+has no pass/fail threshold. A negative source-A mean can increase `D_path`; the signed control was
+chosen because the estimand is directional, and is not described as uniformly more conservative than
+an absolute control.
+
+The negative verdict is **Subject-value transport not shown**, not Final-position-local. It means the
+registered `v@subject` probe did not meet the control-comparison rule. It does not establish that the
+effect is generated locally at the final position, and it remains blind to transport through a head's
+QK pattern.
+
+### E. Q4 projector, matched subsets and claim label
+
+The twelve target decoder rows form a matrix `D ∈ R^{12×768}`. Construct the projector in float64
+with a thin SVD. Let `V_r` be the retained right-singular rows under
+`tol = max(D.shape) × eps_float64 × s_max`; then `P_V δ = V_r.T @ (V_r @ δ)`. Cast the projected delta
+to the model activation dtype only at injection. The target must have numerical rank 12. If it does
+not, Q4 is blocked and requires a dated design amendment rather than silently changing the matched
+dimension.
+
+For each Stage-3 seed, sort the recomputed 128-candidate latent ids, exclude every target latent id,
+and draw 12 distinct ids uniformly without replacement within a subset. The 100 subsets are
+independent draws and may overlap across draws. Use `default_rng(experiment_seed × 1000 + 401)` and
+write every drawn id set to the manifest. A rank-deficient sampled span is rejected and redrawn; if
+100 full-rank subsets cannot be obtained within 10,000 attempts, that seed is blocked rather than
+reusing another seed's edge. Fewer than 12 eligible candidate ids is also a block.
+
+Amendment 2's edge remains the second-largest of the 100 per-seed matched `R_span` values. The public
+verdict labels are now **Above matched-span chance** and **Not above matched-span chance**. A positive
+verdict means only that, at layer-8 and the adjudicating position set `both`, the twelve decoder-row
+span's `R_span` exceeds this matched-dimension empirical edge in `≥6/8` seeds. It does not establish
+necessity, mediation, an attention route, or that the native model uses these coordinates as its
+mechanism. `subject` remains a non-adjudicating transport-relevant diagnostic.
+
+### F. `E_all`, `d_gap`, runtime and provenance corrections
+
+Amendment 1's statement that `E_all` and clean `d_gap` are "equal in every bit" is withdrawn. Their
+reported Stage-1 means are both `5.180971145629883`, and the equality follows in exact arithmetic for
+this single-flip construction, but the shipped float32 records differ on 2 of 472 directed edits with
+maximum absolute difference `5.7220458984375e-06`. The licensed statement is **same mathematical
+estimand and same reported mean up to numerical error**, not bitwise identity. `E_all` remains a
+separately measured denominator.
+
+The reproducible Stage-2 subtotal behind `≈106` minutes is
+`(16 × 358.863859 + 224 × 2.258879 + 8 × 12.982374) / 60 = 105.861` minutes: sixteen 144-head sweeps,
+224 joint-patch equivalents and eight fixed-overhead blocks. Amendment 1's prose calling that only
+"two 144-head sweeps across eight seeds" was incomplete, though the subtotal was not. The `≈137`
+whole-experiment and `≈76` trimmed numbers additionally contain estimates not fully enumerated in the
+published runtime manifest and omit newly required work. They are planning proxies, not measured
+totals and not proof that the 180-minute cap will hold.
+
+The committed calibration record proves commit content and order: it records one source-C family that
+passed Gate A and its measured constants. It cannot prove when residual effects were inspected or that
+no unrecorded family was tried. Any stronger timing or exhaustive-search claim is withdrawn.
+
+### G. Method framing and public verdict language
+
+The frozen claim that adjudication rests only on nulls that shrink with data is withdrawn. Sampling
+uncertainty in the bootstrap and source-A estimates can narrow with more retained pairs; Q2 instead
+uses fixed calibration-derived specificity ratios, and Q4 compares against a finite matched-span
+reference distribution. These are different forms of evidence and are reported as such.
+
+The numerical rules are accompanied by these controlling public labels and negative boundaries:
+
+- **Q1 — Qualifying ≤8-head set / No qualifying ≤8-head set.** A negative says that no tested set
+  simultaneously met the half-`E_all` and all-member distinguishability conditions in the same
+  `≥6/8` seeds. It does not license a global claim that the mechanism is diffuse.
+- **Q2 — Number-specific under registered controls / Specificity bound not met.** A negative says at
+  least one registered source-A/source-C bound failed the `≥6/8` rule. It does not license "the
+  matched-number source was as strong as the true source."
+- **Q3 — Subject-value transport shown / Subject-value transport not shown.** The negative boundary
+  is the one in §D above; neither label speaks to QK-mediated routing.
+- **Q4 — Above matched-span chance / Not above matched-span chance.** The exact scope is the one in
+  §E above; neither label is "On-path."
+
+These labels supersede the broader frozen labels and sentences wherever the experiment is summarized
+or written up. The legacy terms remain visible in the preserved base text so the amendment history is
+auditable.
