@@ -16,6 +16,33 @@ Template for a new entry:
 
 ---
 
+## 2026-08-08 — Advisor review correction: experiment 05 is not ready to run
+
+**Goal:** Record the corrections requested by the independent Advisor review of pushed docs-only commit
+`07bc83c8f793cf58db79cc9667141b4e1f2cd7ae` without rewriting the 2026-08-02 historical entry.
+
+**Did:** Reconciled that entry with experiment 05's dated amendments and added Amendment 4's Q4 data-role
+gate. No Stage-2 or Stage-3 result exists, and this correction does not report a new model run.
+
+**Happened:** Three sentences below no longer survive. Amendment 2's repairs are not uniformly ordered as
+making a positive harder; Amendment 3 already withdraws that monotonicity claim, especially for Q3. The
+clean `E_all` and `d_gap` are the same mathematical estimand and have the same reported mean up to numerical
+error, but the shipped float32 records differ on 2 of 472 directed edits, with maximum absolute difference
+`5.7220458984375e-06`; that is not bitwise identity. Finally, Stage 2 does not follow mechanically from the
+shipped ranking: seed `20260801` still needs a selection-only full source-A 144-head sweep to complete
+candidate set `C`, and the incomplete runtime projection must be re-estimated before any experiment run.
+
+The review also found one separate Stage-3 gate: disjoint experiment seeds isolate the twelve target rows
+from experiment 04's selection, but do not by themselves make the per-seed matched-latent pool independent
+of Q4 evaluation. Amendment 4 therefore freezes an item-disjoint rank-training/evaluation split before any
+Q4 run while leaving the 100-draw second-largest edge and all other numerical rules unchanged.
+
+**Next:** Complete the selection-only source-A supplement and runtime re-estimation before Stage 2. Do not
+run Stage 3 until the Amendment-4 split is implemented and its pair, pool, and subset identifiers can be
+recorded. Both execution steps remain separate work that requires explicit authorisation.
+
+---
+
 ## 2026-08-02 — Designing experiment 05, and changing the banner over the whole repository
 
 **Goal:** Decide whether this line of work is still the right one, verify that what is already published is actually correct, and pre-register the next experiment before writing a line of its code.
