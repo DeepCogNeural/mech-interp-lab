@@ -16,6 +16,56 @@ Template for a new entry:
 
 ---
 
+## 2026-08-08 — Making experiment 05 executable without pretending it has run
+
+**Goal:** Turn the frozen questions in experiment 05 into a reviewable, fail-closed execution
+protocol while preserving the line between a design decision, an implementation, and evidence from a
+model run.
+
+**Did:** Asked an independent Pro Advisor to adjudicate the places where the written design still
+allowed multiple scientifically different implementations, then recorded those decisions as
+Amendments 5–9 and a result-free machine protocol. Implemented separate selection, candidate-freeze,
+Stage-2, and Stage-3 entry points around that protocol. The implementation is still under static
+adversarial review; no offline contract test or model-backed command has been run.
+
+**Happened:** The largest correction was not a threshold. The shipped Stage-1 true-source sweep and a
+new source-A sweep could not be shown to use exactly the same model snapshot. Candidate `C` therefore
+cannot lawfully compare them. Amendment 7 requires both 144-head sweeps to be rerun in one invocation,
+against one in-memory model and immutable clean-base cache, with complete state-dictionary fingerprints
+before and after. The old Stage-1 ranking survives only as a non-blocking historical cross-check. This
+costs 291 logical forward-equivalents and has not yet been authorised or executed.
+
+The other corrections were about identifying what the interventions actually establish. Q3 now has
+one explicit clamped-`z` kernel rather than an underspecified “path” patch. Q2 uses the exact intersection
+of complete base and source-C item pairs; a global source-C Gate-A flag is diagnostic rather than a
+second, accidental exclusion rule. Q4 keeps rank-training items separate from evaluation items and can
+only support the narrow statement that the fixed layer-8 twelve-row decoder span exceeds matched
+12-dimensional spans on the registered intervention. It cannot establish mediation, necessity, or the
+model's native causal path.
+
+Static review also changed the engineering standard for the experiment. A self-hash is not enough if a
+plausible but edited checkpoint can be re-hashed, so resumable scientific payloads must be reconstructed
+from their pair records and frozen seeds. Amendment 8 goes further for Stage 2: an earlier checkpoint is
+diagnostic only, and every adjudicating cell must be rerun in one fresh invocation. Amendment 9 applies
+the same evidence rule to the Q4 runtime while retaining independently reviewed preparation artifacts.
+`COMPLETE` must bind its pair/draw artifacts, and a failed new invocation must invalidate any older
+successful-looking output. Scientific non-estimability, a
+pre-registered conditional skip, and technical execution failure now have different machine statuses.
+
+**Confused about / open:** A long protocol can prevent silent analytic flexibility while also creating
+new surface area for contradictions. The right portfolio claim is therefore not “the protocol is long,
+so the result is trustworthy.” It is that each added rule answers a named failure mode, is machine-bound
+where possible, and remains independently reviewable. That claim still needs contract tests and actual
+artifacts before it is earned.
+
+**Next:** Finish the static producer-to-consumer review, commit the result-free implementation, and ask
+the Advisor to review the pushed commit. Only after explicit execution authorisation: run the small
+offline contract suite; run the 291-FE same-snapshot selection with a declared wall-time cap; freeze and
+review `C`; then run Stage 2 and the independently prepared Stage-3 pipeline. Until those steps complete,
+there is no Q1–Q4 verdict and no new model finding.
+
+---
+
 ## 2026-08-08 — Advisor review correction: experiment 05 is not ready to run
 
 **Goal:** Record the corrections requested by the independent Advisor review of pushed docs-only commit

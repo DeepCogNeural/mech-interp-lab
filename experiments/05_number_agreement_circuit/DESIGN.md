@@ -1,7 +1,7 @@
 # Experiment 05 — Which heads move the number signal, and are the twelve latents on the path?
 
 > **STATUS: BASE DESIGN FROZEN 2026-08-02; calibration and Stage 1 complete; Stages 2–3 not
-> started; one pre-freeze correction and four dated amendments.**
+> started; one pre-freeze correction and nine dated amendments.**
 >
 > **Read the end of this file before the frozen text above it.** The frozen text is preserved
 > unedited on purpose, and parts of it are now known to be wrong:
@@ -32,6 +32,28 @@
 >   — **read this before implementing Stage 3.** It freezes an item-disjoint rank-training/evaluation
 >   split for the per-seed matched-latent pool, closing a selection/evaluation ambiguity without
 >   changing Q4's seeds, projector, RNG, 100-draw edge or `≥6/8` decision rule.
+> - [Amendment 5](#amendment-5--2026-08-08--clamped-z-q3-kernel-q2-item-intersection-q4-denominator-and-reporting-boundary)
+>   — freezes the simultaneous clamped-`z` Q3 B-prime kernel and forward-equivalent accounting,
+>   makes Q2's item intersection and complete-pair block executable, fixes Q4's denominator guard,
+>   removes qualitative saturation language, and retires the cross-layer `P_Vδ` covariate.
+> - [Amendment 6](#amendment-6--2026-08-08--fail-closed-denominators-seed-slots-and-gate-a-boundaries)
+>   — withdraws Q3's across-seed inferential interval for direct recovery, makes all eight
+>   descriptive seed slots explicit, freezes Q2's diagnostic-only global source-C gate, adds the
+>   float64 Q1 `E_all` guard, freezes independent Q3/item and tested-set gates, and distinguishes
+>   complete scientific unresolved states from execution incompleteness.
+> - [Amendment 7](#amendment-7--2026-08-08--same-snapshot-selection-provenance)
+>   — requires the candidate pool to come only from same-invocation fresh true/source-A sweeps over
+>   one unchanged model/config/tokenizer/dtype/cache snapshot, demotes shipped Stage 1 to a
+>   non-blocking cross-check, freezes the 291-FE accounting, and makes missing or changed
+>   provenance fail closed before Q1–Q3.
+> - [Amendment 8](#amendment-8--2026-08-08--stage-2-single-invocation-provenance)
+>   — forbids cross-invocation reuse of Stage-2 scientific payloads, makes interrupted checkpoints
+>   diagnostic only, and requires one fresh eight-seed invocation plus bound pair/checkpoint coverage
+>   before any Q1–Q3 `COMPLETE` artifact can exist.
+> - [Amendment 9](#amendment-9--2026-08-08--stage-3-q4-single-invocation-runtime-provenance)
+>   — applies the same evidence boundary to the eight-seed Q4 runtime while preserving independently
+>   reviewed preparation artifacts, and binds accepted draws across attempts, CSV, checkpoint, and
+>   the final manifest.
 > - The prior-work section cites `notes/lit-check-…`, which is gitignored. That record is now
 >   [`LITERATURE.md`](LITERATURE.md) in this directory.
 
@@ -900,3 +922,502 @@ twelve target rows, target exclusion, float64 SVD projector, rank tolerance, wit
 without replacement, 10,000-attempt redraw limit, per-seed second-largest edge over 100 matched draws,
 or the `≥6/8` aggregation rule. Evaluation results may not trigger a new pool, a new split, a different
 edge, or a dated amendment chosen with the Q4 answer in view.
+
+---
+
+## Amendment 5 — 2026-08-08 — clamped-z Q3 kernel, Q2 item intersection, Q4 denominator and reporting boundary
+
+**Written after Stage 1 was run and read, and after Amendments 3–4, before any Stage-2 or Stage-3
+adjudicating quantity exists.** This amendment freezes the remaining implementation choices needed for
+the next run. It does not inspect, add, or replace an experimental result. The earlier prose remains in
+this file as an audit history; wherever it conflicts with this section, **Amendment 5 is the operative
+specification**. The machine-readable transcription is [`protocol_v1.json`](protocol_v1.json), which is
+hand-authored, contains no result fields, and deliberately carries no protocol hash.
+
+### A. Q3 B-prime — the simultaneous clamped-`z` intervention
+
+The registered Q3 implementation is **B-prime**. For every selected head and every retained item,
+compute, from immutable clean/base and source activation caches,
+
+```text
+z_star = z_base + P_base(final, subject) * (V_source(subject) - V_base(subject)).
+```
+
+Here `z_base` is the base head output at `hook_z@final`, `P_base(final, subject)` is the base
+attention weight from the final query to the subject key, and `V_base`/`V_source` are the cached value
+vectors at the subject position. The selected heads are then jointly replaced **only** at
+`hook_z@final` with their `z_star` values in an otherwise clean base forward. The base attention
+weights are frozen; no live `hook_v`, `hook_Q`, or `hook_K` is replaced, no target is read from an
+intervention forward, and no joint-`v` patch is run. The exact same kernel is used for the true
+number-flip and source-A arms.
+
+The operation is called a **simultaneous clamped-`z` intervention under frozen base attention
+weights**. It is not called mediation, necessity, sufficiency, or faithfulness, and no such claim is
+licensed by a positive or negative Q3 result.
+
+For runtime accounting, one source-plus-joint-set arm is **3 forward-equivalents (FE)**; the true and
+source-A arms together are **5 FE**; and one all-144 singleton sweep is **146 logical FE**. Batching
+changes wall-clock scheduling only and never changes these logical counts.
+
+### B. Q2's eligible items and complete-pair inference unit
+
+For each seed, Q2's eligible item ids are exactly
+
+```text
+base Gate-A retained pair ids ∩ source-C Gate-A retained pair ids.
+```
+
+The intersection is applied before any Q2 arm is summarized. A minimal pair is eligible only when both
+directed edits are present; the two directions remain one item cluster for inference. Bootstrap and
+other resampling therefore resample complete minimal-pair clusters, never individual directions. If
+fewer than 40 complete pairs remain, the seed is blocked with the exact code
+`Q2_BLOCKED_LT40_COMPLETE_PAIRS`.
+
+This rule supersedes any older wording that treated the base retained list alone, or a single directed
+edit, as Q2's analysis population.
+
+### C. Q4's denominator guard
+
+On the held-out evaluation split, define the ratio denominator and scale guard in float64 as
+
+```text
+D   = E(delta)
+M   = max(1, E|delta|, E|delta_span|, E|delta_comp|)
+tau = sqrt(float64_eps) * M.
+```
+
+If `|D| <= tau`, record the seed status
+`NON_ESTIMABLE_DENOMINATOR`. Do not form `R_span` or `R_comp`, and do not regularize, replace, or
+otherwise alter the denominator. The public record reports the marker rather than a fabricated ratio;
+an estimable seed reports its numeric effect, interval, and matched reference under the unchanged Q4
+rule.
+
+### D. Q4 role assignment and public reporting boundary
+
+After the deterministic item shuffle, the Amendment-4 roles are immutable and are assigned by the
+number `N` of retained minimal pairs:
+
+| `N` after Gate A | rank-training role | evaluation role | status |
+|---:|---:|---:|---|
+| `<40` | all available pairs | none | `BLOCKED_INSUFFICIENT_TRAIN` |
+| `=40` | 40 pairs | 0 pairs | `BLOCKED_INSUFFICIENT_EVAL` |
+| `41…79` | 40 pairs | remainder | `BLOCKED_INSUFFICIENT_EVAL` |
+| `80…190` | 40 pairs | remainder | usable; all remainder evaluated |
+| `>190` | 40 pairs | next 150 pairs | usable; remaining pairs `unused_after_eval_cap` |
+
+A pair and both directed edits stay in one role. The rank-training split alone may construct and
+freeze the 128-candidate matched pool; target and matched-subset effects, including their common
+`E(delta)` denominator, use only the held-out evaluation split. Evaluation results cannot change the
+pool, split, edge, or thresholds.
+
+Split preparation is a model-derived selection step, not an inference-time convenience. Under a
+separately authorized cache Gate-A run, compute clean logits, margins, and provenance for every
+Stage-3 item and seed. An offline materialization step then derives the retained bits and immutable
+roles from those caches. The required artifacts are `stage3_gate_a_cache.jsonl`, `split_manifest`,
+and `prepare_manifest`; their provenance must be cross-hashed, and an independent pushed review must
+approve the prepared artifacts before Q4 begins. No unrecorded live Gate-A recomputation may alter a
+split.
+
+The alpha control has one new cell only: `alpha = 0.5` at `both` on the evaluation split. The
+`alpha = 1.0`, `both`, evaluation cell aliases the existing full-delta cell and must carry the same
+execution, tensor, and result hashes; it is not rerun or double-counted. The 100 matched-span draws
+are run only at `both`, evaluation, `alpha = 1.0`, one cell per seed.
+
+The supervised train-delta/`P_context` PCA proposal is explicitly withdrawn. For each Stage-3 seed,
+the descriptive PCA context must reuse experiment 04's `generate_pool` and `fit_complete_bases` on
+the frozen **8,192-token generic-text pool**, preserving its construction, sampling, layer-8
+extraction, centering, fitting order, and serialization. Stage 3 freezes the basis fit in float64;
+the current experiment-04 implementation uses float32 `eigh` plus refinements, so the protocol names
+that implementation deviation and must not claim that the existing code is already float64. The fit
+may read no task ids, Gate-A bits, role assignments, task deltas, or evaluation items, and there is no
+fallback task pool. The top-12 PCA rows form this descriptive projector.
+
+There are exactly three position-isomorphic alpha-1 evaluation cells for this PCA span:
+`PCA_span/subject`, `PCA_span/final`, and `PCA_span/both`. `both` is the primary displayed cell;
+`subject` and `final` are fixed controls. These are **three logical cells, never twelve**.
+
+The old qualitative wording “strongly sublinear” and “departs far from 1” is retired for public
+reporting. The `α ∈ {0.5, 1.0}` responses and `R_span + R_comp` are reported as numbers with their
+intervals and the matched reference (or `NON_ESTIMABLE_DENOMINATOR`); no qualitative adjective,
+unregistered cutoff, or extra verdict is added.
+
+The cross-layer Q1→Q3 covariate that would replace the subject-position `δ` by `P_Vδ` is deleted from
+the operative protocol. It is **not collected, plotted, or used for adjudication**. The legacy
+paragraph remains above only so the amendment history is auditable.
+
+### E. Empty candidate selection and axis instantiation
+
+If the selection-only source-A supplement completes successfully and the frozen candidate rule returns
+an empty `C`, Q1 is recorded as `COMPLETE_NO_CANDIDATES`. Its only public sentence is **“No candidates
+were selected under the frozen source-A selection rule.”** This is not the `Diffuse` verdict and does
+not license a mechanism-wide diffusion claim. Q2 and Q3 are then
+`NOT_INSTANTIATED_NO_TESTED_SET`: they emit no effect, interval, bootstrap test, or positive/negative
+label because there is no tested set `S*`. A failed or incomplete selection supplement is
+`BLOCKED`, never an empty `C`.
+
+Q4 is scientifically and operationally independent of `C` and of Stage 2. It runs on its own Stage-3
+seeds and Q4 split/pool rules even when Q1–Q3 are blocked or not instantiated; no candidate-selection
+or Stage-2 path, status, or hash is an input to Q4.
+
+For `C ≠ ∅`, the downstream tested set is the smallest qualifying Q1 set when Q1 is positive, and
+`S_min(8, |C|)` otherwise. The older shorthand `S_8` is superseded because it is undefined when
+`|C| < 8`; `C = ∅` follows the explicit no-tested-set status above.
+
+### F. Seed accounting and partial-identification verdicts
+
+For each adjudicating axis and each of its eight registered seeds, the seed manifest must assign
+exactly one of four mutually exclusive classes:
+
+- `PASS`: the seed completed and met the registered per-seed rule;
+- `COMPLETED_FAIL`: the seed completed, the registered statistic was estimable, and it did not meet
+  the per-seed rule;
+- `SCIENTIFIC_UNRESOLVED`: execution completed far enough to establish a registered scientific
+  non-resolution condition, such as Q2 having fewer than 40 complete eligible pairs, Q4 having an
+  insufficient split or matched pool, or Q4's denominator guard firing; or
+- `EXECUTION_INCOMPLETE`: the authorized computation did not complete or its required artifact or
+  provenance contract failed.
+
+The four counts must sum to eight. If any seed is `EXECUTION_INCOMPLETE`, the axis status is
+`BLOCKED_EXECUTION_INCOMPLETE` and no scientific positive or negative verdict is emitted. Otherwise,
+let `L` be the number of `PASS` seeds and let `U` be `PASS + SCIENTIFIC_UNRESOLVED`. The axis is
+positive when `L >= 6`, negative when `U < 6`, and `INCONCLUSIVE_UNRESOLVED_SEEDS` otherwise. Thus an
+unresolved seed is never silently discarded, counted as a pass, or converted to a completed failure.
+The manifest reports all per-seed assignments and both bounds.
+
+The candidate set `C` is a single completed-or-blocked selection artifact, not an eight-seed
+adjudicating axis. A valid completed empty `C` follows §E. If `C` is not successfully frozen, Q1 is
+blocked and Q2–Q3 are `NOT_INSTANTIATED_UNRESOLVED_C`; they do not receive fabricated eight-seed
+assignments. A failure of the descriptive PCA context arm is recorded separately as a comparator
+failure and does not change the primary target-versus-matched Q4 seed class.
+
+### G. Supersession summary
+
+Amendment 5 supersedes, wherever they conflict with this section: the former Q3 live-`v`/path-patch
+description; any Q2 population or direction-level resampling convention that is not the base/source-C
+intersection; any Q4 ratio formed without the `D/M/tau` guard; the qualitative saturation/departure
+sentence; the cross-layer `P_Vδ` covariate; and any claim that every instantiated axis must return a
+binary positive/negative verdict with no inconclusive or blocked state. All other Amendments 3–4 constants and boundaries
+remain unchanged. No Q1–Q4 result, pass/fail label, runtime total, or protocol hash is asserted here.
+
+---
+
+## Amendment 6 — 2026-08-08 — fail-closed denominators, seed slots and Gate-A boundaries
+
+**Written before any Stage-2 or Stage-3 adjudicating quantity exists.** Amendment 6 makes the
+remaining boundary cases machine-decidable. Its structured transcription is in
+[`protocol_v1.json`](protocol_v1.json);
+the runner must consume those fields fail-closed rather than reconstructing a threshold or status from
+this prose. It does not add a result, a verdict, or a new scientific threshold.
+
+### A6.1 Q3 direct-recovery is descriptive, not an across-seed interval
+
+The per-seed direct-recovery fraction remains the descriptive ratio
+
+```text
+r_direct(seed) = E(delta_true_path) / E(delta_direct(S*))
+```
+
+when its numerator and denominator are finite and the tested set `S*` exists. The previously
+registered **across-seed inferential interval for `r_direct` is withdrawn**. It must not be reported,
+computed, or used to adjudicate Q3. This withdrawal does not change Q3's per-seed `D_path` interval,
+its `≥6/8` path rule, or its partial-identification aggregation.
+
+The manifest has **exactly eight seed slots**, one for every registered Stage-2/Q3 seed, in the
+protocol order. Each slot contains the seed id and either a finite numeric `value` or `value: null`
+with a non-empty structured `reason`; slots may not be dropped because a value is unavailable. The
+summary is purely descriptive and contains only:
+
+- `n_finite`: the number of finite slot values;
+- `median`: the median of the finite values, using the arithmetic mean of the two middle values
+  after numeric sorting when `n_finite` is even, or `null` when no finite value exists;
+- `observed_min` and `observed_max`: the minimum and maximum finite values, or `null` when none
+  exists.
+
+No interval, across-seed standard error, or pass/fail threshold may be attached to this summary.
+
+### A6.2 Q2 eligibility and the diagnostic-only global source-C gate
+
+For each seed, Q2's analysis population is exactly the complete-pair intersection of the base and
+source-C item Gate-A retained sets:
+
+```text
+eligible_pair_ids = complete_pairs(base_gate_a_retained ∩ source_c_gate_a_retained)
+```
+
+Both directed edits must be present in each retained pair. The boolean **global source-C Gate-A
+`passed` field is diagnostic only**: it never replaces the item intersection, zeroes the eligible
+set, or creates a different block. If the exact intersection contains fewer than 40 complete pairs,
+the seed has axis class `SCIENTIFIC_UNRESOLVED` and exact status code
+`SCIENTIFIC_UNRESOLVED_Q2_LT40_COMPLETE_PAIRS` (the legacy short block code remains an input-level
+alias only). Missing, malformed, contradictory, or hash/provenance-invalid Gate-A or pair artifacts
+are `status: EXECUTION_INCOMPLETE`; they are never represented as an empty scientific population.
+
+### A6.3 Q1 `E_all` float64 guard
+
+For every Q1 seed, let `e` be the retained complete-pair `E_all` effect vector and compute all guard
+quantities in float64:
+
+```text
+E      = mean(e)
+A      = mean(abs(e))
+g      = abs(E) / A
+gamma  = sqrt(float64_eps)
+```
+
+If `E` or `A` is non-finite, if `A == 0`, if `g` is non-finite, or if `g <= gamma`, the seed is
+`status: SCIENTIFIC_UNRESOLVED` with the structured Q1 `E_all`-guard reason. The guard is a
+scientific non-estimability condition: do not divide by `E_all`, manufacture a recovery fraction,
+or emit a Q1 positive/negative seed result. The value `1e-12` (and any substitute epsilon or
+regularization) is explicitly forbidden as a denominator guard.
+
+### A6.4 Base global Gate-A failure is not a missing execution
+
+When the base global Gate-A boolean is false but the authorized computation and all required
+provenance/artifact hashes are complete, record execution as `COMPLETE`, the Q1 axis as
+`SCIENTIFIC_UNRESOLVED`, and the Q1 cell as `SKIPPED_BY_PREREGISTERED_SCIENTIFIC_GATE` with reason
+`Q1_BASE_GLOBAL_GATE_A_FAIL`. Skip every Q1-specific cell — the true sweep, source-A sweep,
+`E_all`, every `E(S_n)`, and every Q1 recovery ratio. A shared cache used by Q2 or Q3 is not a Q1
+cell and does not count as Q1 execution. This state does **not** block the eight-seed accounting and
+does **not** clear Q2's item-level eligible ids: Q2 continues to use the exact base∩source-C
+complete-pair intersection, including an empty intersection if that is what the items establish.
+Only missing, malformed, contradictory, or provenance-invalid artifacts are `EXECUTION_INCOMPLETE`.
+
+### A6.5 Independent Q3 retained-item gate
+
+Q3 is independent of the Q1-specific cells. If a tested set exists, `retained_item_count > 0`, and
+the required Q3 cache and provenance are complete, run the registered Q3 per-seed rule normally and
+assign exactly `PASS` or `COMPLETED_FAIL`; a base global Gate-A failure does not suppress this Q3
+execution. If `retained_item_count == 0` with complete execution and provenance, record execution
+`COMPLETE`, Q3 axis class `SCIENTIFIC_UNRESOLVED`, Q3 cell
+`SKIPPED_NO_RETAINED_ITEMS`, and reason `Q3_ZERO_RETAINED_ITEMS`. If no tested set exists at all,
+retain the existing `NOT_INSTANTIATED_NO_TESTED_SET` status; it is not rewritten as a zero-item
+scientific result. Missing or invalid Q3 artifacts remain `EXECUTION_INCOMPLETE`.
+
+### A6.6 Deterministic tested-set selection after Q1 seed accounting
+
+For each nested set size `n`, use only the observed per-seed `PASS` classes. Select the smallest
+`n` whose PASS lower count is at least six and record
+`Q1_TESTED_SET_SELECTED_MIN_N_PASS_GE6`. Scientific-unresolved seeds do not count as PASS. If no
+such `n` exists, `C ≠ ∅`, all eight Q1 seed technical statuses are accounted for, and none is
+`EXECUTION_INCOMPLETE`, deterministically fall back to `S_min(8, |C|)` and record
+`Q1_TESTED_SET_SELECTED_FALLBACK_MIN8C`; this fallback chooses the downstream tested set only and
+does not change Q1's positive/negative/unresolved axis result. If any Q1 seed is
+`EXECUTION_INCOMPLETE`, do not fall back and record
+`Q1_TESTED_SET_BLOCKED_EXECUTION_INCOMPLETE`.
+
+### A6.7 Q3 direct-recovery interaction with the Q1 base Gate-A gate
+
+If the base global Gate-A gate is false but Q3 otherwise has a tested set, retained items, and
+complete required cache/provenance, Q3 executes its registered `PASS`/`COMPLETED_FAIL` rule
+independently. It does not add a direct-reference run solely to define a DRF denominator. Every Q3
+direct-recovery slot in this case is `value: null` with the exact reason
+`Q3_DRF_REFERENCE_SKIPPED_BY_Q1_BASE_GLOBAL_GATE`. Q3's axis class and `PASS`/`COMPLETED_FAIL`
+assignment are unchanged; DRF is descriptive and never affects the Q3 verdict. This interaction
+adds **zero** forward-equivalents. The exact null reason is not a synonym for a non-finite value,
+scientific unresolved state, or execution incompleteness; those conditions retain their own reasons.
+
+### A6.8 Supersession
+
+Amendment 6 supersedes Amendment 5 wherever it calls for an across-seed inferential interval for Q3
+direct recovery, treats global source-C Gate-A failure as an item-population gate, uses a numerical
+`1e-12` denominator guard for Q1, or conflates a complete global Gate-A failure with incomplete
+execution. All other Amendment-5 kernel, split, denominator, partial-identification, and reporting
+rules remain operative. No Q1–Q4 result, verdict, runtime total, or protocol hash is asserted here.
+
+---
+
+## Amendment 7 — 2026-08-08 — same-snapshot selection provenance
+
+**Written before the selection supplement and before any Q1–Q3 adjudicating quantity exists.**
+Amendment 7 closes the remaining source-A selection contamination and provenance ambiguity. The
+machine-readable fields in [`protocol_v1.json`](protocol_v1.json) are operative; the runner must
+fail closed on any missing, changed, or incomplete fingerprint rather than silently falling back to
+the shipped Stage-1 artifact.
+
+### A7.1 One invocation, one in-memory snapshot, two fresh sweeps
+
+The candidate pool `C` may be constructed only from two **fresh** 144-head `hook_z@final` sweeps —
+`fresh_true_source` and `fresh_source_A` — produced by the **same runner invocation** using the same
+in-memory model, model config, tokenizer, activation dtype, and clean/base cache. Both sweeps must
+cover the canonical 144 heads, the same retained directed edits, and the same head order. Their
+outputs, hashes, and completion statuses are inputs to candidate construction; a fresh sweep that
+is partial, malformed, or missing prevents `C` from being constructed.
+
+The invocation records a before/after canonical full `state_dict` fingerprint. The fingerprint sorts
+keys lexicographically and frames each key, dtype, shape, and **uncast contiguous tensor bytes**;
+the before and after SHA-256 values must be identical. It also records and binds the normalized model
+config hash, tokenizer asset hashes, the pinned local model/SAE revision, repository commit, runtime
+environment fingerprint, activation dtype, and immutable clean/base cache fingerprint. A missing
+fingerprint, changed value, missing asset/revision/commit/environment record, or mismatch between
+the two fresh sweeps is a technical failure, not a scientific empty candidate result.
+
+### A7.2 Shipped Stage 1 is a descriptive cross-check only
+
+The shipped Stage-1 true sweep is retained only as a non-blocking descriptive cross-check. The
+selection manifest records the fresh and shipped top-10 membership, each rank order, and their
+membership/order overlap. Any divergence is reported descriptively, does not block the fresh
+selection, and **cannot contribute a head, rank, effect, or candidate row to `C`**. Its historical
+snapshot remains unverified and is never substituted for a missing fresh true sweep.
+
+### A7.3 Fail-closed statuses, axis boundary, and cost
+
+If either fresh sweep is incomplete, or any required model/config/tokenizer/cache/revision/commit/
+environment fingerprint is missing or changes during the invocation, record the selection artifact
+as `SELECTION_SNAPSHOT_EXECUTION_INCOMPLETE`, record `C` as `C_NOT_CONSTRUCTED_SAME_SNAPSHOT`, and
+emit no Q1–Q3 verdict (`Q1: BLOCKED`; `Q2/Q3: NOT_INSTANTIATED_UNRESOLVED_C`). Q4 remains independent
+and may follow its own protocol. A complete same-snapshot selection records
+`FRESH_SAME_INVOCATION_MODEL_STATE_FINGERPRINT_MATCHED` and provenance `READY`; only then may the
+fresh true/source-A results be passed to `freeze_candidate.py`.
+
+The fresh selection supplement has exactly **291 logical forward-equivalents**:
+
+```text
+1 clean + 1 true-source cache + 1 source-A cache + 144 fresh true heads + 144 fresh source-A heads = 291.
+```
+
+The historical shipped Stage-1 cross-check costs **0** additional logical forward-equivalents. It
+is not a substitute sweep and is not counted in the 291.
+
+### A7.4 Supersession
+
+Amendment 7 supersedes any earlier selection wording that permits Stage-1 true-source rows, separate
+invocations, mutable model state, mismatched caches, or incomplete provenance to construct `C`, and
+any selection runtime accounting that omits the 291-FE fresh sweep cost or charges the historical
+cross-check as a fresh sweep. All Q2–Q4 scientific rules and Q4's independence remain unchanged.
+No selection result, candidate set, Q1–Q4 verdict, runtime total, or protocol hash is asserted here.
+
+---
+
+## Amendment 8 — 2026-08-08 — Stage-2 single-invocation provenance
+
+**Written before the first Stage-2 adjudicating run.** Static review established that a checkpoint
+self-hash and statistics recomputed from the checkpoint's own primitive arrays prove internal
+consistency, not independent scientific provenance: the arrays and their derived fields can be
+edited together and re-hashed. The Advisor therefore freezes Stage 2 as a single-invocation
+experiment rather than introducing an external signing service.
+
+### A8.1 No cross-invocation scientific reuse
+
+All adjudicating Stage-2 cells for all eight registered seeds must execute in one fresh runner
+invocation. A checkpoint from an earlier or interrupted invocation may be loaded only for diagnostic
+integrity inspection. No primitive effect array, cached intervention output, scientific row,
+bootstrap result, Holm result, candidate membership, derived statistic, or verdict field from it may
+enter the fresh adjudicating dataset. Prior checkpoints are never merged, appended, repaired, or
+promoted. A subsequent authorised invocation restarts Stage 2 from zero and reruns every required
+cell.
+
+An interrupted, capped, incomplete, or unbound invocation emits only
+`execution_status: EXECUTION_INCOMPLETE`, `scientific_reuse_allowed: false`,
+`resumable_for_adjudication: false`, and no Q1–Q3 verdict. The registered status identifies the
+cause (`RUNTIME_CAP`, `INTERRUPTED`, `REQUIRED_CELL_MISSING`, `SEED_COVERAGE`, `FINAL_BINDING`, or
+`ARTIFACT_MISMATCH`), and the next run records `STAGE2_RESTART_FROM_ZERO_REQUIRED`.
+
+### A8.2 Complete publication is one bound invocation
+
+Stage 2 is `STAGE2_COMPLETE_SINGLE_INVOCATION` only after the same invocation has completed every
+registered cell for all eight seeds, generated its complete pair-level CSV and final checkpoint,
+and bound both artifacts together with their exact seed/execution-cell coverage, configuration,
+repository revision, model-state fingerprint, input hashes, and cryptographic content hashes in the
+final manifest. The CSV and checkpoint are two representations of the same completed invocation;
+any hash or coverage mismatch invalidates the invocation, and neither is a fallback for the other.
+The final publication records `STAGE2_FINAL_ARTIFACTS_BOUND` and
+`STAGE2_PAIR_CSV_CHECKPOINT_COVERAGE_MATCH` before exposing a scientific `COMPLETE` status.
+
+### A8.3 Valid completed empty `C` is not a Stage-2 invocation
+
+If the fresh provenance-valid selection completes with `|C| = 0` and
+`COMPLETE_NO_CANDIDATES`, the candidate-dependent Stage-2 run is not instantiated. No model cell,
+eight-seed runtime, intervention row, effect, interval, bootstrap, Holm test, seed class, or scientific
+verdict is executed or emitted. A non-adjudicating dependency-resolution artifact records
+`coverage_mode: VALID_COMPLETED_EMPTY_C_NO_STAGE2_CELLS`,
+`stage2_instantiation_status: NOT_INSTANTIATED_VALID_EMPTY_C`, zero registered/executed cells, zero
+Stage-2 logical FE, and a null Stage-2 verdict. It binds the fresh selection, paired-sweep provenance,
+valid empty candidate manifest, commit, and protocol hashes.
+
+Q1 remains `COMPLETE_NO_CANDIDATES` with its sole registered public sentence; Q2 and Q3 remain
+`NOT_INSTANTIATED_NO_TESTED_SET`. The branch must not fabricate empty CSV/checkpoint files or eight
+placeholder seeds, and must not claim `STAGE2_COMPLETE_SINGLE_INVOCATION`, eight-seed completion,
+final Stage-2 binding, or scientific `COMPLETE`. A final scientific checkpoint and pair CSV are not
+required because no Stage-2 scientific run exists. This clarifies Amendment 8's scope and is not a
+new amendment or estimator.
+
+### A8.4 Compute accounting and supersession
+
+Every fresh invocation starts with zero reusable adjudicating forward-equivalents. A failed or capped
+attempt contributes zero reusable scientific cells, but its compute remains disclosed. Runtime
+artifacts report `final_complete_invocation_logical_fe`, `prior_incomplete_attempt_logical_fe`,
+`cumulative_logical_fe_all_attempts`, `final_complete_invocation_wall_time`, and
+`cumulative_wall_time_all_attempts`. Only the final complete invocation supplies the published
+scientific artifact; physical batching never reduces logical FE.
+
+Amendment 8 supersedes any earlier implementation wording that permits Stage-2 scientific state to
+resume across invocations or permits partial/capped work to emit a scientific verdict. It changes no
+Q1–Q3 estimator, threshold, seed, or scientific label. No Stage-2 result, verdict, runtime total, or
+protocol hash is asserted here.
+
+---
+
+## Amendment 9 — 2026-08-08 — Stage-3 Q4 single-invocation runtime provenance
+
+**Written before the first Stage-3 Q4 runtime invocation.** Independent review found that deep schema
+checks and a self-hash still cannot authenticate scientific rows loaded from a prior checkpoint: an
+entire internally consistent Q4 payload can be edited and re-hashed. The Advisor therefore applies
+the single-invocation evidence rule to the runtime experiment, without discarding separately reviewed
+preparation work.
+
+### A9.1 Fresh Q4 runtime; immutable preparation may be reused
+
+Every runtime scientific cell required for all eight registered Q4 seeds must execute in one fresh
+runner invocation. Cross-invocation reuse of primitive tensors, intervention outputs, effect or
+accepted-draw rows, derived statistics, alpha/PCA outputs, seed classes, or verdict fields is
+forbidden. A prior Q4 checkpoint is diagnostic only and cannot supply a scientific row or mark a
+cell complete. After a cap, interruption, or failure, the next authorised Q4 invocation restarts its
+runtime registry from zero.
+
+The already accepted Gate-A cache, split manifest, generic-pool/PCA preparation artifact, and review
+or harness receipts remain immutable inputs when their exact content hashes and receipts match. A
+failed Q4 attempt does not by itself require preparation to rerun, and preparation compute remains
+reported separately.
+
+### A9.2 Clean source, seed completeness, and unresolved slots
+
+Q4 starts and finishes at the frozen commit with the same source-tree hash and a clean worktree:
+no staged, unstaged, or untracked source files. Runtime artifacts live outside the source worktree.
+A dirty or changed source tree is execution failure. Each seed has exactly one execution class,
+`EXECUTION_COMPLETE` or `EXECUTION_INCOMPLETE`. A pre-registered scientific gate may yield
+`SCIENTIFIC_UNRESOLVED` while execution remains complete if all cells required before that gate and
+its registered skip/null behavior are complete.
+
+Any `EXECUTION_INCOMPLETE` seed forces top-level `EXECUTION_INCOMPLETE`, a null scientific verdict,
+and a non-resumable artifact. Top-level `COMPLETE` requires all eight seeds technically complete and
+exact seed/cell coverage. For an unresolved axis, dependent scientific slots are `value: null` with
+the frozen gate-specific reason; optional or unvalidated alpha, PCA, matched-span, ratio, or
+descriptive values cannot enter accepted scientific output or aggregation.
+
+### A9.3 Accepted-draw and final-artifact binding
+
+Every accepted draw has the binding key `(invocation_id, seed_id, draw_family, draw_index,
+accepted_attempt_id, draw_or_projector_hash)`. The exact set and multiplicity of keys must match the
+accepted-draw manifest, accepted attempt records, and accepted scientific CSV. Each accepted draw has
+one accepted attempt and its exact registered CSV coverage; no duplicate, missing, rejected, or
+unaccepted draw can appear as accepted science.
+
+The final manifest cryptographically binds that accepted set, the complete attempt ledger, scientific
+CSV, final checkpoint, execution-cell registry, immutable preparation hashes, model-state fingerprint,
+configuration, source-tree identity, and code revision. Any set, coverage, multiplicity, or hash
+mismatch makes the invocation `EXECUTION_INCOMPLETE`.
+
+### A9.4 Compute accounting and threshold invariance
+
+Each attempt records `q4_invocation_id`, `q4_attempt_logical_fe_executed`, `q4_attempt_wall_time`, and
+`q4_attempt_status`. The accepted invocation records `final_complete_q4_logical_fe` and
+`final_complete_q4_wall_time`; disclosure also records `prior_incomplete_q4_logical_fe`,
+`cumulative_q4_logical_fe_all_attempts`, `cumulative_q4_wall_time_all_attempts`, and
+`preparation_logical_fe_separately`. Prior attempts contribute zero reusable scientific cells but
+remain in cumulative compute. Physical batching does not reduce logical FE, and the existing aliased
+alpha-1/full-delta cell is still counted once.
+
+Amendment 9 changes only runtime provenance, restart semantics, completeness, artifact binding, and
+compute accounting. It changes no Q4 estimand, denominator, rank gate, split, alpha/PCA cell, draw
+count, seed, `6/8` rule, partial-identification rule, or scientific class. No Q4 result, verdict,
+runtime total, or protocol hash is asserted here.
