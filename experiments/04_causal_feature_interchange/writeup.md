@@ -346,9 +346,13 @@ against the raw data.
 - Close the PCA fitting-budget objection with a fit an order of magnitude larger, or with real corpus
   text rather than model-generated text.
 - A second stimulus family, before any of this is allowed to generalise beyond number agreement.
-- The mechanism question motivated by this uncertified descriptive measurement: what are the 12 latents
-  that recur across all five seeds, and do they lie on the causal path that moves the number signal?
-  That needed a pre-registered analysis rather than a post-hoc hunt, and it is now
-  [experiment 05](../05_number_agreement_circuit/DESIGN.md) — which adjudicates that question on seeds
-  disjoint from the five that selected the latents, so the post-hoc selection here cannot contaminate
-  it.
+- The mechanism question motivated by this uncertified descriptive measurement is what the 12 latents
+  that recur across all five seeds capture under registered interventions. That needed a pre-registered
+  analysis rather than a post-hoc hunt, and it is now
+  [experiment 05](../05_number_agreement_circuit/DESIGN.md). Its shipped Stage 1 is descriptive and
+  adjudicates none of Q1–Q4; Stages 2–3 have not run. Stage 3's seeds are disjoint from the five that
+  selected the target latents, which isolates that target-selection step but is not a blanket guarantee
+  against every form of selection leakage. Experiment 05's dated amendments separately require an
+  item-disjoint matched-pool selection/evaluation split for Q4. Even a positive Q4 verdict would establish
+  only the registered layer-8 matched-span comparison, not necessity, mediation, or native causal-path
+  membership.
