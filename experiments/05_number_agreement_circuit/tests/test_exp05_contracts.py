@@ -280,6 +280,37 @@ class Q4Contracts(unittest.TestCase):
 
 
 class ArtifactAndRunnerContracts(unittest.TestCase):
+    def test_stage2_requires_complete_selection_state_fingerprints(self) -> None:
+        complete = {
+            "schema": "exp05.model_state_fingerprint.v1",
+            "scheme": "lexicographic state_dict keys; key/dtype/shape JSON plus uncast contiguous tensor bytes; uint64 length framing",
+            "encoding_detail": "canonical JSON metadata; unsigned uint64 big-endian metadata and raw-byte lengths",
+            "entries": [
+                {
+                    "key": "weight",
+                    "dtype": "torch.float32",
+                    "shape": [1],
+                    "byte_length": 4,
+                    "bytes_sha256": HEX_A,
+                }
+            ],
+            "key_count": 1,
+            "sha256": HEX_B,
+            "exact_match_before": True,
+        }
+        self.assertEqual(
+            stage2._validate_selection_state_fingerprint(complete, label="after_true_sweep"),
+            HEX_B,
+        )
+
+        compact = {
+            "key_count": 1,
+            "sha256": HEX_B,
+            "exact_match_before": True,
+        }
+        with self.assertRaises(stage2.Stage2Stop):
+            stage2._validate_selection_state_fingerprint(compact, label="after_true_sweep")
+
     def test_stage3_self_hash_and_runtime_alias_guards(self) -> None:
         body = {"schema": "contract", "status": "RUNNING", "value": 7}
         bound = stage3._with_self_hash(body)
