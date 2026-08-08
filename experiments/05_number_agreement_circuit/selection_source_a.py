@@ -1738,9 +1738,12 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             label="local GPT-2/SAE revisions after fresh true sweep",
             hash_field="local_snapshot_revisions_sha256",
         )
+        # Keep the complete canonical fingerprint registry at all three A7
+        # checkpoints.  Stage 2 independently validates the schema, hashing
+        # scheme, lexicographic state entries, and final digest rather than
+        # trusting a digest-only producer summary.
         manifest["provenance"]["model_state_fingerprints"]["after_true_sweep"] = {
-            "sha256": model_state_after_true["sha256"],
-            "key_count": model_state_after_true["key_count"],
+            **model_state_after_true,
             "exact_match_before": True,
         }
         manifest["provenance"]["normalized_model_config_checks"]["after_true_sweep_sha256"] = config_after_true["sha256"]
@@ -1871,8 +1874,7 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             hash_field="local_snapshot_revisions_sha256",
         )
         manifest["provenance"]["model_state_fingerprints"]["after_source_a_sweep"] = {
-            "sha256": model_state_after_source_a["sha256"],
-            "key_count": model_state_after_source_a["key_count"],
+            **model_state_after_source_a,
             "exact_match_before": True,
         }
         manifest["provenance"]["model_state_fingerprints"]["all_exact_match"] = True

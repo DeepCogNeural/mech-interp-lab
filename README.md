@@ -378,7 +378,7 @@ artifacts are [`stage1.py`](experiments/05_number_agreement_circuit/stage1.py),
 [`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md). Stage 1 is deliberately
 non-adjudicating: it does not decide Q1–Q4.
 The result-free [`protocol_v1.json`](experiments/05_number_agreement_circuit/protocol_v1.json) and the
-remaining runner files are available for review. Their 11-test model-free contract suite passes; the
+remaining runner files are available for review. Their 12-test model-free contract suite passes; the
 model-backed selection and adjudication runs remain unexecuted, so code presence is not an experimental
 result.
 
