@@ -313,13 +313,15 @@ to you.
 ## Next
 
 - **[Experiment 05 — the number-agreement circuit](experiments/05_number_agreement_circuit/DESIGN.md)**,
-  design frozen 2026-08-02, calibration and Stage 1 complete, Stages 2–3 not started. Which attention
+  design frozen 2026-08-02 and amended through 2026-08-08, calibration and Stage 1 complete, and the
+  remaining runner code present but not tested or executed. Which attention
   heads carry the subject's number to the verb position, is what they carry *number* rather than any
   perturbation, does it arrive from the subject position, and does experiment 04's twelve-row decoder
   span exceed matched-span chance at layer 8. Stage 1's [`stage1.py`](experiments/05_number_agreement_circuit/stage1.py) output
   ([`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json),
   [`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md)) is descriptive and
-  adjudicates none of Q1–Q4; the later axes retain two pre-declared verdicts each,
+  adjudicates none of Q1–Q4; the later axes retain two pre-declared scientific verdicts each plus
+  explicit blocked/inconclusive states for incomplete or unresolved evidence,
   with the latent question adjudicated on seeds disjoint from the ones that selected those latents. No
   peer-reviewed head-level *causal* baseline exists for this task in GPT-2-small, which is checked and
   sourced in the design.
@@ -366,7 +368,8 @@ Experiment 04 is four stages in the order they were actually run — go/no-go pi
 that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
 Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
-Experiment 05's calibration and Stage 1 are complete; Stages 2–3 have not started. Its
+Experiment 05's calibration and Stage 1 are complete; the selection supplement and Stages 2–3 have
+not run. Its
 [pre-registration](experiments/05_number_agreement_circuit/DESIGN.md) is frozen. The calibration pilot
 artifacts are [`calibration_results.json`](experiments/05_number_agreement_circuit/calibration_results.json)
 and [`CALIBRATION_NOTES.md`](experiments/05_number_agreement_circuit/CALIBRATION_NOTES.md); Stage 1's
@@ -374,6 +377,10 @@ artifacts are [`stage1.py`](experiments/05_number_agreement_circuit/stage1.py),
 [`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json), and
 [`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md). Stage 1 is deliberately
 non-adjudicating: it does not decide Q1–Q4.
+The result-free [`protocol_v1.json`](experiments/05_number_agreement_circuit/protocol_v1.json) and the
+remaining runner files are available for review, but no execution command for them is presented here
+until their offline contracts have been explicitly authorised and checked. Code presence is not an
+experimental result.
 
 ```bash
 (cd experiments/05_number_agreement_circuit && python calibrate.py)     # 101.8 s measured on an M1 Pro CPU

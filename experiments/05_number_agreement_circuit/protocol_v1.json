@@ -1,0 +1,1081 @@
+{
+  "schema": "exp05-number-agreement-protocol",
+  "version": 1,
+  "status": "designed_not_executed",
+  "design_freeze": {
+    "base_freeze_date": "2026-08-02",
+    "latest_amendment": 9,
+    "latest_amendment_date": "2026-08-08",
+    "preserved_amendments": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "stages": {
+      "calibration": "complete_before_freeze",
+      "stage1": "complete_for_shipped_scope",
+      "stage2": "not_started",
+      "stage3": "not_started"
+    }
+  },
+  "model": {
+    "name": "gpt2-small",
+    "mechanism_library": "TransformerLens",
+    "activation_dtype": "float32",
+    "sae": "res-jb",
+    "sae_layer": 8,
+    "residual_width": 768,
+    "expected_local_snapshot_revisions": {
+      "gpt2": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "sae": "57d08a4fd333fbf18caf3fbea63ceeb88e2f50d9",
+      "interpretation": "expected local snapshot revisions; not verified blob hashes"
+    }
+  },
+  "head_universe": {
+    "layer_count": 12,
+    "heads_per_layer": 12,
+    "total_heads": 144,
+    "layer_ids": "0..11",
+    "head_ids": "0..11",
+    "flat_test_id": "12 * layer + head + 1"
+  },
+  "target_latents": {
+    "ids": [
+      8922,
+      8952,
+      13352,
+      13594,
+      15165,
+      17956,
+      19093,
+      19955,
+      21401,
+      21581,
+      21805,
+      23011
+    ],
+    "count": 12,
+    "decoder_matrix_shape": [
+      12,
+      768
+    ],
+    "required_numerical_rank": 12,
+    "selection_origin": "experiment_04_top16_intersection"
+  },
+  "seeds": {
+    "calibration": 20260899,
+    "stage1_and_source_a_selection": 20260801,
+    "stage2_adjudication": [
+      20260802,
+      20260803,
+      20260804,
+      20260805,
+      20260806,
+      20260807,
+      20260808,
+      20260809
+    ],
+    "stage3_adjudication": [
+      20260806,
+      20260807,
+      20260808,
+      20260809,
+      20260810,
+      20260811,
+      20260812,
+      20260813
+    ]
+  },
+  "stimuli": {
+    "generator": "experiment_04_templates_and_gate_a",
+    "family": "single_flip_minimal_pairs",
+    "template": "The {ADJ} {SUBJ} {PREP} the {ATTRACTOR} ___",
+    "requested_pairs": 240,
+    "attractor": "fixed_and_counterbalanced",
+    "subject_token_rule": "last_subword_if_multi_token",
+    "directed_edits_per_pair": 2,
+    "pair_cluster_rule": "both_directed_edits_stay_together"
+  },
+  "readout": {
+    "name": "d",
+    "definition": "logit(\" are\") - logit(\" is\") at the final position",
+    "delta_definition": "sign-aligned source-minus-base change in d",
+    "model_readout": "native_unembedding",
+    "fitted_readout": false
+  },
+  "gate_a": {
+    "conditions": {
+      "both_members_signed_correct_fraction_at_least": 0.6,
+      "minimum_retained_pairs": 140,
+      "median_clean_d_gap_at_least": 1.0
+    },
+    "sanity_floor": {
+      "layer": 8,
+      "position_set": "both",
+      "full_residual_E_over_d_gap_at_least": 0.5,
+      "sign_consistency_at_least": 0.9,
+      "role": "stop_condition_only_not_a_verdict"
+    }
+  },
+  "pair_rules": {
+    "runtime_trim_floor_pairs": 100,
+    "q2_minimum_complete_pairs": 40,
+    "q2_block_code": "Q2_BLOCKED_LT40_COMPLETE_PAIRS",
+    "resampling_unit": "complete_retained_minimal_pair_cluster",
+    "directed_edits_kept_together": true,
+    "directional_sign_rule": "both sign-aligned directions must be strictly positive; zero is inconsistent"
+  },
+  "sources": {
+    "right": "subject-number-flip_opposite_member_of_base_pair",
+    "A": "same-number_different-subject-noun",
+    "B": "attractor-number-flip",
+    "C": "cross-template_number-matched",
+    "calibration_constants": {
+      "source_A_rho_full": 0.00174,
+      "source_C_rho_full": 0.13492,
+      "theta_spec_A": 0.2,
+      "theta_spec_C": 0.26983,
+      "theta_spec_definition": "max(0.20, 2 * rho_full_source)",
+      "calibration_seed": 20260899
+    }
+  },
+  "bootstrap_and_multiple_testing": {
+    "per_head_resamples": 100000,
+    "other_stage2_interval_resamples": 10000,
+    "interval_type": "two-sided_percentile",
+    "percentiles": [
+      2.5,
+      97.5
+    ],
+    "percentile_method": "numpy.percentile(method=\"linear\")",
+    "resampling_unit": "retained_minimal_pair_cluster",
+    "directed_edits_and_arms_resampled_together": true,
+    "per_head_p_value": "min(1, 2 * min((n_mu_bootstrap_le_0 + 1)/(B + 1), (n_mu_bootstrap_ge_0 + 1)/(B + 1)))",
+    "holm": {
+      "alpha": 0.05,
+      "method": "Holm step-down",
+      "family": "144 heads within each seed",
+      "raw_statistic": "head raw mean delta_d; E_all division is effect-size reporting only"
+    }
+  },
+  "rng": {
+    "generator": "numpy.random.default_rng",
+    "seed_formula": "experiment_seed * 1000 + test_id",
+    "iteration_order_derived_seed_forbidden": true
+  },
+  "test_ids": {
+    "head_sweep": {
+      "ids": "1..144",
+      "mapping": "12 * layer + head + 1"
+    },
+    "q3_true_minus_source_a_interval": 301,
+    "q4_matched_subset_draw": 401
+  },
+  "stage1": {
+    "seed": 20260801,
+    "true_source_sweep": {
+      "head_count": 144,
+      "hook": "hook_z",
+      "position": "final",
+      "role": "signed_coarse_rank_only"
+    },
+    "source_a_selection_supplement": {
+      "head_count": 144,
+      "hook": "hook_z",
+      "position": "final",
+      "same_retained_base_pairs": true,
+      "role": "legacy historical declaration; superseded by Amendment 7 fresh same-snapshot selection",
+      "operative_for_candidate_C": false
+    },
+    "joint_denominator": "all-144 hook_z@final source-to-base patch defines E_all",
+    "top_v_measurement": "top-24 signed true-source heads at hook_v@subject; descriptive only"
+  },
+  "selection": {
+    "candidate_source": "fresh_true_source_and_fresh_source_A_same_snapshot_only",
+    "required_sweeps": {
+      "fresh_true_source": {
+        "head_count": 144,
+        "hook": "hook_z",
+        "position": "final",
+        "source": "true number-flip",
+        "status_required": "COMPLETE"
+      },
+      "fresh_source_A": {
+        "head_count": 144,
+        "hook": "hook_z",
+        "position": "final",
+        "source": "source-A same-number different-noun",
+        "status_required": "COMPLETE"
+      }
+    },
+    "same_snapshot_requirements": {
+      "same_runner_invocation": true,
+      "same_in_memory_model": true,
+      "same_model_config": true,
+      "same_tokenizer": true,
+      "same_activation_dtype": true,
+      "same_immutable_clean_base_cache": true,
+      "same_retained_directed_edits_and_head_order": true
+    },
+    "state_dict_fingerprint": {
+      "before_after_required": true,
+      "before_after_sha256_must_match": true,
+      "scheme": "lexicographic state_dict keys; key/dtype/shape JSON plus uncast contiguous tensor bytes; uint64 length framing",
+      "uncast_bytes": true,
+      "record_fields": [
+        "state_dict_sha256_before",
+        "state_dict_sha256_after",
+        "state_dict_key_count",
+        "state_dict_entry_metadata"
+      ],
+      "missing_or_changed_status": "SELECTION_SNAPSHOT_EXECUTION_INCOMPLETE"
+    },
+    "required_snapshot_fingerprints": {
+      "normalized_model_config_sha256": true,
+      "tokenizer_asset_hashes": true,
+      "local_model_and_sae_revision": true,
+      "repository_commit": true,
+      "runtime_environment_fingerprint": true,
+      "activation_dtype": true,
+      "immutable_clean_base_cache_fingerprint": true,
+      "record_fields": [
+        "normalized_model_config_sha256",
+        "tokenizer_asset_hashes",
+        "local_model_revision",
+        "local_sae_revision",
+        "repository_commit",
+        "runtime_environment_fingerprint",
+        "activation_dtype",
+        "immutable_clean_base_cache_sha256"
+      ]
+    },
+    "historical_stage1_crosscheck": {
+      "role": "descriptive_non_blocking_only",
+      "top10_membership_and_order_recorded": true,
+      "fresh_top10_membership_and_order_recorded": true,
+      "membership_and_order_overlap_recorded": true,
+      "record_fields": [
+        "fresh_top10_membership",
+        "fresh_top10_order",
+        "shipped_stage1_top10_membership",
+        "shipped_stage1_top10_order",
+        "membership_overlap",
+        "order_overlap"
+      ],
+      "divergence_blocks_fresh_selection": false,
+      "may_contribute_to_C": false,
+      "additional_logical_forward_equivalents": 0,
+      "snapshot_status": "UNVERIFIED_FROM_SHIPPED_STAGE1_ARTIFACT"
+    },
+    "logical_forward_equivalents": {
+      "total": 291,
+      "clean": 1,
+      "fresh_true_source_cache": 1,
+      "fresh_source_A_cache": 1,
+      "fresh_true_source_144_heads": 144,
+      "fresh_source_A_144_heads": 144,
+      "historical_stage1_crosscheck": 0,
+      "definition": "1 clean + 1 true cache + 1 source-A cache + 144 fresh true heads + 144 fresh source-A heads"
+    },
+    "status_codes": {
+      "ready": "FRESH_SAME_INVOCATION_MODEL_STATE_FINGERPRINT_MATCHED",
+      "provenance_ready": "READY",
+      "technical_incomplete": "SELECTION_SNAPSHOT_EXECUTION_INCOMPLETE",
+      "candidate_not_constructed": "C_NOT_CONSTRUCTED_SAME_SNAPSHOT",
+      "q1_no_verdict": "BLOCKED",
+      "q2_q3_no_verdict": "NOT_INSTANTIATED_UNRESOLVED_C"
+    },
+    "failure_boundary": {
+      "missing_or_changed_fingerprint": "technical_incomplete",
+      "either_fresh_sweep_incomplete": "technical_incomplete",
+      "C_constructed_only_when": "same snapshot status ready and both fresh sweeps complete",
+      "q4_independent": true
+    }
+  },
+  "stage2": {
+    "input_artifacts": {
+      "required": [
+        "protocol",
+        "calibration",
+        "selection",
+        "candidate"
+      ],
+      "stage1_artifact_cli_input": false,
+      "stage1_role": "descriptive historical cross-check recorded inside same-snapshot selection; never a Stage-2 gate or measurement input"
+    },
+    "adjudication_seeds": [
+      20260802,
+      20260803,
+      20260804,
+      20260805,
+      20260806,
+      20260807,
+      20260808,
+      20260809
+    ],
+    "true_source_sweep": "all 144 heads at hook_z@final with per-item delta_d",
+    "source_a_sweep": "all 144 heads at hook_z@final with per-item delta_d",
+    "joint_set_runs": "E_all, nested candidate sets, Q2 reporting arms, and Q3 B-prime true/source-A arms",
+    "candidate_rule": {
+      "source_seed": 20260801,
+      "rank_source": "fresh_true_source signed mean delta_d descending from same-snapshot selection invocation",
+      "top_rank_count": 10,
+      "tie_break": "layer then head ascending",
+      "requires_source_a_noise_edge": true,
+      "requires_true_source_holm_distinguishability": true,
+      "requires_pair_level_sign_consistency_at_least": 0.9,
+      "source_a_noise_edge": {
+        "values": "absolute source-A mean delta_d for all 144 heads",
+        "quantile": 0.99,
+        "method": "numpy.percentile(values, 99, method=\"linear\")"
+      },
+      "pool": "C = fresh same-snapshot true/source-A top-10 heads satisfying all registered requirements"
+    },
+    "single_invocation_provenance": {
+      "amendment": 8,
+      "all_eight_seeds_and_adjudicating_cells_one_fresh_invocation": true,
+      "cross_invocation_scientific_reuse_allowed": false,
+      "prior_checkpoint_role": "diagnostic_integrity_inspection_only",
+      "prior_checkpoint_rows_enter_fresh_adjudicating_dataset": false,
+      "restart_from_zero_after_incomplete_attempt": true,
+      "incomplete_artifact": {
+        "execution_status": "EXECUTION_INCOMPLETE",
+        "scientific_reuse_allowed": false,
+        "resumable_for_adjudication": false,
+        "scientific_verdict_emitted": false
+      },
+      "complete_requires": [
+        "all registered adjudicating cells for all eight seeds in one invocation",
+        "complete pair-level CSV from that invocation",
+        "final checkpoint from that invocation",
+        "pair CSV and checkpoint exact seed and execution-cell coverage match",
+        "configuration code revision model-state fingerprint input hashes and artifact content hashes bound in final manifest"
+      ],
+      "complete_status_codes": [
+        "STAGE2_COMPLETE_SINGLE_INVOCATION",
+        "STAGE2_FINAL_ARTIFACTS_BOUND",
+        "STAGE2_PAIR_CSV_CHECKPOINT_COVERAGE_MATCH"
+      ],
+      "incomplete_status_codes": [
+        "STAGE2_EXECUTION_INCOMPLETE_RUNTIME_CAP",
+        "STAGE2_EXECUTION_INCOMPLETE_INTERRUPTED",
+        "STAGE2_EXECUTION_INCOMPLETE_REQUIRED_CELL_MISSING",
+        "STAGE2_EXECUTION_INCOMPLETE_SEED_COVERAGE",
+        "STAGE2_EXECUTION_INCOMPLETE_FINAL_BINDING",
+        "STAGE2_EXECUTION_INCOMPLETE_ARTIFACT_MISMATCH",
+        "STAGE2_NONVERDICT_NONRESUMABLE",
+        "STAGE2_RESTART_FROM_ZERO_REQUIRED",
+        "STAGE2_CROSS_INVOCATION_REUSE_REJECTED"
+      ],
+      "compute_accounting_fields": [
+        "final_complete_invocation_logical_fe",
+        "prior_incomplete_attempt_logical_fe",
+        "cumulative_logical_fe_all_attempts",
+        "final_complete_invocation_wall_time",
+        "cumulative_wall_time_all_attempts"
+      ],
+      "only_final_complete_invocation_supplies_science": true
+      ,
+      "valid_completed_empty_C": {
+        "condition": "fresh provenance-valid selection is COMPLETE_NO_CANDIDATES and candidate_count == 0",
+        "coverage_mode": "VALID_COMPLETED_EMPTY_C_NO_STAGE2_CELLS",
+        "stage2_instantiation_status": "NOT_INSTANTIATED_VALID_EMPTY_C",
+        "stage2_registered_cell_count": 0,
+        "stage2_executed_cell_count": 0,
+        "stage2_logical_fe": 0,
+        "stage2_scientific_verdict": null,
+        "q1_status": "COMPLETE_NO_CANDIDATES",
+        "q2_status": "NOT_INSTANTIATED_NO_TESTED_SET",
+        "q3_status": "NOT_INSTANTIATED_NO_TESTED_SET",
+        "final_checkpoint_required": false,
+        "scientific_pair_csv_required": false,
+        "eight_seed_coverage_applicable": false,
+        "single_invocation_complete_status_applicable": false,
+        "dependency_resolution_artifact_binds": [
+          "fresh_selection_artifact_sha256",
+          "fresh_paired_sweep_provenance_sha256",
+          "frozen_empty_candidate_manifest_sha256",
+          "candidate_count_zero",
+          "code_commit",
+          "protocol_sha256"
+        ],
+        "placeholder_seed_rows_forbidden": true,
+        "empty_checkpoint_or_scientific_csv_forbidden": true
+      }
+    }
+  },
+  "q1": {
+    "adjudication": {
+      "max_heads": 8,
+      "recovery_fraction_min": 0.5,
+      "pass_seed_count": 6,
+      "seed_count": 8,
+      "all_members_individually_distinguishable": true
+    },
+    "e_all_guard": {
+      "vector": "retained complete-pair E_all effects e",
+      "arithmetic_dtype": "float64",
+      "formula": {
+        "E": "mean(e)",
+        "A": "mean(abs(e))",
+        "g": "abs(E) / A",
+        "gamma": "sqrt(float64_eps)"
+      },
+      "float64_eps": "numpy.finfo(numpy.float64).eps",
+      "unresolved_status": "SCIENTIFIC_UNRESOLVED",
+      "unresolved_reason_code": "Q1_E_ALL_GUARD_NON_ESTIMABLE",
+      "unresolved_if": [
+        "E is non-finite",
+        "A is non-finite",
+        "A == 0",
+        "g is non-finite",
+        "g <= gamma"
+      ],
+      "on_unresolved": [
+        "do not divide by E_all",
+        "do not form a recovery fraction",
+        "do not emit a Q1 positive or negative seed result"
+      ],
+      "forbidden_denominator_guards": [
+        "1e-12",
+        "any substitute epsilon",
+        "regularization or denominator replacement"
+      ]
+    },
+    "nested_sets": {
+      "order": "fresh same-snapshot true-source signed rank order within C",
+      "sizes": "1..min(8, |C|)",
+      "membership_fixed_before_joint_stage2_effects": true
+    },
+    "tested_set_for_downstream_axes": "smallest qualifying Q1 set if positive; otherwise S_min(8,|C|) when |C|>0; C=0 is handled by COMPLETE_NO_CANDIDATES",
+    "positive_label": "Qualifying <=8-head set",
+    "negative_label": "No qualifying <=8-head set",
+    "positive_rule": "there exists a smallest n <= 8 satisfying jointly in >=6 of 8 seeds: E(S_n)/E_all >= 0.50 and every member is individually distinguishable",
+    "negative_boundary": "does not license a global claim that the mechanism is diffuse",
+    "aggregation": "same seed satisfies all subconditions; no mixing seed subsets",
+    "empty_candidate_selection": {
+      "completed_selection_with_C_empty": "COMPLETE_NO_CANDIDATES",
+      "public_sentence": "No candidates were selected under the frozen source-A selection rule.",
+      "not_diffuse": true,
+      "failed_or_incomplete_selection": "BLOCKED"
+    },
+    "base_global_gate_a_failure": {
+      "condition": "base global Gate-A passed is false",
+      "required_artifact_state": "execution and provenance complete",
+      "execution_status": "COMPLETE",
+      "axis_class": "SCIENTIFIC_UNRESOLVED",
+      "cell_status": "SKIPPED_BY_PREREGISTERED_SCIENTIFIC_GATE",
+      "reason_code": "Q1_BASE_GLOBAL_GATE_A_FAIL",
+      "skip_cells": [
+        "true_source_sweep",
+        "source_a_sweep",
+        "E_all",
+        "E(S_n)",
+        "Q1_recovery_ratio"
+      ],
+      "shared_q2_q3_cache_is_not_q1_execution": true,
+      "all_eight_seed_slots_required": true,
+      "does_not_block_other_seed_slots": true,
+      "does_not_clear_q2_item_ids": true,
+      "missing_or_invalid_artifact_status": "EXECUTION_INCOMPLETE"
+    },
+    "tested_set_selection": {
+      "per_nested_set_observed_pass_lower_count": "count of per-seed PASS classes only",
+      "scientific_unresolved_counts_as_pass": false,
+      "select_minimum_n_if": "observed_pass_lower_count >= 6",
+      "selected_min_n_status": "Q1_TESTED_SET_SELECTED_MIN_N_PASS_GE6",
+      "fallback_if": {
+        "no_nested_set_reaches_pass_lower_count": 6,
+        "candidate_C_nonempty": true,
+        "all_eight_q1_seed_technical_statuses_accounted": true,
+        "execution_incomplete_count": 0
+      },
+      "fallback_set": "S_min(8, |C|)",
+      "fallback_status": "Q1_TESTED_SET_SELECTED_FALLBACK_MIN8C",
+      "fallback_changes_q1_axis_verdict": false,
+      "blocked_if_execution_incomplete": true,
+      "blocked_status": "Q1_TESTED_SET_BLOCKED_EXECUTION_INCOMPLETE",
+      "no_fallback_when": [
+        "any Q1 seed is EXECUTION_INCOMPLETE",
+        "candidate C is empty",
+        "candidate C is not successfully frozen"
+      ]
+    }
+  },
+  "q2": {
+    "adjudication": {
+      "pass_seed_count": 6,
+      "seed_count": 8,
+      "source_A_abs_ratio_max": 0.2,
+      "source_C_abs_ratio_max": 0.26983
+    },
+    "eligibility": {
+      "population": "complete_pair_ids(base_gate_a_retained intersect source_c_gate_a_retained)",
+      "base_gate_a_retained": "item-level retained pair ids from base Gate-A artifact",
+      "source_c_gate_a_retained": "item-level retained pair ids from source-C Gate-A artifact",
+      "both_directed_edits_required": true,
+      "global_source_c_gate_a_passed": {
+        "role": "diagnostic_only",
+        "never_zeroes_intersection": true,
+        "never_replaces_item_intersection": true,
+        "never_creates_q2_block": true
+      },
+      "minimum_complete_pairs": 40,
+      "lt40": {
+        "axis_class": "SCIENTIFIC_UNRESOLVED",
+        "status": "SCIENTIFIC_UNRESOLVED_Q2_LT40_COMPLETE_PAIRS",
+        "legacy_input_alias": "Q2_BLOCKED_LT40_COMPLETE_PAIRS"
+      },
+      "missing_or_invalid_gate_or_pair_artifact": {
+        "status": "EXECUTION_INCOMPLETE",
+        "must_not_be_encoded_as_empty_population": true
+      }
+    },
+    "eligible_item_ids": "base Gate-A retained pair ids intersect source-C Gate-A retained pair ids",
+    "pair_requires_both_directions": true,
+    "inference_resampling": "complete eligible minimal-pair clusters",
+    "block_if_complete_pairs_below": 40,
+    "block_code": "Q2_BLOCKED_LT40_COMPLETE_PAIRS",
+    "block_code_role": "legacy_input_alias; operative seed status is SCIENTIFIC_UNRESOLVED_Q2_LT40_COMPLETE_PAIRS",
+    "tested_set": "smallest qualifying Q1 set if positive; otherwise S_min(8,|C|) when |C|>0; C=0 is NOT_INSTANTIATED_NO_TESTED_SET",
+    "thresholds": {
+      "source_A": 0.2,
+      "source_C": 0.26983
+    },
+    "positive_rule": "in >=6 of 8 seeds, |E(delta_C(S*))| <= 0.26983*|E(delta_right(S*))| and |E(delta_A(S*))| <= 0.20*|E(delta_right(S*))|",
+    "positive_label": "Number-specific under registered controls",
+    "negative_label": "Specificity bound not met",
+    "source_B": "reported descriptively and never adjudicates Q2",
+    "no_tested_set_status": "NOT_INSTANTIATED_NO_TESTED_SET",
+    "no_tested_set_outputs": [
+      "effect",
+      "interval",
+      "bootstrap_test",
+      "positive_or_negative_label"
+    ]
+  },
+  "q3": {
+    "name": "B-prime",
+    "kernel_name": "simultaneous_clamped_z_intervention_under_frozen_base_attention_weights",
+    "formula": "z_star = z_base + P_base(final,subject) * (V_source(subject) - V_base(subject))",
+    "cache_inputs": "immutable clean/base and source activation caches",
+    "replacement": "jointly replace only selected heads' hook_z@final in an otherwise clean base forward",
+    "frozen_attention": "P_base(final,subject)",
+    "live_hooks_replaced": [],
+    "forbidden": [
+      "live hook_v replacement",
+      "live hook_Q replacement",
+      "live hook_K replacement",
+      "targets read from intervention forward",
+      "joint-v patch"
+    ],
+    "arms": [
+      "true number-flip",
+      "source-A"
+    ],
+    "claim_boundary": "not mediation, necessity, sufficiency, or faithfulness",
+    "retained_item_gate": {
+      "requires_tested_set": true,
+      "positive_retained_item_condition": "retained_item_count > 0 and required Q3 cache/provenance complete",
+      "positive_condition_execution": "run independent Q3 rule and assign PASS or COMPLETED_FAIL",
+      "zero_retained_item_condition": "retained_item_count == 0 and execution/provenance complete",
+      "zero_retained_item_execution_status": "COMPLETE",
+      "zero_retained_item_axis_class": "SCIENTIFIC_UNRESOLVED",
+      "zero_retained_item_cell_status": "SKIPPED_NO_RETAINED_ITEMS",
+      "zero_retained_item_reason_code": "Q3_ZERO_RETAINED_ITEMS",
+      "no_tested_set_status": "NOT_INSTANTIATED_NO_TESTED_SET",
+      "missing_or_invalid_artifact_status": "EXECUTION_INCOMPLETE",
+      "base_global_q1_gate_does_not_suppress_q3": true
+    },
+    "forward_equivalents": {
+      "one_source_plus_joint_set": 3,
+      "true_and_source_a_arms": 5,
+      "one_all_144_singleton_sweep": 146,
+      "batching_changes_logical_count": false
+    },
+    "decision_statistic": {
+      "F_path": "mean(delta_d_A_path) in raw logit-difference units",
+      "D_path": "mean(delta_d_true_path) - mean(delta_d_A_path)",
+      "resamples": 10000,
+      "test_id": 301,
+      "pass_seed_count": 6,
+      "seed_count": 8,
+      "requires_D_path_gt_zero": true,
+      "requires_ci_lower_gt_zero": true,
+      "positive_per_seed": "D_path > 0 and the two-sided percentile 95% interval lower bound > 0",
+      "positive_aggregation": ">=6 of 8 adjudication seeds",
+      "recovery_fraction": {
+        "estimator": "E(delta_true_path) / E(delta_direct(S*))",
+        "scope": "per_seed_descriptive_only",
+        "across_seed_inferential_interval": "withdrawn",
+        "used_for_adjudication": false,
+        "used_for_partial_identification": false,
+        "no_pass_fail_threshold": true,
+        "base_global_q1_gate_interaction": {
+          "condition": "base global Gate-A passed is false while Q3 tested-set/items/cache/provenance are otherwise complete",
+          "direct_reference_added": false,
+          "slot_value": null,
+          "slot_null_reason": "Q3_DRF_REFERENCE_SKIPPED_BY_Q1_BASE_GLOBAL_GATE",
+          "q3_axis_class_unchanged": true,
+          "q3_pass_or_completed_fail_unchanged": true,
+          "drf_affects_q3_verdict": false,
+          "additional_logical_forward_equivalents": 0,
+          "distinct_from": [
+            "NONFINITE_VALUE",
+            "SCIENTIFIC_UNRESOLVED",
+            "EXECUTION_INCOMPLETE"
+          ]
+        },
+        "seed_slots": {
+          "count": 8,
+          "seed_ids": [
+            20260802,
+            20260803,
+            20260804,
+            20260805,
+            20260806,
+            20260807,
+            20260808,
+            20260809
+          ],
+          "exact_protocol_order": true,
+          "slot_schema": {
+            "seed": "integer; must equal the registered slot id",
+            "value": "finite number or null",
+            "reason": "required non-empty object when value is null; forbidden when value is finite"
+          },
+          "null_reason_schema": {
+            "code": "non-empty status/reason code",
+            "detail": "non-empty explanation"
+          },
+          "no_slot_drop": true
+        },
+        "summary_fields": {
+          "n_finite": "count of finite values",
+          "median": "numeric median of finite values; mean of two middle sorted values when count is even; null when count is zero",
+          "observed_min": "minimum finite value; null when count is zero",
+          "observed_max": "maximum finite value; null when count is zero"
+        },
+        "allowed_null_reason_classes": [
+          "NOT_INSTANTIATED_NO_TESTED_SET",
+          "SCIENTIFIC_UNRESOLVED",
+          "EXECUTION_INCOMPLETE",
+          "NONFINITE_VALUE",
+          "Q3_DRF_REFERENCE_SKIPPED_BY_Q1_BASE_GLOBAL_GATE"
+        ]
+      },
+      "positive_label": "Subject-value transport shown",
+      "negative_label": "Subject-value transport not shown",
+      "no_tested_set_status": "NOT_INSTANTIATED_NO_TESTED_SET",
+      "no_tested_set_outputs": [
+        "effect",
+        "interval",
+        "bootstrap_test",
+        "positive_or_negative_label"
+      ]
+    }
+  },
+  "q4": {
+    "adjudication_seeds": [
+      20260806,
+      20260807,
+      20260808,
+      20260809,
+      20260810,
+      20260811,
+      20260812,
+      20260813
+    ],
+    "independent_of_candidate_selection_and_stage2": true,
+    "upstream_candidate_or_stage2_inputs": [],
+    "layer": 8,
+    "hook": "hook_resid_pre",
+    "position_sets": [
+      "subject",
+      "final",
+      "both"
+    ],
+    "adjudicating_position_set": "both",
+    "delta": "true activation delta x_src - x_base; no encoder and no reconstruction term",
+    "interventions": {
+      "reference": "add delta",
+      "span": "add P_V delta",
+      "complement": "add (I - P_V) delta"
+    },
+    "alpha_cells": {
+      "scope": "both position set on held-out evaluation split",
+      "alpha_0_5": "new cell",
+      "alpha_1_0": "alias existing full-delta/both/evaluation cell",
+      "alias_requires_same_execution_tensor_result_hashes": true,
+      "alpha_1_0_rerun": false,
+      "alpha_1_0_double_count": false,
+      "pca_alpha_1_evaluation_cells": [
+        "PCA_span/subject",
+        "PCA_span/final",
+        "PCA_span/both"
+      ],
+      "pca_alpha_1_primary_cell": "PCA_span/both",
+      "pca_alpha_1_fixed_controls": [
+        "PCA_span/subject",
+        "PCA_span/final"
+      ],
+      "pca_alpha_1_logical_cell_count": 3,
+      "pca_alpha_1_never_expand_to_twelve_cells": true
+    },
+    "projector": {
+      "decoder_matrix": "target twelve decoder rows D in R^(12x768)",
+      "arithmetic": "float64 thin SVD",
+      "rank_tolerance": "max(D.shape) * eps_float64 * s_max",
+      "projection": "P_V delta = V_r.T @ (V_r @ delta)",
+      "cast_to_model_dtype": "only at injection",
+      "rank_block": "if target numerical rank is not 12, block and require a dated amendment"
+    },
+    "matched_pool": {
+      "candidate_count": 128,
+      "pre_filter": "experiment-04 causal pre-filter",
+      "rank_and_freeze_reads_only": "rank-training split",
+      "target_ids_excluded": true,
+      "evaluation_cannot_change_pool": true
+    },
+    "data_roles": {
+      "split_generation": "experiment-04 deterministic item-disjoint shuffle after Gate A",
+      "pair_and_directions_stay_together": true,
+      "gate_a_cache": {
+        "selection_mode": "model-derived clean-logit/margin/provenance cache under separate authorization",
+        "coverage": "every Stage-3 item and seed",
+        "offline_materialization": "derive retained bits and immutable roles from cache only",
+        "artifacts": [
+          "stage3_gate_a_cache.jsonl",
+          "split_manifest",
+          "prepare_manifest"
+        ],
+        "cross_hashes_required": true,
+        "hash_values_present_in_protocol": false,
+        "independent_pushed_review_before_q4": true
+      },
+      "role_table": {
+        "N_lt_40": {
+          "rank_training": "all available",
+          "evaluation": "none",
+          "status": "BLOCKED_INSUFFICIENT_TRAIN"
+        },
+        "N_eq_40": {
+          "rank_training": 40,
+          "evaluation": 0,
+          "status": "BLOCKED_INSUFFICIENT_EVAL"
+        },
+        "N_41_to_79": {
+          "rank_training": 40,
+          "evaluation": "remainder",
+          "status": "BLOCKED_INSUFFICIENT_EVAL"
+        },
+        "N_80_to_190": {
+          "rank_training": 40,
+          "evaluation": "remainder",
+          "status": "usable"
+        },
+        "N_gt_190": {
+          "rank_training": 40,
+          "evaluation": 150,
+          "remaining": "unused_after_eval_cap",
+          "status": "usable"
+        }
+      }
+    },
+    "matched_subsets": {
+      "subset_size": 12,
+      "draw_count": 100,
+      "scope": "both position set, held-out evaluation split, alpha=1.0 only; one cell per seed",
+      "sampling": "uniform without replacement within each subset",
+      "draws_may_overlap_across_subsets": true,
+      "exclude_target_ids": true,
+      "full_rank_required": true,
+      "max_redraw_attempts": 10000,
+      "rank_deficient_subset_action": "reject and redraw; block seed if 100 full-rank subsets cannot be obtained",
+      "insufficient_candidate_action": "block if fewer than 12 eligible candidate ids",
+      "rng_test_id": 401,
+      "manifest_records": [
+        "frozen pool ids",
+        "all drawn subset ids",
+        "all rejected rank-deficient subset ids"
+      ]
+    },
+    "statistics": {
+      "R_span": "E(delta_span) / E(delta)",
+      "R_comp": "E(delta_comp) / E(delta)",
+      "matched_edge": "second-largest of the 100 per-seed matched R_span values",
+      "denominator_guard": {
+        "D": "E(delta)",
+        "M": "max(1, E|delta|, E|delta_span|, E|delta_comp|)",
+        "tau": "sqrt(float64_eps) * M",
+        "condition": "abs(D) <= tau",
+        "status": "NON_ESTIMABLE_DENOMINATOR",
+        "on_guard": "do not form either ratio and do not regularize or replace D",
+        "evaluation_scope": "held-out evaluation split only"
+      }
+    },
+    "context_arms": {
+      "pca": {
+        "role": "descriptive only",
+        "procedure": "experiment-04 generate_pool + fit_complete_bases",
+        "fit_scope": "per Stage-3 seed",
+        "generic_text_pool_tokens": 8192,
+        "preserve": [
+          "pool construction",
+          "pool sampling",
+          "layer-8 extraction",
+          "centering",
+          "fitting order",
+          "serialization"
+        ],
+        "basis_fit_dtype": "float64",
+        "implementation_deviation": "experiment-04 code currently uses float32 eigh plus refinements; Stage3 freezes float64 and records this deviation",
+        "fit_excludes": [
+          "task ids",
+          "Gate-A bits",
+          "role assignments",
+          "task deltas",
+          "evaluation items"
+        ],
+        "top12_projector": true,
+        "fallback_task_pool": false,
+        "alpha_1_evaluation_cells": [
+          "PCA_span/subject",
+          "PCA_span/final",
+          "PCA_span/both"
+        ],
+        "primary_cell": "PCA_span/both",
+        "fixed_control_cells": [
+          "PCA_span/subject",
+          "PCA_span/final"
+        ],
+        "logical_cell_count": 3
+      },
+      "supervised_train_delta_or_P_context": "withdrawn"
+    },
+    "positive_rule": "R_span exceeds the per-seed matched edge in >=6 of 8 seeds; a NON_ESTIMABLE_DENOMINATOR seed supplies no comparison and cannot count toward six",
+    "positive_label": "Above matched-span chance",
+    "negative_label": "Not above matched-span chance",
+    "magnitude_floor": false,
+    "reporting": {
+      "linearity_diagnostics": "numeric alpha=0.5 and alpha=1.0 responses, intervals, and matched reference only",
+      "qualitative_strongly_sublinear_language": false,
+      "qualitative_departs_far_from_one_language": false,
+      "non_estimable_reporting": "emit NON_ESTIMABLE_DENOMINATOR instead of a ratio"
+    },
+    "single_invocation_runtime_provenance": {
+      "amendment": 9,
+      "all_eight_q4_runtime_seeds_one_fresh_invocation": true,
+      "cross_invocation_scientific_reuse_allowed": false,
+      "prior_checkpoint_role": "diagnostic_integrity_inspection_only",
+      "restart_q4_runtime_from_zero_after_incomplete_attempt": true,
+      "preparation_inputs_may_be_reused_when_hash_and_receipt_match": true,
+      "preparation_inputs": [
+        "stage3_gate_a_cache",
+        "stage3_split_manifest",
+        "stage3_prepare_manifest",
+        "independent_review_receipt",
+        "independent_harness_receipt"
+      ],
+      "clean_source_requirement": {
+        "require_clean_tree": true,
+        "start_and_finish_commit_source_hash_and_clean_status_match": true,
+        "runtime_outputs_outside_source_worktree": true,
+        "dirty_or_changed_source_status": "EXECUTION_INCOMPLETE"
+      },
+      "seed_execution_classes": [
+        "EXECUTION_COMPLETE",
+        "EXECUTION_INCOMPLETE"
+      ],
+      "any_execution_incomplete_seed": {
+        "top_level_execution_status": "EXECUTION_INCOMPLETE",
+        "top_level_scientific_verdict": null,
+        "resumable_for_adjudication": false
+      },
+      "scientific_unresolved_output": {
+        "execution_may_be_complete": true,
+        "dependent_value": null,
+        "dependent_axis_status": "SCIENTIFIC_UNRESOLVED",
+        "reason_code": "frozen gate-specific reason",
+        "optional_unvalidated_numeric_output_forbidden": true
+      },
+      "accepted_draw_binding_key": [
+        "invocation_id",
+        "seed_id",
+        "draw_family",
+        "draw_index",
+        "accepted_attempt_id",
+        "draw_or_projector_hash"
+      ],
+      "accepted_draw_sets_exact_across": [
+        "accepted_draw_manifest",
+        "accepted_attempt_records",
+        "accepted_scientific_csv"
+      ],
+      "accepted_draw_duplicates_or_missing_rows_forbidden": true,
+      "complete_requires": [
+        "all eight seeds have exact registered execution-cell coverage",
+        "accepted draw set and multiplicity match manifest attempts and scientific CSV",
+        "final manifest binds complete attempt ledger scientific CSV final checkpoint execution-cell registry immutable preparation hashes model-state fingerprint configuration source-tree identity and code revision"
+      ],
+      "final_manifest_binds": [
+        "accepted_draw_manifest",
+        "complete_attempt_ledger",
+        "accepted_scientific_csv",
+        "final_checkpoint",
+        "execution_cell_registry",
+        "immutable_preparation_input_hashes",
+        "model_state_fingerprint",
+        "configuration",
+        "source_tree_identity",
+        "code_revision"
+      ],
+      "compute_accounting_fields": [
+        "q4_invocation_id",
+        "q4_attempt_logical_fe_executed",
+        "q4_attempt_wall_time",
+        "q4_attempt_status",
+        "final_complete_q4_logical_fe",
+        "final_complete_q4_wall_time",
+        "prior_incomplete_q4_logical_fe",
+        "cumulative_q4_logical_fe_all_attempts",
+        "cumulative_q4_wall_time_all_attempts",
+        "preparation_logical_fe_separately"
+      ],
+      "thresholds_and_estimands_unchanged": true
+    }
+  },
+  "seed_aggregation": {
+    "applies_to": "each instantiated adjudicating Q1-Q4 axis over its eight registered seeds",
+    "candidate_selection_is_not_an_eight_seed_axis": true,
+    "per_seed_classes": [
+      "PASS",
+      "COMPLETED_FAIL",
+      "SCIENTIFIC_UNRESOLVED",
+      "EXECUTION_INCOMPLETE"
+    ],
+    "classes_are_mutually_exclusive": true,
+    "class_counts_must_sum_to": 8,
+    "execution_incomplete_rule": {
+      "condition": "EXECUTION_INCOMPLETE count > 0",
+      "axis_status": "BLOCKED_EXECUTION_INCOMPLETE",
+      "scientific_verdict_emitted": false
+    },
+    "partial_identification": {
+      "lower_bound": "PASS count",
+      "upper_bound": "PASS count + SCIENTIFIC_UNRESOLVED count",
+      "positive": "lower_bound >= 6",
+      "negative": "upper_bound < 6",
+      "otherwise": "INCONCLUSIVE_UNRESOLVED_SEEDS"
+    },
+    "unresolved_examples": [
+      "SCIENTIFIC_UNRESOLVED_Q2_LT40_COMPLETE_PAIRS",
+      "Q1_E_ALL_GUARD_NON_ESTIMABLE",
+      "Q1_BASE_GLOBAL_GATE_A_FAIL",
+      "Q3_ZERO_RETAINED_ITEMS",
+      "Q4 BLOCKED_INSUFFICIENT_TRAIN",
+      "Q4 BLOCKED_INSUFFICIENT_EVAL",
+      "Q4 insufficient or rank-deficient matched pool",
+      "Q4 NON_ESTIMABLE_DENOMINATOR"
+    ],
+    "descriptive_pca_failure": "recorded as a comparator failure; does not alter the primary target-versus-matched Q4 seed class",
+    "candidate_dependency": {
+      "valid_completed_empty_C": "follow q1.empty_candidate_selection and q2/q3 no-tested-set statuses",
+      "unfrozen_or_failed_C_q1": "BLOCKED",
+      "unfrozen_or_failed_C_q2_q3": "NOT_INSTANTIATED_UNRESOLVED_C"
+    }
+  },
+  "runtime": {
+    "planning_cap_cpu_minutes": 180,
+    "cap_role": "planning_gate_only",
+    "measured_total_cpu_minutes": null,
+    "projection_status": "not_certified_before_stage2_and_stage3",
+    "unknown_cost_terms": [
+      "attention-value caching for z/v implementation",
+      "per-seed Stage-3 PCA fit",
+      "Stage-3 latent-candidate pool preparation",
+      "fresh same-snapshot true/source-A selection invocation"
+    ],
+    "if_cap_exceeded": {
+      "allowed_action": "trim retained pairs per seed",
+      "minimum_pair_floor": 100,
+      "requires_dated_amendment_before_main_run": true
+    },
+    "no_false_total": true
+  },
+  "supersession": {
+    "amendment_5_operates_over_conflicts": true,
+    "amendment_6_operates_over_conflicts": true,
+    "amendment_7_operates_over_conflicts": true,
+    "amendment_8_operates_over_conflicts": true,
+    "amendment_9_operates_over_conflicts": true,
+    "legacy_text_preserved_for_audit": true,
+    "retired_or_superseded": [
+      "Q3 live hook_v/path-patch implementation wording",
+      "Q2 base-only or direction-level eligible population wording",
+      "Q4 ratio without D/M/tau denominator guard",
+      "public qualitative strongly-sublinear or departs-far-from-one wording",
+      "cross-layer Q1-to-Q3 P_Vdelta covariate",
+      "guaranteed binary verdict wording that forbids blocked or inconclusive states",
+      "Q3 across-seed inferential interval for direct recovery",
+      "Q2 global source-C Gate-A boolean as item-population gate",
+      "Q1 1e-12 or substitute denominator guard",
+      "global base Gate-A failure treated as execution incompleteness",
+      "shipped Stage-1 true-source rows used as candidate measurements",
+      "separate or mutable model snapshots for true/source-A candidate sweeps",
+      "selection provenance missing state/config/tokenizer/cache/revision/commit/environment fingerprints",
+      "selection logical forward-equivalent accounting below 291",
+      "cross-invocation reuse of Stage-2 scientific rows or primitive arrays",
+      "partial or runtime-capped Stage-2 work emitting a scientific verdict",
+      "cross-invocation reuse of Stage-3 Q4 scientific rows or accepted draws",
+      "Stage-3 Q4 COMPLETE with any execution-incomplete seed"
+    ],
+    "cross_layer_q1_to_q3_P_Vdelta_covariate": "not collected",
+    "amendment_6": {
+      "q3_direct_recovery_across_seed_interval": "withdrawn",
+      "q2_global_source_c_gate_role": "diagnostic_only",
+      "q1_e_all_guard": "float64 E/A/g against sqrt(float64_eps)",
+      "q1_base_global_gate_a_fail": "SCIENTIFIC_UNRESOLVED only when execution and provenance are complete",
+      "missing_or_invalid_artifacts": "EXECUTION_INCOMPLETE"
+    },
+    "amendment_7": {
+      "candidate_source": "same-invocation fresh true/source-A sweeps only",
+      "stage1_role": "descriptive_non_blocking_crosscheck_only",
+      "snapshot_status": "FRESH_SAME_INVOCATION_MODEL_STATE_FINGERPRINT_MATCHED",
+      "provenance_status": "READY",
+      "technical_incomplete_status": "SELECTION_SNAPSHOT_EXECUTION_INCOMPLETE",
+      "candidate_not_constructed_status": "C_NOT_CONSTRUCTED_SAME_SNAPSHOT",
+      "q1_status_when_candidate_not_constructed": "BLOCKED",
+      "q2_q3_status_when_candidate_not_constructed": "NOT_INSTANTIATED_UNRESOLVED_C",
+      "fresh_selection_logical_forward_equivalents": 291,
+      "historical_stage1_crosscheck_logical_forward_equivalents": 0,
+      "q4_independent": true
+    },
+    "amendment_8": {
+      "execution_scope": "one fresh invocation for all eight Stage-2 seeds and adjudicating cells",
+      "prior_checkpoint_role": "diagnostic_integrity_inspection_only",
+      "cross_invocation_scientific_reuse_allowed": false,
+      "incomplete_status": "EXECUTION_INCOMPLETE",
+      "scientific_reuse_allowed_when_incomplete": false,
+      "resumable_for_adjudication": false,
+      "restart_from_zero_required": true,
+      "complete_requires_bound_pair_csv_and_checkpoint_coverage": true
+    },
+    "amendment_9": {
+      "q4_runtime_scope": "one fresh invocation for all eight Q4 seeds",
+      "prior_checkpoint_role": "diagnostic_integrity_inspection_only",
+      "cross_invocation_scientific_reuse_allowed": false,
+      "preparation_reuse": "allowed only with accepted exact hashes and receipts",
+      "clean_source_required": true,
+      "any_execution_incomplete_seed_blocks_top_level_complete": true,
+      "accepted_draw_sets_must_match_manifest_attempts_and_csv": true,
+      "thresholds_and_estimands_unchanged": true
+    }
+  }
+}
