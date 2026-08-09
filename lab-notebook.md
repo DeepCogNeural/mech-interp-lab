@@ -16,7 +16,40 @@ Template for a new entry:
 
 ---
 
-## 2026-08-08 — The span carries the effect; the bridge is still open
+## 2026-08-09 — The bridge localises a reproducible causal subspace, not a complete path
+
+**Goal:** Test the highest-information alternative left by Q4: whether the fixed layer-8 span carries
+the effect induced upstream by L7H4, rather than merely correlating with the registered two-head
+intervention.
+
+**Did:** Ran the Advisor-chosen exploratory bridge from clean source `0d7c4db` on eight fresh held-out
+seeds (`20260814–20260821`), with 150 pairs per seed, 100 target-excluded matched rank-12 spans per
+seed (800 total), and the `L7_ONLY_RESID_PRE8` timing decision. The L8H5 final value path was then
+clamped to the natural source-A baseline as a dependence control. The invocation took 852.85 seconds;
+the raw result remains outside Git with SHA-256 prefix `9d8446…`.
+
+**Expected:** If the Q4 span was downstream of the upstream head intervention, it should rescue a
+substantial fraction of the directed effect and beat matched spans. If it was only a task-aligned
+subspace selected by the later intervention, the bridge should collapse or fail the matched control.
+
+**Happened:** The target recovered `R_target=0.678639` (t(7) CI `[0.673841, 0.683437]`) and exceeded
+the actual maximum of all 100 matched spans on every seed (8/8). The complement was `R_comp=0.305339`
+(CI `[0.301260, 0.309418]`), versus aggregate matched-span mean `0.065910` (CI `[0.049408, 0.082411]`).
+With the L8H5 final value path clamped, the target remained `R_target=0.674047` (CI
+`[0.669586, 0.678508]`); the natural reader projection coefficient was descriptive and only
+`0.027–0.124` across seeds. The independent artifact review shipped `SHIP`.
+
+**Confused about / open:** The clamp weakens a dominant L8H5-final-value explanation but does not
+show L8H5 is irrelevant. Other positions, QK/attention routes, and parallel routes were not tested.
+The target-plus-complement near-closure belongs to a separate nonlinear arm and cannot be read as a
+linear attribution. This is exploratory bridge evidence, not a preregistered mediation verdict.
+
+**Next:** Freeze a small factorial that distinguishes a too-narrow clamp from an L8H5-parallel route;
+do not run it until the design is written and reviewed.
+
+---
+
+## 2026-08-08 — The span carries the effect; choosing the bridge follow-up
 
 **Goal:** Close the representation-span question without turning a span-level result into a claim about
 the model's native circuit, then choose one high-information follow-up.
@@ -44,9 +77,8 @@ head→span→readout path in its unconstrained computation. It does not establi
 mediation, a complete circuit, or cross-model/task generalisation. The remaining uncertainty is
 specifically whether the observed span effect is downstream of the selected head intervention.
 
-**Next:** Run one Advisor-chosen exploratory bridge on fresh held-out items: L7H4 → `resid_pre8` target
-span → natural L8H5/readout, with an L8H5 clamp arm. It has not run; no new amendment or protocol layer
-is being added.
+**Next:** The Advisor-chosen exploratory bridge on fresh held-out items was run in the next dated entry;
+no new amendment or protocol layer was added.
 
 ---
 

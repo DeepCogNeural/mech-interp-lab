@@ -1,0 +1,12 @@
+{
+  "claim_boundary": "Descriptive exploratory bridge evidence; no mediation claim.",
+  "figure": "figure_bridge_rescue.svg",
+  "panels": {
+    "A": "per-seed natural target R versus maximum matched-span R",
+    "B": "per-seed natural target R versus L8H5-clamped target R",
+    "C": "per-seed descriptive L8 reader projection coefficient"
+  },
+  "png": "figure_bridge_rescue.png",
+  "schema": "exp05-public-bridge-figure-manifest-v1",
+  "source": "bridge_seed_metrics.csv"
+}

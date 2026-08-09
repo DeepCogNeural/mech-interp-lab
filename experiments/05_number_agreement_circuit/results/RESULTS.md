@@ -81,3 +81,41 @@ python3 experiments/05_number_agreement_circuit/make_claim_ladder.py \
 [`index.json`](index.json) and [`artifact_index.json`](artifact_index.json)
 list generated files and source receipts.  Verify the checked-in packet with
 `(cd experiments/05_number_agreement_circuit/results && sha256sum -c checksums.sha256)`.
+## Exploratory bridge follow-up
+
+The single follow-up is a fresh out-of-sample, exploratory bridge around the
+L7H4 intervention.  It asks whether the fixed 12-row layer-8 decoder span
+also carries that upstream head-induced effect, while clamping the L8H5 reader
+as a dependence control.  The compact evidence is in
+[`bridge_seed_metrics.csv`](bridge_seed_metrics.csv),
+[`bridge_matched_ratios.csv`](bridge_matched_ratios.csv), and
+[`bridge_result_summary.json`](bridge_result_summary.json); the raw 639 KB
+model result stays outside Git.
+
+**Exploratory finding.** On eight fresh seeds, the target span had mean
+`R_target=0.6786` (95% t(7) CI `[0.6738, 0.6834]`) versus mean matched-span
+maximum `0.4110`, and exceeded the matched maximum on all 8 seeds.  The
+complement ratio was `0.3053`.  With L8H5 clamped, the target remained large:
+mean `R_target_clamped=0.6740` (95% t(7) CI `[0.6696, 0.6785]`).  This does
+not support dominant dependence on L8H5's tested final-value path or a mediation claim; it only says that this
+fixed span carries the tested L7H4-induced effect better than the matched
+controls in this exploratory sample.
+
+**Run integrity.** Gate A passed on 8/8 seeds, retaining 230–237 pairs per
+seed; the evaluation split contains 150 pairs per seed.  The timing identity
+checks have non-final and selected-position maxima of 0, and the full-vs-true
+final-logit maximum is `9.536743e-06 < 1e-5`.  The run started and finished
+with a clean worktree at commit `0d7c4db`; the raw result is bound by SHA-256
+`9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef`.
+
+This follow-up has no preregistered verdict or threshold.  It does not
+establish naturalness, necessity, sufficiency, individual-latent causality,
+or full mediation.  The three-panel overview is
+[`figure_bridge_rescue.svg`](figure_bridge_rescue.svg) (and its PNG).
+
+Reproduce the compact packet with:
+
+```bash
+python3 experiments/05_number_agreement_circuit/make_bridge_summary.py \
+  --bridge-results /path/to/bridge_results.json
+```

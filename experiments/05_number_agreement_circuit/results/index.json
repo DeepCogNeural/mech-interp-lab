@@ -18,13 +18,28 @@
     "stage3_matched_ratios.csv",
     "stage3_result_summary.json",
     "stage3/stage3_prepare_review.json",
-    "stage3/stage3_harness_receipt.json"
+    "stage3/stage3_harness_receipt.json",
+    "bridge_seed_metrics.csv",
+    "bridge_matched_ratios.csv",
+    "bridge_result_summary.json",
+    "figure_bridge_rescue.svg",
+    "figure_bridge_rescue.png",
+    "bridge_figure_manifest.json"
   ],
+  "bridge_followup": {
+    "raw_result_copied": false,
+    "source_sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef",
+    "status": "COMPLETE_EXPLORATORY",
+    "summary": "bridge_result_summary.json",
+    "target_exceeds_matched_max_all_seeds": true
+  },
   "checksums": "checksums.sha256",
-  "claim_boundary": "Q1-Q3 Stage2 evidence and the adjudicated Q4 matched-span comparison are public; Q4 is limited to the directed-logit target-span versus frozen matched-span test.",
+  "claim_boundary": "Q1-Q3 Stage2 evidence and the adjudicated Q4 matched-span comparison are public; Q4 is limited to the directed-logit target-span versus frozen matched-span test. The exploratory bridge packet is descriptive and carries no preregistered verdict or mediation claim. The exploratory bridge packet is descriptive and carries no preregistered verdict or mediation claim.",
   "package_policy": {
+    "bridge_exploratory_verdict_emitted": false,
     "historical_30d941c_science_eligible": false,
     "portable_stage3_prepare_manifest_copied": true,
+    "raw_bridge_results_copied": false,
     "raw_stage2_json_copied": false,
     "raw_stage2_pair_csv_copied": false,
     "raw_stage3_draws_copied": false,

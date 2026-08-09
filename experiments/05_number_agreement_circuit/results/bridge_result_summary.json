@@ -1,0 +1,175 @@
+{
+  "claim": "In this exploratory follow-up, the fixed 12-row decoder span carried a large fraction of the L7H4-induced directed-logit effect on fresh seeds and exceeded every matched span maximum in the 8-seed sample.",
+  "claim_boundary": "The bridge packet is descriptive follow-up evidence, not a preregistered adjudication.",
+  "compact_artifacts": {
+    "figure": "figure_bridge_rescue.svg",
+    "matched_ratios": "bridge_matched_ratios.csv",
+    "raw_result_copied": false,
+    "seed_metrics": "bridge_seed_metrics.csv"
+  },
+  "design": {
+    "fixed_decoder_span": "12 layer-8 res-jb decoder rows from Q4",
+    "follow_up_type": "fresh out-of-sample exploratory bridge",
+    "matched_control": "100 rank-12 target-excluded spans per seed",
+    "reader_clamp": "L8H5.final fixed to natural source-A L7H4 arm value",
+    "reader_head": "L8H5",
+    "timing_decision": "L7_ONLY_RESID_PRE8",
+    "upstream_head": "L7H4"
+  },
+  "integrity": {
+    "gate_a": {
+      "all_passed": true,
+      "evaluation_pairs_per_seed": [
+        150
+      ],
+      "passed_count": 8,
+      "retained_pairs_per_seed_range": [
+        230,
+        237
+      ],
+      "seed_count": 8
+    },
+    "git": {
+      "clean_final": true,
+      "clean_start": true,
+      "final_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
+      "final_status_porcelain": "",
+      "start_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
+      "start_status_porcelain": ""
+    },
+    "identity": {
+      "full_vs_true_final_logit_max_abs": 9.5367431640625e-06,
+      "full_vs_true_final_logit_tolerance": 1e-05,
+      "full_vs_true_final_logit_within_tolerance": true,
+      "non_final_positions_max_abs": 0.0,
+      "selected_positions_max_abs": 0.0,
+      "status": "PASS"
+    },
+    "raw_result_sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef"
+  },
+  "matched_per_seed": 100,
+  "matched_rows": 800,
+  "metrics": {
+    "R_complement": {
+      "ci95": {
+        "high": 0.3094182813449743,
+        "low": 0.3012603734852325
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.3053393274151034,
+      "standard_error": 0.0017247162494168655,
+      "status": "ESTIMABLE",
+      "t_critical": 2.365
+    },
+    "R_matched_max": {
+      "ci95": {
+        "high": 0.5681158826463573,
+        "low": 0.2538980971382866
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.41100698989232193,
+      "standard_error": 0.06643082146048004,
+      "status": "ESTIMABLE",
+      "t_critical": 2.365
+    },
+    "R_matched_mean": {
+      "ci95": {
+        "high": 0.08241096522610206,
+        "low": 0.049408345618835725
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.06590965542246889,
+      "standard_error": 0.00697729801422121,
+      "status": "ESTIMABLE",
+      "t_critical": 2.365
+    },
+    "R_matched_second_largest": {
+      "ci95": {
+        "high": 0.5259763840662812,
+        "low": 0.231447787392171
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.3787120857292261,
+      "standard_error": 0.06226820225668291,
+      "status": "ESTIMABLE",
+      "t_critical": 2.365
+    },
+    "R_target": {
+      "ci95": {
+        "high": 0.6834368332068662,
+        "low": 0.6738412044176022
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.6786390188122342,
+      "standard_error": 0.0020286741626351153,
+      "status": "ESTIMABLE",
+      "t_critical": 2.365
+    },
+    "R_target_clamped": {
+      "ci95": {
+        "high": 0.6785077911279654,
+        "low": 0.6695859559686784
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.6740468735483219,
+      "standard_error": 0.00188622307807336,
+      "status": "ESTIMABLE",
+      "t_critical": 2.365
+    },
+    "target_reader_coefficient": {
+      "ci95": {
+        "high": 0.12042046856694504,
+        "low": 0.06808986772980154
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.09425516814837329,
+      "standard_error": 0.011063551974026108,
+      "status": "ESTIMABLE",
+      "t_critical": 2.365
+    }
+  },
+  "not_claimed": [
+    "This is an exploratory follow-up with no preregistered verdict or threshold.",
+    "It does not establish that the fixed span is a natural, necessary, or sufficient representation.",
+    "It does not establish individual-latent causality, a complete circuit, or full mediation.",
+    "The L8H5 reader clamp is a dependence control, not a proof of an L7H4-to-span-to-readout mediation path.",
+    "R_target is a directed-logit effect ratio, not an activation-reconstruction percentage."
+  ],
+  "reproduce": {
+    "command": "python3 experiments/05_number_agreement_circuit/make_bridge_summary.py --bridge-results /path/to/bridge_results.json",
+    "independent_checks": [
+      "recompute per-seed matched maxima from bridge_matched_ratios.csv",
+      "recompute aggregate means and t(7) intervals from bridge_seed_metrics.csv",
+      "sha256sum -c checksums.sha256"
+    ],
+    "script": "experiments/05_number_agreement_circuit/make_bridge_summary.py"
+  },
+  "schema": "exp05-public-bridge-rescue-summary-v1",
+  "seed_count": 8,
+  "seeds": [
+    20260814,
+    20260815,
+    20260816,
+    20260817,
+    20260818,
+    20260819,
+    20260820,
+    20260821
+  ],
+  "source_receipt": {
+    "basename": "bridge_results.json",
+    "bytes": 653980,
+    "sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef"
+  },
+  "status": "COMPLETE",
+  "target_exceeds_matched_max_all_seeds": true,
+  "target_exceeds_matched_max_count": 8,
+  "verdict": "EXPLORATORY_NO_PREREGISTERED_VERDICT"
+}

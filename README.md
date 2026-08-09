@@ -45,10 +45,23 @@ levels separate.
 
 The Q4 result does not establish natural or monosemantic latent activations, individual-latent
 causality, necessity or sufficiency, a natural head→span path or mediation, a complete circuit, or
-generalisation across models or tasks. The next high-information experiment is one fresh held-out
-bridge—L7H4 → `resid_pre8` target span → natural L8H5/readout, with an L8H5-clamp arm. It has not run.
+generalisation across models or tasks. A single high-information exploratory bridge has now run on
+fresh held-out seeds. The fixed 12-row span recovered `0.6786` (t(7) CI `[0.6738, 0.6834]`) of the
+directed L7H4→`resid_pre8` effect and beat the maximum of 100 target-excluded matched rank-12 spans
+in all eight seeds; its complement retained `0.3053` (CI `[0.3013, 0.3094]`). With L8H5's final
+value path clamped to the source-A baseline, the target remained `0.6740` (CI `[0.6696, 0.6785]`).
+This supports a reproducible causal subspace under the tested intervention, not dominant L8H5
+mediation, native latent semantics, necessity, or a complete circuit. The run used clean source
+`0d7c4db`, fresh seeds `20260814–20260821`, 150 pairs per seed, and 800 frozen matched draws; the
+raw result stays outside Git (SHA-256 prefix `9d8446…`) and the independent artifact review was
+`SHIP`. The [Fellow-level research brief](experiments/05_number_agreement_circuit/RESEARCH_BRIEF.md)
+is the short public entry point.
 
 ![Experiment 05 claim ladder: eight-head selection, eight-seed Q1–Q3 evidence, and the positive Stage-3/Q4 matched-span result](experiments/05_number_agreement_circuit/results/figure_exp05_main.png)
+
+The bridge follow-up is shown in [`figure_bridge_rescue.svg`](experiments/05_number_agreement_circuit/results/figure_bridge_rescue.svg)
+([PNG](experiments/05_number_agreement_circuit/results/figure_bridge_rescue.png)); its compact
+seed-level and matched-span evidence is in [`bridge_result_summary.json`](experiments/05_number_agreement_circuit/results/bridge_result_summary.json).
 
 **A note on the framing this repository started with.** Experiments 01 and 02 were built around
 superposition versus mixed selectivity — whether many features sharing few non-orthogonal directions is
@@ -328,12 +341,16 @@ to you.
 ## Next
 
 - **[Experiment 05 — the number-agreement circuit](experiments/05_number_agreement_circuit/DESIGN.md)**,
-  with independently recomputed Stage-2 and Stage-3/Q4 results. L7H4 and L8H5 form the minimum tested
-  compact set, pass both number-specificity controls, and transport subject-number information under
-  the registered frozen-pattern value-path intervention in all eight seeds. Q4's frozen 12-row layer-8
-  span retains `0.8935` of the directed logit effect, beats the frozen matched-span edge in every seed,
-  and leaves `0.0848` in the complement. The next step is one fresh held-out L7H4→`resid_pre8` target-
-  span→natural-L8H5/readout rescue with an L8H5 clamp; it has not run.
+  with independently recomputed Stage-2 and Stage-3/Q4 results plus one exploratory bridge. L7H4 and
+  L8H5 form the minimum tested compact set, pass both number-specificity controls, and transport
+  subject-number information under the registered frozen-pattern value-path intervention in all eight
+  seeds. Q4's frozen 12-row layer-8 span retains `0.8935` of the directed logit effect, beats the
+  frozen matched-span edge in every seed, and leaves `0.0848` in the complement. The fresh bridge then
+  recovers `0.6786` of the L7H4→`resid_pre8` effect (clamped-reader arm `0.6740`) and beats all 100
+  matched spans per seed. It is exploratory evidence for a reproducible causal subspace, not a
+  dominant L8H5 mediation or complete-circuit claim. The next frozen question is a small factorial
+  that can distinguish a clamp that is simply too narrow from an L8H5-parallel route; it is planned,
+  not run.
 - Re-register experiment 04's Gate C on a decoder each arm actually ships with, with the floor
   pre-declared from a pilot on a *different* stimulus family so the threshold cannot be tuned to this
   one. Necessary but **not** sufficient: a rerun still has to clear every other frozen gate, and Gate D
@@ -377,13 +394,13 @@ Experiment 04 is four stages in the order they were actually run — go/no-go pi
 that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
 Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
-Experiment 05's calibration, fresh same-snapshot selection, Stage 2, and Stage-3/Q4 are complete. The
-compact claim inputs, per-seed statistics, checksums, and generation code live in
+Experiment 05's calibration, fresh same-snapshot selection, Stage 2, Stage-3/Q4, and one exploratory
+bridge follow-up are complete. The compact claim inputs, per-seed statistics, checksums, and generation code live in
 [`results/`](experiments/05_number_agreement_circuit/results/); the raw execution artifacts stay outside
 Git and are identified by SHA-256. The Stage-2 invocation used 2,528 logical forward-equivalents and
 6,272 seconds of CPU wall time; Stage 3/Q4 used 353,120 logical forward-equivalents and about 1,266
-seconds. The public packet reports the bounded Q4 result and its non-claims; the bridge follow-up is not
-yet run.
+seconds; the bridge used 852.85 seconds on eight fresh seeds. The public packet reports the bounded
+Q4 result and the exploratory bridge with their non-claims; it does not copy the raw model outputs.
 
 ```bash
 ./.venv/bin/python -m unittest discover \
