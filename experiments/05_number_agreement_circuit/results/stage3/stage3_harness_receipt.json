@@ -1,0 +1,17 @@
+{
+  "checks": {
+    "causal_handle_floor": "PASS",
+    "prompt_swap": "PASS",
+    "start_at_layer8_equivalence": "PASS",
+    "zero": "PASS"
+  },
+  "independent": true,
+  "model": "gpt-5.6-sol",
+  "protocol_sha256": "a3b68a4104a8f654f5982b78bfd9ba8746db0323a0ca5ea1e626b307953d7dee",
+  "pushed_evidence": "https://github.com/DeepCogNeural/mech-interp-lab/commit/6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+  "reviewed_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+  "reviewer": "Codex independent Stage-3 harness auditor",
+  "schema": "exp05-number-agreement-stage3-harness-receipt-v1",
+  "self_sha256": "cc669b761b57649809d05e6e4ad551a5db506b763d7009029791e33724a65962",
+  "status": "ACCEPT"
+}

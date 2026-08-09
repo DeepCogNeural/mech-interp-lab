@@ -1,8 +1,8 @@
 # Experiment 05 — the number-agreement circuit
 
 **Status: design frozen 2026-08-02 and amended through 2026-08-08 (Amendments 1–9);
-calibration, Stage 1, fresh same-snapshot selection, and Stage 2 are complete. Q1–Q3 are positive in
-8/8 registered seeds; Stage 3 preparation is complete and Q4 has not run.**
+calibration, Stage 1, fresh same-snapshot selection, Stage 2, and Stage 3/Q4 are complete. Q1–Q4 are
+positive in 8/8 registered seeds.**
 [`DESIGN.md`](DESIGN.md) is the pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02)
 and nine dated amendments. [Amendment 2](DESIGN.md#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
 corrects three factual errors and repairs five rules that adversarial review found unexecutable;
@@ -36,8 +36,9 @@ the freeze. Stage 1 then completed ([`stage1.py`](stage1.py) →
 single-flip `z@final` head sweep, the required all-head `E_all`, residual `E_ref`, and top-24 `v@subject`
 sweep. Stage 1 itself adjudicates none of Q1–Q4. The later fresh selection chose eight candidates;
 the completed Stage-2 run selected `[L7H4, L8H5]` as the minimum tested qualifying set and returned
-positive Q1, Q2, and Q3 decisions in all eight seeds. See the [public result](writeup.md) and
-[compact evidence packet](results/RESULTS.md).
+positive Q1, Q2, and Q3 decisions in all eight seeds. The completed Stage-3/Q4 run returned positive
+matched-span decisions in all eight seeds. See the [public result](writeup.md) and [compact evidence
+packet](results/RESULTS.md).
 
 The Stage-1-informed **incomplete proxy/projection** of about 137 CPU-minutes was based on the measured
 head-sweep, joint-patch, and per-seed fixed-overhead costs. It does not price Stage 3's per-seed PCA
@@ -45,7 +46,9 @@ fitting or latent-candidate preparation, and it predates Amendment 7's fresh sam
 true/source-A selection. It is not a verified total runtime. Stage 1 touched no latent span, by construction, so the
 design was frozen on evidence about the stimuli, not about the answer. The actual fresh selection used
 291 logical forward-equivalents and 966 seconds; the completed Stage-2 invocation used 2,528 logical
-forward-equivalents and 6,272 seconds. Stage 3 remains separately unpriced and unadjudicated.
+forward-equivalents and 6,272 seconds. The Stage-3/Q4 invocation used 353,120 logical
+forward-equivalents and 1,265.99 seconds; its raw result remains outside Git and its compact evidence is
+under `results/`.
 
 | lifecycle gate | current state |
 |---|---|
@@ -55,18 +58,20 @@ forward-equivalents and 6,272 seconds. Stage 3 remains separately unpriced and u
 | fresh same-snapshot selection | complete; eight-head candidate set frozen |
 | Stage 2 | complete; Q1/Q2/Q3 each 8/8 positive; independently recomputed and Advisor-accepted |
 | Stage 3 preparation | complete; all eight Gate-A cells pass and have 40 rank-training / 150 evaluation pairs |
-| Stage 3 / Q4 | not run; no matched-span verdict exists |
-| offline contract tests | 15/15 pass; protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4 helpers, portable preparation binding, target-excluded matched pools, artifact guards, and the empty-`C` terminal path |
+| Stage 3 / Q4 | complete; Q4 above matched-span chance in 8/8; mean `R_span=0.8935`, `R_comp=0.0848` |
+| offline contract tests | 20/20 pass; protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4/bridge helpers, portable preparation binding, target-excluded matched pools, artifact guards, and the empty-`C` terminal path |
 
 The implementation files are [`selection_source_a.py`](selection_source_a.py),
 [`freeze_candidate.py`](freeze_candidate.py), [`exp05_core.py`](exp05_core.py),
-[`stage2.py`](stage2.py), and [`stage3.py`](stage3.py). Stage 2 consumed the completed, self-hashed selection artifact as an explicit input
+[`stage2.py`](stage2.py), and [`stage3.py`](stage3.py). The single post-Q4 exploratory follow-up is
+isolated in [`bridge_rescue.py`](bridge_rescue.py). Stage 2 consumed the completed, self-hashed selection artifact as an explicit input
 (`--selection selection_source_a.json`) together with the protocol, calibration, and candidate
 artifacts; it no longer takes `--stage1`, because shipped Stage 1 is only a descriptive cross-check
 inside selection. The raw Stage-2 JSON is 1.4 GB and stays outside Git; its SHA-256 and the compact
-claim inputs are recorded under [`results/`](results/). Stage 3 will consume only the independently
-prepared cache, split, review, and harness receipts—not the head candidate or Stage-2 result. The
-offline suite is model-free and can be reproduced from the repository root with:
+claim inputs are recorded under [`results/`](results/). Stage 3 consumed only the independently prepared
+cache, split, review, and harness receipts—not the head candidate or Stage-2 result; its compact
+seed-level metrics and matched-span draws are now shipped under `results/`. The offline suite is
+model-free and can be reproduced from the repository root with:
 
 ```bash
 ./.venv/bin/python -m unittest discover \
@@ -94,8 +99,22 @@ Q3's direct-recovery summary is descriptive only and has no across-seed inferent
 
 These labels do not prove necessity, mediation, or a native attention path. Q4 is only the layer-8,
 `both`-position decoder-row span compared with matched-dimension empirical chance. Stage 1 is a coarse
-historical ranking and adjudicates none of these four axes; the completed Stage-2 artifact now
-adjudicates Q1–Q3, while Q4 remains pending.
+historical ranking and adjudicates none of these four axes; the completed Stage-2 artifact adjudicates
+Q1–Q3 and the completed Stage-3/Q4 artifact adjudicates Q4.
+
+**Q4 result (8/8 positive).** Across eight seeds, projecting the registered layer-8 intervention delta
+into the frozen 12-row SAE span retained about `0.89` of its causal effect, exceeded the frozen
+matched-span edge in every seed, and left about `0.085` in the complementary subspace, without implying
+equivalent geometric energy capture or full mediation. The exact mean `R_span` is `0.893525` (t(7) CI
+`[0.890486, 0.896565]`) and `R_comp` is `0.084783` (CI `[0.082268, 0.087299]`). The geometric
+squared-norm fraction is only about `0.525–0.544`, and the generic-text PCA span/both comparator is a
+raw logit effect of `0.027400`, not 2.74% recovery.
+
+Q4 does not establish natural or monosemantic latent activations, individual-latent causality,
+necessity or sufficiency, a natural head→span path or mediation, a complete circuit, or
+generalisation across models or tasks. The next step is one fresh held-out exploratory bridge—L7H4 →
+`resid_pre8` target span → natural L8H5/readout, with an L8H5 clamp. Its executable design is in
+[`bridge_rescue.py`](bridge_rescue.py); it has not yet run.
 
 Q1 alone is close to tautological — eight late heads can push a logit they sit one step away from —
 which is exactly why Q2 and Q3 are separate adjudicated axes and why the writeup may not present Q1

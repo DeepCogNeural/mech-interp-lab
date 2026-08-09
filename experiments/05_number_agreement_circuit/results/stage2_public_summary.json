@@ -15,7 +15,7 @@
     "They do not establish that every causal route is explained by this pair.",
     "They do not establish an exhaustive circuit or a native attention route.",
     "The Q3 direct-recovery values are descriptive only and do not adjudicate the verdict.",
-    "Stage 3 / Q4 has no scientific verdict yet."
+    "Q4 is a separate target-span versus matched-span comparison; see stage3_result_summary.json."
   ],
   "public_claim": "Across eight seeds, two heads—L7H4 and L8H5—formed a stable minimal compact set, passed preregistered specificity controls, and causally transported subject-number information under a frozen-pattern value-path intervention.",
   "question": "Which heads carry the number signal, and do they transport subject-number information?",
@@ -26,7 +26,11 @@
       "stage2_results.json",
       "stage3_gate_a_cache.jsonl",
       "stage3_split_manifest.json",
-      "stage3_prepare_manifest.json"
+      "stage3_prepare_manifest.json",
+      "stage3_results.json",
+      "stage3_draws.csv",
+      "stage3_prepare_review.json",
+      "stage3_harness_receipt.json"
     ],
     "outputs": [
       "selection_candidates.csv",
@@ -35,7 +39,12 @@
       "stage2_public_summary.json",
       "stage3_preparation_summary.json",
       "figure_exp05_main.svg",
-      "figure_exp05_main.png"
+      "figure_exp05_main.png",
+      "stage3_seed_metrics.csv",
+      "stage3_matched_ratios.csv",
+      "stage3_result_summary.json",
+      "stage3/stage3_prepare_review.json",
+      "stage3/stage3_harness_receipt.json"
     ],
     "script": "experiments/05_number_agreement_circuit/make_claim_ladder.py"
   },
@@ -87,9 +96,9 @@
     },
     {
       "basename": "stage3_prepare_manifest.json",
-      "bytes": 2363,
+      "bytes": 2455,
       "label": "stage3_prepare_manifest",
-      "sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875"
+      "sha256": "76faddf372fcc5bfd9e635208cc15be39fb3e595b5be757c27f048db7dd75d89"
     }
   ],
   "stage2": {

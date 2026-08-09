@@ -16,6 +16,40 @@ Template for a new entry:
 
 ---
 
+## 2026-08-08 — The span carries the effect; the bridge is still open
+
+**Goal:** Close the representation-span question without turning a span-level result into a claim about
+the model's native circuit, then choose one high-information follow-up.
+
+**Did:** Ran the independently prepared, candidate-independent Stage-3/Q4 invocation on the frozen
+layer-8 `both` intervention, with the item-disjoint rank-training/evaluation split and 100 matched-span
+draws per seed. The run used 353,120 logical forward-equivalents and 1,265.99 seconds of wall time. A
+science audit recomputed the directed arrays from the raw result, and a separate artifact audit checked
+the raw/result/CSV/checkpoint bindings; both shipped the result as complete.
+
+**Expected:** Genuinely open. The twelve decoder rows recurring in experiment 04 might fail to beat
+matched 12-dimensional spans, which would leave the Stage-2 transport result without a compact
+representation-level explanation.
+
+**Happened:** The frozen target span beat the frozen second-largest matched edge in every seed (8/8).
+Across seeds, `R_span = 0.893525` with t(7) CI `[0.890486, 0.896565]`, while the complementary
+subspace retained `R_comp = 0.084783` with CI `[0.082268, 0.087299]`. The geometric squared-norm
+fraction was only about `0.525–0.544`, so the headline is concentration of a directed logit effect,
+not 89% activation reconstruction. The generic-text PCA span/both comparator was a raw logit effect
+of `0.027400`, not 2.74% recovery.
+
+**Confused about / open:** This is a positive span-level causal comparison, not evidence that the SAE
+rows are natural or monosemantic, that any individual latent is causal, or that the model uses a
+head→span→readout path in its unconstrained computation. It does not establish necessity, sufficiency,
+mediation, a complete circuit, or cross-model/task generalisation. The remaining uncertainty is
+specifically whether the observed span effect is downstream of the selected head intervention.
+
+**Next:** Run one Advisor-chosen exploratory bridge on fresh held-out items: L7H4 → `resid_pre8` target
+span → natural L8H5/readout, with an L8H5 clamp arm. It has not run; no new amendment or protocol layer
+is being added.
+
+---
+
 ## 2026-08-08 — Two heads survive the controls; the representation question stays open
 
 **Goal:** Stop treating experiment 05 as an execution protocol and make it answer a scientific

@@ -1,0 +1,221 @@
+{
+  "claim": "Above matched-span chance, the target 12-decoder-row span recovered a mean of 89.35% of the directed logit effect and beat the frozen second-largest of 100 matched spans in all 8 seeds.",
+  "claim_boundary": "The Q4 claim is limited to the directed-logit matched-span comparison on the frozen 12-row decoder span.",
+  "code_revision": {
+    "expected_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+    "final_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+    "start_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54"
+  },
+  "compact_artifacts": {
+    "matched_ratios": "stage3_matched_ratios.csv",
+    "portable_prepare_manifest": "stage3/stage3_prepare_manifest.json",
+    "raw_stage3_draws_copied": false,
+    "raw_stage3_results_copied": false,
+    "seed_metrics": "stage3_seed_metrics.csv"
+  },
+  "invocation_id": "376efabf8723249787e2d7e4040cbd985632f3bed2fe541dd8b45f61c412ba88",
+  "matched_draws_per_seed": [
+    100
+  ],
+  "matched_edge_pass_count": 8,
+  "metrics": {
+    "PCA_span_both_raw_logit_effect_E": {
+      "ci95": {
+        "high": 0.04953798516046179,
+        "low": 0.005262413984028772
+      },
+      "degrees_of_freedom": 7,
+      "finite_count": 8,
+      "mean": 0.02740019957224528,
+      "null_reason": null,
+      "slots": [
+        {
+          "seed": 20260806,
+          "value": 0.010711472829182942
+        },
+        {
+          "seed": 20260807,
+          "value": 0.06949928442637125
+        },
+        {
+          "seed": 20260808,
+          "value": 0.017347126007080077
+        },
+        {
+          "seed": 20260809,
+          "value": 0.002069516181945801
+        },
+        {
+          "seed": 20260810,
+          "value": 0.061318920453389485
+        },
+        {
+          "seed": 20260811,
+          "value": 0.002214377721150716
+        },
+        {
+          "seed": 20260812,
+          "value": 0.0408193318049113
+        },
+        {
+          "seed": 20260813,
+          "value": 0.015221567153930663
+        }
+      ],
+      "standard_error": 0.009360585872395985,
+      "t_critical": 2.365
+    },
+    "R_comp": {
+      "ci95_t7": [
+        0.08226780690595158,
+        0.08729877398718862
+      ],
+      "max": 0.08818505587172096,
+      "mean": 0.0847832904465701,
+      "min": 0.08064591857795095,
+      "n": 8,
+      "sd": 0.0030083982571408106
+    },
+    "R_span": {
+      "ci95_t7": [
+        0.8904860608652501,
+        0.8965646612461051
+      ],
+      "max": 0.8989337761834327,
+      "mean": 0.8935253610556776,
+      "min": 0.8897794938219628,
+      "n": 8,
+      "sd": 0.003634857969916106
+    },
+    "geometric_complement_descriptive": {
+      "ci95_t7": [
+        0.45760440651142514,
+        0.46892909910391306
+      ],
+      "max": 0.4746790683318814,
+      "mean": 0.4632667528076691,
+      "min": 0.4556510191962612,
+      "n": 8,
+      "sd": 0.006771895921354126
+    },
+    "geometric_span_descriptive": {
+      "ci95_t7": [
+        0.5310709008960881,
+        0.542395593488576
+      ],
+      "max": 0.5443489808037398,
+      "mean": 0.5367332471923321,
+      "min": 0.5253209316681196,
+      "n": 8,
+      "sd": 0.006771895921354119
+    },
+    "matched_edge_second_largest": {
+      "ci95_t7": [
+        0.40133517092094095,
+        0.5498456323535249
+      ],
+      "max": 0.5778241179697222,
+      "mean": 0.47559040163723293,
+      "min": 0.30568488393678767,
+      "n": 8,
+      "sd": 0.0888057119290684
+    }
+  },
+  "not_claimed": [
+    "This matched-span result does not establish that the encoder features are natural, necessary, or sufficient.",
+    "It does not establish mediation, an attention route, or a native model path.",
+    "R_span is a directed-logit effect ratio, not an 89% geometric reconstruction claim.",
+    "The generic PCA value (0.0274 mean for PCA_span/both) is a raw logit effect, not 2.74% recovery."
+  ],
+  "prepare_manifest_binding": {
+    "portable_copy": {
+      "basename": "stage3_prepare_manifest.json",
+      "bytes": 2363,
+      "path": "stage3/stage3_prepare_manifest.json",
+      "rewritten_fields": {
+        "split_csv_path": "stage3_split_roles.csv",
+        "split_manifest_path": "stage3_split_manifest.json"
+      },
+      "sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875"
+    },
+    "q4_declared_prepare_manifest_sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875",
+    "raw_source_receipt": {
+      "basename": "stage3_prepare_manifest.json",
+      "bytes": 2455,
+      "label": "stage3_prepare_manifest",
+      "sha256": "76faddf372fcc5bfd9e635208cc15be39fb3e595b5be757c27f048db7dd75d89"
+    }
+  },
+  "protocol_sha256": "a3b68a4104a8f654f5982b78bfd9ba8746db0323a0ca5ea1e626b307953d7dee",
+  "raw_runtime": {
+    "cumulative_q4_logical_fe_all_attempts": 353120,
+    "cumulative_q4_wall_time_all_attempts": 1265.990939667041,
+    "final_complete_q4_logical_fe": 353120,
+    "final_complete_q4_wall_time": 1265.990939667041,
+    "preparation_logical_fe_separately": {
+      "original_logical_fe": null,
+      "repeated_q4_fe": 0,
+      "reused_in_q4_invocation": true,
+      "status": "NOT_REGISTERED"
+    },
+    "prior_incomplete_q4_logical_fe": 0,
+    "prior_incomplete_q4_wall_time": 0.0,
+    "q4_attempt_logical_fe_executed": 353120,
+    "q4_attempt_status": "COMPLETE",
+    "q4_attempt_wall_time": 1265.990939667041,
+    "q4_invocation_id": "376efabf8723249787e2d7e4040cbd985632f3bed2fe541dd8b45f61c412ba88"
+  },
+  "raw_summary": {
+    "completed_fail_count": 0,
+    "execution_incomplete_count": 0,
+    "lower_pass_count": 8,
+    "pass_count": 8,
+    "scientific_unresolved_count": 0,
+    "status": "POSITIVE",
+    "upper_pass_count": 8,
+    "verdict": "POSITIVE"
+  },
+  "receipt_bindings": [
+    {
+      "basename": "stage3_prepare_review.json",
+      "bytes": 736,
+      "label": "stage3_review_receipt",
+      "reviewed_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+      "schema": "exp05-number-agreement-stage3-prepare-review-v1",
+      "self_sha256": "e5fa401293334e7be0890a7d780edf3eb3f78839a8728274bff3c25b742ef121",
+      "sha256": "a08cc291753d1d557289737d2926a8e55408a133f8ded63eac21bc08ff5ccddd",
+      "status": "ACCEPT"
+    },
+    {
+      "basename": "stage3_harness_receipt.json",
+      "bytes": 700,
+      "label": "stage3_harness_receipt",
+      "reviewed_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+      "schema": "exp05-number-agreement-stage3-harness-receipt-v1",
+      "self_sha256": "cc669b761b57649809d05e6e4ad551a5db506b763d7009029791e33724a65962",
+      "sha256": "d2fd5c23dcc89a1217e4158721d8f165014fb11ca34da333e308d2fd2020823f",
+      "status": "ACCEPT"
+    }
+  ],
+  "reproduce_matched_edge": "For each seed, sort matched_R_span in stage3_matched_ratios.csv and take the second-largest value; compare R_span in stage3_seed_metrics.csv.",
+  "schema": "exp05-public-stage3-q4-summary-v1",
+  "seed_count": 8,
+  "seed_pass_count": 8,
+  "source_receipts": [
+    {
+      "basename": "stage3_results.json",
+      "bytes": 42508601,
+      "label": "stage3_results",
+      "sha256": "81a917da187a103a1e76d79ce86f672347d01110cd50c4a93a241302237671ac"
+    },
+    {
+      "basename": "stage3_draws.csv",
+      "bytes": 333374,
+      "label": "stage3_draws",
+      "sha256": "fe3fa182dd20fda64c9cc9b04980e7c311d737dccaab8ad8e78d7ac07ab040dd"
+    }
+  ],
+  "status": "POSITIVE",
+  "verdict": "POSITIVE",
+  "wall_clock_seconds": 1265.990939667041
+}
