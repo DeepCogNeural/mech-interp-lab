@@ -1,0 +1,3 @@
+# This is an immutable, byte-hashed Stage-3 review input. Preserve its CRLF
+# serialization exactly and keep Git's whitespace checker from rewriting it.
+experiments/05_number_agreement_circuit/results/stage3/stage3_split_roles.csv -text -diff

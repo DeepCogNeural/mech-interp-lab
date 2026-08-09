@@ -10,3 +10,18 @@ graphify-out/
 
 # private working notes, not part of the portfolio
 notes/
+
+# Experiment 05 model-run artifacts are large and live outside Git.  Only the
+# compact, reviewable evidence under experiments/05_.../results/ is public.
+/experiments/05_number_agreement_circuit/selection_source_a.json
+/experiments/05_number_agreement_circuit/selection_source_a_pairs.json
+/experiments/05_number_agreement_circuit/selection_source_a.checkpoint.json
+/experiments/05_number_agreement_circuit/candidate.json
+/experiments/05_number_agreement_circuit/stage2_results.json
+/experiments/05_number_agreement_circuit/stage2_pair_stats.csv
+/experiments/05_number_agreement_circuit/stage2_checkpoint.json
+/experiments/05_number_agreement_circuit/stage3_gate_a_cache.jsonl
+/experiments/05_number_agreement_circuit/stage3_gate_a.checkpoint.json
+/experiments/05_number_agreement_circuit/stage3_results.json
+/experiments/05_number_agreement_circuit/stage3_draws.csv
+/experiments/05_number_agreement_circuit/stage3_checkpoint.json

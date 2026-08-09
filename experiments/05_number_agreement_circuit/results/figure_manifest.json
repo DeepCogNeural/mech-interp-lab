@@ -1,0 +1,16 @@
+{
+  "panel_order": [
+    "selection",
+    "q1_q2_q3_eight_seed",
+    "stage3_preparation_pending"
+  ],
+  "png": "figure_exp05_main.png",
+  "png_height_px": 1440,
+  "png_width_px": 2880,
+  "source_rows": {
+    "selection": 8,
+    "stage2": 8,
+    "stage3": 8
+  },
+  "svg": "figure_exp05_main.svg"
+}

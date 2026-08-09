@@ -391,6 +391,36 @@ class ArtifactAndRunnerContracts(unittest.TestCase):
                     runtime={"output": root / "same.json", "draw_csv": root / "same.json"},
                 )
 
+    def test_stage3_prepare_split_csv_binding_is_portable_and_fail_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            prepare_path = root / "stage3_prepare_manifest.json"
+            split_csv = root / "stage3_split_roles.csv"
+            split_csv.write_text("seed,pair_id\n", encoding="utf-8")
+
+            self.assertEqual(
+                stage3._resolve_prepared_split_csv(prepare_path, split_csv.name),
+                split_csv.resolve(),
+            )
+            with self.assertRaises(stage3.Stage3Stop):
+                stage3._resolve_prepared_split_csv(prepare_path, str(split_csv.resolve()))
+            with self.assertRaises(stage3.Stage3Stop):
+                stage3._resolve_prepared_split_csv(prepare_path, "nested/stage3_split_roles.csv")
+            with self.assertRaises(stage3.Stage3Stop):
+                stage3._portable_artifact_name(root / "other" / "stage3_split_roles.csv", anchor=prepare_path, label="split CSV")
+
+    def test_stage3_freezes_exact_target_excluded_pool_before_draws(self) -> None:
+        ranked = [(target, 100.0 - index) for index, target in enumerate(stage3.TARGET_LATENTS)]
+        ranked.extend((100_000 + index, float(index)) for index in range(stage3.MATCHED_POOL_SIZE))
+        frozen = stage3._freeze_target_excluded_pool(ranked, seed=stage3.STAGE3_SEEDS[0])
+        self.assertEqual(len(frozen), stage3.MATCHED_POOL_SIZE)
+        self.assertEqual([latent_id for latent_id, _ in frozen], list(range(100_000, 100_000 + stage3.MATCHED_POOL_SIZE)))
+        self.assertTrue(set(latent_id for latent_id, _ in frozen).isdisjoint(stage3.TARGET_LATENTS))
+
+        with self.assertRaises(stage3.Stage3Stop) as caught:
+            stage3._freeze_target_excluded_pool(ranked[: len(stage3.TARGET_LATENTS) + stage3.MATCHED_POOL_SIZE - 1], seed=stage3.STAGE3_SEEDS[0])
+        self.assertEqual(caught.exception.gate, "matched_pool")
+
     def test_freeze_candidate_rejects_output_alias_before_reading_inputs(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             selection_path = Path(temp) / "selection.json"

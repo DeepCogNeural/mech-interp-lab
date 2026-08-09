@@ -16,6 +16,51 @@ Template for a new entry:
 
 ---
 
+## 2026-08-08 — Two heads survive the controls; the representation question stays open
+
+**Goal:** Stop treating experiment 05 as an execution protocol and make it answer a scientific
+question: is there a small, reproducible set of attention heads that carries subject-number
+information under a controlled intervention?
+
+**Did:** Reran both 144-head selection sweeps in one unchanged in-memory GPT-2-small snapshot, froze the
+eight-head candidate set, and ran all eight Stage-2 seeds from zero. The completed invocation used
+2,528 logical forward-equivalents and 6,272 seconds of CPU wall time. A first attempt had stopped after
+688 seconds on a hook-callback signature error; it emitted no science, the callback was repaired and
+regression-tested, and the adjudicating run restarted rather than resuming its scientific rows. I then
+gave the final artifact and its pair-level data to two independent reviewers—one recomputed the science
+without trusting runner verdicts, one checked hashes and execution coverage—and sent the compact result
+to the Pro Advisor for a separate claim-boundary review.
+
+**Expected:** Genuinely open. The Stage-1 ranking suggested a distributed set, but it did not say how
+many heads would recover half of the joint effect, whether the apparent signal would survive sources
+that remove or preserve number, or whether a subject-position value-path intervention would remain
+positive once the attention pattern was clamped.
+
+**Happened:** The minimum tested set was two heads, `L7H4` and `L8H5`. One head alone recovered only
+`0.240–0.251` of the registered direct effect and failed in every seed; the pair recovered
+`0.521–0.546` and passed in all eight, with both members individually above the source-A floor. The
+largest source-A/true ratio was `0.0052` against a `0.20` limit, and the largest source-C/true ratio was
+`0.1950` against `0.26983`; Q2 passed eight of eight. The clamped frozen-attention value-path effect was
+positive in every seed (`D_path=0.528–0.574`, smallest 95% bootstrap lower bound `0.504`); Q3 also passed
+eight of eight. Pair-level recomputation reproduced all three decisions, the artifact audit found all
+16 execution cells and the bound 1,100,148-row CSV, and the Advisor returned `ACCEPT` with no major flaw.
+
+**Confused about / open:** This is the first adjudicated real-model mechanism result in the repository,
+but it is narrower than the sentence I most want to say. B-prime freezes the base attention pattern and
+clamps the value-path edit, so a robust effect there may be larger than—or simply different from—the
+heads' role in GPT-2's unconstrained endogenous computation. It does not prove necessity, sufficiency,
+full mediation, a complete circuit, or monosemanticity. The representation question that motivated the
+application is still live: the result identifies transport-related causal structure, not whether the
+twelve recurring SAE decoder rows are a privileged low-dimensional basis for that structure.
+
+**Next:** Run the already prepared, candidate-independent Q4 comparison on held-out items: the fixed
+twelve-row layer-8 decoder span versus matched 12-dimensional spans. If it is positive, test one direct
+head→span→readout bridge; if it is negative, test an equal-rank supervised subspace to distinguish an
+SAE-basis failure from the absence of a compact transported state. One result, one alternative
+explanation, one follow-up—not another amendment cycle.
+
+---
+
 ## 2026-08-08 — Making experiment 05 executable without pretending it has run
 
 **Goal:** Turn the frozen questions in experiment 05 into a reviewable, fail-closed execution

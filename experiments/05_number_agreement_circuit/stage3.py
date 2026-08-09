@@ -175,6 +175,35 @@ def _resolve(value: str | Path, *, base: Path = HERE, reject_leaf_symlink: bool 
     return raw.resolve()
 
 
+def _portable_artifact_name(path: Path, *, anchor: Path, label: str) -> str:
+    """Return a same-directory basename suitable for a published manifest.
+
+    Prepared artifacts are copied as a bundle.  Persisting an absolute source
+    path (or a path containing ``..``) would make that bundle resolve against
+    the machine that materialized it, so publication is deliberately limited
+    to a basename next to the prepare manifest.
+    """
+
+    path = path.expanduser().resolve()
+    anchor = anchor.expanduser().resolve()
+    if path.parent != anchor.parent:
+        raise Stage3Stop("path_binding", f"{label} must be beside the prepare manifest: {path}")
+    return path.name
+
+
+def _resolve_prepared_split_csv(prepare_path: Path, value: Any) -> Path:
+    """Resolve the prepare manifest's split CSV binding without fallbacks."""
+
+    if not isinstance(value, str) or not value.strip():
+        raise Stage3Stop("prepare_cross_hash", "prepare manifest lacks a relative split CSV basename")
+    candidate = Path(value)
+    # Only a basename is accepted.  In particular, reject old absolute
+    # manifests and traversal/subdirectory paths instead of trying a fallback.
+    if candidate.is_absolute() or len(candidate.parts) != 1 or candidate.name in {"", ".", ".."} or candidate.as_posix() != candidate.name:
+        raise Stage3Stop("prepare_cross_hash", "prepare manifest split CSV binding must be a relative basename")
+    return _resolve(candidate, base=prepare_path.expanduser().resolve().parent)
+
+
 def _validate_runtime_paths(*, immutable: Mapping[str, Path], runtime: Mapping[str, Path]) -> None:
     """Keep every writable runtime artifact distinct from inputs and each other."""
 
@@ -533,7 +562,7 @@ def _validate_seed_results(rows: Sequence[Mapping[str, Any]], expected_seeds: Se
             raise Stage3Stop("seed_result_binding", f"{context} seed {seed} candidate pool budget/role is not frozen")
         frozen = pool.get("frozen_ranked_latent_ids")
         scores = pool.get("scores")
-        if not isinstance(frozen, list) or len(frozen) != MATCHED_POOL_SIZE or len(set(frozen)) != MATCHED_POOL_SIZE or any(not isinstance(item, int) or isinstance(item, bool) for item in frozen) or not isinstance(scores, list) or len(scores) != MATCHED_POOL_SIZE:
+        if not isinstance(frozen, list) or len(frozen) != MATCHED_POOL_SIZE or len(set(frozen)) != MATCHED_POOL_SIZE or any(not isinstance(item, int) or isinstance(item, bool) for item in frozen) or any(item in TARGET_LATENTS for item in frozen) or not isinstance(scores, list) or len(scores) != MATCHED_POOL_SIZE:
             raise Stage3Stop("seed_result_binding", f"{context} seed {seed} candidate pool is not exactly 128 unique ids/scores")
         if any(not isinstance(item, Mapping) or int(item.get("latent_id", -1)) != frozen[index] or not finite(item.get("score")) for index, item in enumerate(scores)):
             raise Stage3Stop("seed_result_binding", f"{context} seed {seed} candidate scores do not bind frozen ranked ids")
@@ -1249,6 +1278,11 @@ def _validate_split_result(result: Mapping[str, Any], retained: Sequence[int], s
 
 def _materialize_splits(protocol_path: Path, cache_path: Path, split_path: Path, csv_path: Path, prepare_path: Path) -> dict[str, Any]:
     _validate_runtime_paths(immutable={"protocol": protocol_path, "gate_cache": cache_path}, runtime={"split_manifest": split_path, "split_csv": csv_path, "prepare_manifest": prepare_path})
+    # The prepare manifest is the portable anchor for the split CSV.  Refuse
+    # to publish a bundle whose CSV lives elsewhere; otherwise the manifest
+    # could only be replayed on the original machine-specific path.
+    split_manifest_name = _portable_artifact_name(split_path, anchor=prepare_path, label="split manifest")
+    split_csv_name = _portable_artifact_name(csv_path, anchor=prepare_path, label="split CSV")
     protocol = _read_json(protocol_path, "protocol")
     _validate_protocol(protocol, protocol_path)
     manifest, rows, cache_hash = _load_cache(cache_path, protocol)
@@ -1274,7 +1308,10 @@ def _materialize_splits(protocol_path: Path, cache_path: Path, split_path: Path,
     csv_hash = _sha256_file(csv_path)
     prepare = {
         "schema": PREPARE_SCHEMA, "status": "COMPLETE", "protocol_sha256": _protocol_hash(protocol), "gate_cache_sha256": cache_hash,
-        "split_manifest_path": str(split_path), "split_csv_path": str(csv_path),
+        # These are intentionally relative basenames.  At run time the CSV is
+        # resolved only beside this prepare manifest (never beside stage3.py
+        # and never through an arbitrary fallback path).
+        "split_manifest_path": split_manifest_name, "split_csv_path": split_csv_name,
         "split_manifest_sha256": split_hash, "split_csv_sha256": csv_hash, "cross_hash_sha256": _sha256_bytes(_json_bytes({"gate_cache_sha256": cache_hash, "split_manifest_sha256": split_hash, "split_csv_sha256": csv_hash})),
         "independent_review_required": True, "q4_input_boundary": ["protocol", "stage3_gate_a_cache", "stage3_split_manifest", "stage3_prepare_manifest", "review_receipt"],
         "candidate_C_or_stage2_input": False,
@@ -1298,10 +1335,13 @@ def _load_split_inputs(protocol: Mapping[str, Any], cache_path: Path, split_path
         raise Stage3Stop("prepare_protocol_hash", "prepared Stage-3 artifacts do not match protocol")
     if split.get("cache_sha256") != cache_hash or prepare.get("gate_cache_sha256") != cache_hash:
         raise Stage3Stop("prepare_cache_hash", "prepared Stage-3 artifacts do not match Gate-A cache")
+    split_manifest_value = prepare.get("split_manifest_path")
+    if not isinstance(split_manifest_value, str):
+        raise Stage3Stop("prepare_cross_hash", "prepare manifest lacks the relative split manifest basename")
+    if split_manifest_value != _portable_artifact_name(split_path, anchor=prepare_path, label="split manifest"):
+        raise Stage3Stop("prepare_cross_hash", "prepare manifest split manifest binding does not match the supplied manifest")
     split_csv_value = prepare.get("split_csv_path")
-    if not isinstance(split_csv_value, str):
-        raise Stage3Stop("prepare_cross_hash", "prepare manifest lacks the immutable split CSV path")
-    split_csv_path = _resolve(split_csv_value)
+    split_csv_path = _resolve_prepared_split_csv(prepare_path, split_csv_value)
     if prepare.get("split_manifest_sha256") != _sha256_file(split_path) or prepare.get("split_csv_sha256") != _sha256_file(split_csv_path):
         raise Stage3Stop("prepare_cross_hash", "prepare manifest split hashes do not match prepared artifacts")
     cross_hash = _sha256_bytes(_json_bytes({"gate_cache_sha256": cache_hash, "split_manifest_sha256": _sha256_file(split_path), "split_csv_sha256": _sha256_file(split_csv_path)}))
@@ -1462,15 +1502,39 @@ def _ratio_guard(full: Mapping[str, Any], span: Mapping[str, Any], comp: Mapping
     return result
 
 
+def _freeze_target_excluded_pool(ranked: Sequence[tuple[int, float]], *, seed: int) -> list[tuple[int, float]]:
+    """Freeze exactly 128 ranked non-target ids before any Q4 draw."""
+
+    eligible: list[tuple[int, float]] = []
+    seen: set[int] = set()
+    for latent_id, score in ranked:
+        latent_id = int(latent_id)
+        if latent_id in seen:
+            raise Stage3Stop("matched_pool", f"seed {seed} ranked candidate ids are not unique")
+        seen.add(latent_id)
+        if latent_id in TARGET_LATENTS:
+            continue
+        eligible.append((latent_id, float(score)))
+    if len(eligible) < MATCHED_POOL_SIZE:
+        raise Stage3Stop("matched_pool", f"seed {seed} has only {len(eligible)} target-excluded ranked candidates; need exactly {MATCHED_POOL_SIZE}")
+    frozen = eligible[:MATCHED_POOL_SIZE]
+    if len(frozen) != MATCHED_POOL_SIZE or any(latent_id in TARGET_LATENTS for latent_id, _ in frozen):
+        raise Stage3Stop("matched_pool", f"seed {seed} could not freeze an exact target-excluded pool of {MATCHED_POOL_SIZE}")
+    return frozen
+
+
 def _matched_draws(pool_ids: Sequence[int], decoder: Any, seed: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
-    if len(set(pool_ids)) < MATCHED_SUBSET_SIZE:
-        raise Stage3Stop("matched_pool", f"seed {seed} has fewer than 12 eligible matched candidates")
+    pool = [int(item) for item in pool_ids]
+    if len(pool) != MATCHED_POOL_SIZE or len(set(pool)) != MATCHED_POOL_SIZE:
+        raise Stage3Stop("matched_pool", f"seed {seed} matched pool must contain exactly {MATCHED_POOL_SIZE} unique ids before draws")
+    if any(latent_id in TARGET_LATENTS for latent_id in pool):
+        raise Stage3Stop("matched_pool", f"seed {seed} matched pool contains a target latent before draws")
     torch = __import__("torch")
     import numpy as np  # lazy: only the model-backed Q4 path needs it
     rng = np.random.default_rng(seed * 1000 + Q4_TEST_ID)
     accepted: list[dict[str, Any]] = []
     attempts: list[dict[str, Any]] = []
-    eligible = sorted(int(item) for item in pool_ids)
+    eligible = sorted(pool)
     attempt = 0
     while len(accepted) < MATCHED_DRAW_COUNT and attempt < MATCHED_MAX_ATTEMPTS:
         attempt += 1
@@ -1797,7 +1861,15 @@ def _run_one_seed(model: Any, sae: Any, stack: tuple[Any, ...], seed: int, invoc
     rank_code_base = _encode_chunked(sae, rank_x_base)
     rank_code_delta = rank_code_source - rank_code_base
     try:
-        candidates, prefilter = candidate_prefilter_full(code_delta=rank_code_delta, source_code=rank_code_source, base_code=rank_code_base, signs=rank_signs, decoder=sae.W_dec, budget=MATCHED_POOL_SIZE, active_mode="positive")
+        # Exclude the twelve adjudicating target ids before the frozen 128
+        # candidate pre-filter.  Zeroing only source/base activity preserves
+        # the experiment-04 active-union/proxy threshold and makes its exact
+        # budget an exact target-excluded pool budget.
+        prefilter_source = rank_code_source.clone()
+        prefilter_base = rank_code_base.clone()
+        prefilter_source[..., list(TARGET_LATENTS)] = 0
+        prefilter_base[..., list(TARGET_LATENTS)] = 0
+        candidates, prefilter = candidate_prefilter_full(code_delta=rank_code_delta, source_code=prefilter_source, base_code=prefilter_base, signs=rank_signs, decoder=sae.W_dec, budget=MATCHED_POOL_SIZE, active_mode="positive")
         scores = _causal_coordinate_scores(model, engine, stimuli, residuals, rank_base, rank_source, rank_signs, rank_positions, clean_d, sae.W_dec, rank_code_delta, candidates, logit_difference, label=f"stage3_rank_train_128_seed_{seed}")
     except Exception as exc:
         if getattr(exc, "gate", None) == "ranking_candidate_coverage":
@@ -1806,9 +1878,13 @@ def _run_one_seed(model: Any, sae: Any, stack: tuple[Any, ...], seed: int, invoc
     _check_runtime(started, cap, f"after rank-training pool seed {seed}", prior_seconds=prior_seconds)
     ranked = sorted((int(item), float(score)) for item, score in zip(candidates.tolist(), scores.tolist()))
     ranked.sort(key=lambda item: (-item[1], item[0]))
-    frozen_pool = [item[0] for item in ranked[:MATCHED_POOL_SIZE]]
-    if len(frozen_pool) != MATCHED_POOL_SIZE:
-        return {"seed": seed, "invocation_id": invocation_id, "execution_status": "EXECUTION_COMPLETE", "status": "SCIENTIFIC_UNRESOLVED", "reason": "matched_pool_size", "detail": f"seed {seed} did not freeze exactly {MATCHED_POOL_SIZE} candidates", "retained_pairs": len(retained), "role_counts": {"rank_training": len(train_ids), "evaluation": len(eval_ids)}, "elapsed_seconds": time.perf_counter() - seed_started}
+    try:
+        frozen_ranked = _freeze_target_excluded_pool(ranked, seed=seed)
+    except Stage3Stop as exc:
+        if exc.gate == "matched_pool":
+            return {"seed": seed, "invocation_id": invocation_id, "execution_status": "EXECUTION_COMPLETE", "status": "SCIENTIFIC_UNRESOLVED", "reason": "matched_pool_size", "detail": str(exc), "retained_pairs": len(retained), "role_counts": {"rank_training": len(train_ids), "evaluation": len(eval_ids)}, "elapsed_seconds": time.perf_counter() - seed_started}
+        raise
+    frozen_pool = [item[0] for item in frozen_ranked]
     try:
         pca_vr, pca_meta = _fit_pca_context(model, generate_pool, seed)
     except Exception as exc:
@@ -1850,7 +1926,7 @@ def _run_one_seed(model: Any, sae: Any, stack: tuple[Any, ...], seed: int, invoc
     cells["alpha_0_5/both"] = {"effect": alpha05, "execution_cell_id": f"alpha_0_5/full_delta/both/evaluation/seed_{seed}", "tensor_hash": _tensor_hash(alpha05_delta), "result_hash": _sha256_bytes(_json_bytes(alpha05))}
     cells["alpha_1_0/both"] = {"alias_of": "both/full_delta/evaluation", "execution_cell_id": cells["both"]["full_delta"]["execution_cell_id"], "tensor_hash": cells["both"]["full_delta"]["tensor_hash"], "result_hash": cells["both"]["full_delta"]["result_hash"], "rerun": False, "double_count": False}
     try:
-        matched, attempts, rng_meta = _matched_draws([item for item in frozen_pool if item not in TARGET_LATENTS], sae.W_dec, seed)
+        matched, attempts, rng_meta = _matched_draws(frozen_pool, sae.W_dec, seed)
         matched, attempts, rng_meta = _bind_matched_draws(matched, attempts, rng_meta, seed=seed, invocation_id=invocation_id)
     except Stage3Stop as exc:
         if exc.gate in {"matched_pool", "matched_redraw_cap"}:
@@ -1889,7 +1965,7 @@ def _run_one_seed(model: Any, sae: Any, stack: tuple[Any, ...], seed: int, invoc
             pca_cells[f"PCA_span/{kind}"] = {"effect": effect, "projector_hash": _tensor_hash(pca_vr), "projected_delta_hash": _tensor_hash(pca_delta64), "role": "descriptive_only"}
     if q4_status == "SCIENTIFIC_UNRESOLVED":
         return {"seed": seed, "invocation_id": invocation_id, "execution_status": "EXECUTION_COMPLETE", "status": q4_status, "reason": "NON_ESTIMABLE_DENOMINATOR", "retained_pairs": len(retained), "role_counts": {"rank_training": len(train_ids), "evaluation": len(eval_ids)}, "elapsed_seconds": time.perf_counter() - seed_started}
-    return {"seed": seed, "invocation_id": invocation_id, "execution_status": "EXECUTION_COMPLETE", "status": q4_status, "reason": None, "retained_pairs": len(retained), "role_counts": {"rank_training": len(train_ids), "evaluation": len(eval_ids)}, "candidate_pool": {"budget": MATCHED_POOL_SIZE, "rank_training_only": True, "prefilter": prefilter, "frozen_ranked_latent_ids": frozen_pool, "scores": [{"latent_id": item[0], "score": item[1]} for item in ranked]}, "projector": projector_meta, "cells": cells, "pca_context": pca_meta, "pca_cells": pca_cells, "matched_draws": {"rng": rng_meta, "accepted": matched, "attempts": attempts, "results": matched_results}, "execution": {"engine_records": list(engine.records), "eval_pair_ids": eval_ids, "train_pair_ids": train_ids, "clean_d_source": "Gate-A cache", "candidate_or_stage2_inputs": []}, "elapsed_seconds": time.perf_counter() - seed_started}
+    return {"seed": seed, "invocation_id": invocation_id, "execution_status": "EXECUTION_COMPLETE", "status": q4_status, "reason": None, "retained_pairs": len(retained), "role_counts": {"rank_training": len(train_ids), "evaluation": len(eval_ids)}, "candidate_pool": {"budget": MATCHED_POOL_SIZE, "rank_training_only": True, "prefilter": prefilter, "frozen_ranked_latent_ids": frozen_pool, "scores": [{"latent_id": item[0], "score": item[1]} for item in frozen_ranked]}, "projector": projector_meta, "cells": cells, "pca_context": pca_meta, "pca_cells": pca_cells, "matched_draws": {"rng": rng_meta, "accepted": matched, "attempts": attempts, "results": matched_results}, "execution": {"engine_records": list(engine.records), "eval_pair_ids": eval_ids, "train_pair_ids": train_ids, "clean_d_source": "Gate-A cache", "candidate_or_stage2_inputs": []}, "elapsed_seconds": time.perf_counter() - seed_started}
 
 
 def _run_q4_impl(args: argparse.Namespace) -> int:

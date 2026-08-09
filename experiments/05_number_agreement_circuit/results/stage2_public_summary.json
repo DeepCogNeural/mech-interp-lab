@@ -1,0 +1,200 @@
+{
+  "calibration": {
+    "basename": "calibration_results.json",
+    "sha256": "e60be43085164917abdc3f3db539043b5ae9995791300b8ffb3cc042709f8471",
+    "theta_spec": {
+      "A": 0.2,
+      "C": 0.269830584526062,
+      "formula": "max(0.20, 2 * rho_full)"
+    }
+  },
+  "execution_ledger": "execution_ledger.csv",
+  "finding": "Q1, Q2, and Q3 all returned positive registered verdicts on all eight Stage-2 seeds.",
+  "not_claimed": [
+    "These results do not establish that the two heads are required or alone sufficient.",
+    "They do not establish that every causal route is explained by this pair.",
+    "They do not establish an exhaustive circuit or a native attention route.",
+    "The Q3 direct-recovery values are descriptive only and do not adjudicate the verdict.",
+    "Stage 3 / Q4 has no scientific verdict yet."
+  ],
+  "public_claim": "Across eight seeds, two heads—L7H4 and L8H5—formed a stable minimal compact set, passed preregistered specificity controls, and causally transported subject-number information under a frozen-pattern value-path intervention.",
+  "question": "Which heads carry the number signal, and do they transport subject-number information?",
+  "reproduce": {
+    "inputs": [
+      "selection_source_a.json",
+      "candidate.json",
+      "stage2_results.json",
+      "stage3_gate_a_cache.jsonl",
+      "stage3_split_manifest.json",
+      "stage3_prepare_manifest.json"
+    ],
+    "outputs": [
+      "selection_candidates.csv",
+      "stage2_seed_metrics.csv",
+      "stage3_preparation.csv",
+      "stage2_public_summary.json",
+      "stage3_preparation_summary.json",
+      "figure_exp05_main.svg",
+      "figure_exp05_main.png"
+    ],
+    "script": "experiments/05_number_agreement_circuit/make_claim_ladder.py"
+  },
+  "schema": "exp05-public-stage2-summary-v1",
+  "selection": {
+    "candidate_count": 8,
+    "candidate_sha256": "ef03fbf12cde0a1b99867aa4349483cbedb1eee804b518b5420c215ed59ba589",
+    "candidate_status": "NONEMPTY",
+    "selection_sha256": "39349b5a6185bcb0d20e3828c4880554733ffc0dd73ee84c60835bb17c49c183",
+    "source_a_sweep_sha256": "e2b3b7a70556c76168621d2f44c2e56c2b6a860f5cba8ba28f10afd1db0a0f1a",
+    "true_sweep_sha256": "258475646c0afe904b1a5986ee00363c8c1f7ecfe5d9fa7a3800ea402e2bf32f"
+  },
+  "source_receipts": [
+    {
+      "basename": "selection_source_a.json",
+      "bytes": 59540880,
+      "label": "selection_source_a",
+      "sha256": "39349b5a6185bcb0d20e3828c4880554733ffc0dd73ee84c60835bb17c49c183"
+    },
+    {
+      "basename": "candidate.json",
+      "bytes": 35431,
+      "label": "candidate",
+      "sha256": "e9af952f9c7c10befef7c14625db2c661be99106e8d0e2b72f799cde74794495"
+    },
+    {
+      "basename": "stage2_results.json",
+      "bytes": 1424135857,
+      "label": "stage2_results",
+      "sha256": "df0f9ee9cbe173013f9b74bf06890257d148e2058425232d402334d18a061a78"
+    },
+    {
+      "basename": "stage3_gate_a_cache.jsonl",
+      "bytes": 3448568,
+      "label": "stage3_gate_a_cache",
+      "sha256": "36278f6ee0b2dd71da632951252a6e467f4698bd5b13fa7cea4cf273cfc5e6cf"
+    },
+    {
+      "basename": "stage3_split_manifest.json",
+      "bytes": 224964,
+      "label": "stage3_split_manifest",
+      "sha256": "75530f3def2be41b3046059d0260a7b3e661d829d4ff2c117a6fda705e1b6cc7"
+    },
+    {
+      "basename": "stage3_split_roles.csv",
+      "bytes": 91741,
+      "label": "stage3_split_roles",
+      "sha256": "319897bf69f7c3c2d36dcb5bca5c6883024b785ee6808f530848ee7b6253a487"
+    },
+    {
+      "basename": "stage3_prepare_manifest.json",
+      "bytes": 2363,
+      "label": "stage3_prepare_manifest",
+      "sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875"
+    }
+  ],
+  "stage2": {
+    "coverage_status": "STAGE2_PAIR_CSV_CHECKPOINT_COVERAGE_MATCH",
+    "final_binding_status": "STAGE2_FINAL_ARTIFACTS_BOUND",
+    "q1": {
+      "label": "Qualifying <=8-head set",
+      "pass_count": 8,
+      "recovery_fraction": {
+        "ci95_t7": [
+          0.5241440453459831,
+          0.5372868596885485
+        ],
+        "max": 0.5462705497678013,
+        "mean": 0.5307154525172658,
+        "min": 0.5213951286085294,
+        "n": 8,
+        "sd": 0.007859089340806561
+      },
+      "threshold": 0.5,
+      "verdict": "POSITIVE"
+    },
+    "q2": {
+      "label": "Number-specific under registered controls",
+      "pass_count": 8,
+      "source_A_abs_ratio": {
+        "ci95_t7": [
+          0.0011733656196563386,
+          0.004268974121967653
+        ],
+        "max": 0.005179634607196984,
+        "mean": 0.0027211698708119957,
+        "min": 0.00022660411056992335,
+        "n": 8,
+        "sd": 0.0018511000117404333
+      },
+      "source_C_abs_ratio": {
+        "ci95_t7": [
+          0.18423320249113323,
+          0.19122255869108196
+        ],
+        "max": 0.19500017540682285,
+        "mean": 0.1877278805911076,
+        "min": 0.18018936497894597,
+        "n": 8,
+        "sd": 0.004179468215739511
+      },
+      "specificity_thresholds": {
+        "source_A": 0.2,
+        "source_C": 0.269830584526062
+      },
+      "verdict": "POSITIVE"
+    },
+    "q3": {
+      "D_path_descriptive": {
+        "ci95_t7": [
+          0.5444566629997005,
+          0.56724463987968
+        ],
+        "max": 0.5741488923242082,
+        "mean": 0.5558506514396903,
+        "min": 0.5276886683243972,
+        "n": 8,
+        "sd": 0.013626666369011137
+      },
+      "F_path_descriptive": {
+        "ci95_t7": [
+          -0.002262209269926274,
+          0.0023392506670885213
+        ],
+        "max": 0.003834533505141735,
+        "mean": 3.8520698581123725e-05,
+        "min": -0.0036613165866583586,
+        "n": 8,
+        "sd": 0.002751563234521256
+      },
+      "direct_recovery": {
+        "adjudicative": false,
+        "median": 0.19807009384247065,
+        "observed_max": 0.20947188933530506,
+        "observed_min": 0.1915534851039121,
+        "status": "Q3_DRF_NO_INFERENTIAL_INTERVAL"
+      },
+      "label": "Subject-value transport shown",
+      "pass_count": 8,
+      "verdict": "POSITIVE"
+    },
+    "qualifying_n": 2,
+    "scientific_verdict_emitted": true,
+    "seed_count": 8,
+    "status": "COMPLETE",
+    "status_code": "STAGE2_COMPLETE_SINGLE_INVOCATION",
+    "supplies_published_science": true,
+    "tested_set": [
+      {
+        "head": 4,
+        "label": "L7H4",
+        "layer": 7
+      },
+      {
+        "head": 5,
+        "label": "L8H5",
+        "layer": 8
+      }
+    ],
+    "thresholds_are_from_calibration": true
+  }
+}
