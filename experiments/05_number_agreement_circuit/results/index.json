@@ -1,0 +1,72 @@
+{
+  "artifacts": [
+    "RESULTS.md",
+    "selection_candidates.csv",
+    "stage2_seed_metrics.csv",
+    "stage3_preparation.csv",
+    "execution_ledger.csv",
+    "stage2_public_summary.json",
+    "stage3_preparation_summary.json",
+    "figure_manifest.json",
+    "figure_exp05_main.svg",
+    "figure_exp05_main.png",
+    "stage3/stage3_gate_a_cache.jsonl",
+    "stage3/stage3_split_manifest.json",
+    "stage3/stage3_split_roles.csv",
+    "stage3/stage3_prepare_manifest.json"
+  ],
+  "checksums": "checksums.sha256",
+  "claim_boundary": "Q1-Q3 Stage2 evidence is public; Stage3 is preparation-only and Q4 is pending.",
+  "package_policy": {
+    "historical_30d941c_science_eligible": false,
+    "raw_stage2_json_copied": false,
+    "raw_stage2_pair_csv_copied": false,
+    "stage3_q4_verdict_emitted": false
+  },
+  "schema": "exp05-public-evidence-index-v1",
+  "source_receipts": [
+    {
+      "basename": "selection_source_a.json",
+      "bytes": 59540880,
+      "label": "selection_source_a",
+      "sha256": "39349b5a6185bcb0d20e3828c4880554733ffc0dd73ee84c60835bb17c49c183"
+    },
+    {
+      "basename": "candidate.json",
+      "bytes": 35431,
+      "label": "candidate",
+      "sha256": "e9af952f9c7c10befef7c14625db2c661be99106e8d0e2b72f799cde74794495"
+    },
+    {
+      "basename": "stage2_results.json",
+      "bytes": 1424135857,
+      "label": "stage2_results",
+      "sha256": "df0f9ee9cbe173013f9b74bf06890257d148e2058425232d402334d18a061a78"
+    },
+    {
+      "basename": "stage3_gate_a_cache.jsonl",
+      "bytes": 3448568,
+      "label": "stage3_gate_a_cache",
+      "sha256": "36278f6ee0b2dd71da632951252a6e467f4698bd5b13fa7cea4cf273cfc5e6cf"
+    },
+    {
+      "basename": "stage3_split_manifest.json",
+      "bytes": 224964,
+      "label": "stage3_split_manifest",
+      "sha256": "75530f3def2be41b3046059d0260a7b3e661d829d4ff2c117a6fda705e1b6cc7"
+    },
+    {
+      "basename": "stage3_split_roles.csv",
+      "bytes": 91741,
+      "label": "stage3_split_roles",
+      "sha256": "319897bf69f7c3c2d36dcb5bca5c6883024b785ee6808f530848ee7b6253a487"
+    },
+    {
+      "basename": "stage3_prepare_manifest.json",
+      "bytes": 2363,
+      "label": "stage3_prepare_manifest",
+      "sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875"
+    }
+  ],
+  "title": "Exp05 public evidence packet"
+}

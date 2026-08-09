@@ -1,0 +1,72 @@
+{
+  "all_gate_A_passed": true,
+  "evaluation_pairs_per_seed": [
+    150
+  ],
+  "exact_input_copies": [
+    "stage3/stage3_gate_a_cache.jsonl",
+    "stage3/stage3_split_manifest.json",
+    "stage3/stage3_split_roles.csv",
+    "stage3/stage3_prepare_manifest.json"
+  ],
+  "hashes": {
+    "cache_manifest_protocol_sha256": "a3b68a4104a8f654f5982b78bfd9ba8746db0323a0ca5ea1e626b307953d7dee",
+    "cross_hash_sha256": "e97531cbda2e187662e67c1daed29fb360cb50d3cf03e311c8f45359392fa4ef",
+    "gate_cache_sha256": "36278f6ee0b2dd71da632951252a6e467f4698bd5b13fa7cea4cf273cfc5e6cf",
+    "protocol_sha256": "a3b68a4104a8f654f5982b78bfd9ba8746db0323a0ca5ea1e626b307953d7dee",
+    "split_csv_sha256": "319897bf69f7c3c2d36dcb5bca5c6883024b785ee6808f530848ee7b6253a487",
+    "split_manifest_sha256": "75530f3def2be41b3046059d0260a7b3e661d829d4ff2c117a6fda705e1b6cc7"
+  },
+  "independent_review_required": true,
+  "q4_input_boundary": [
+    "protocol",
+    "stage3_gate_a_cache",
+    "stage3_split_manifest",
+    "stage3_prepare_manifest",
+    "review_receipt"
+  ],
+  "q4_verdict_emitted": false,
+  "rank_training_pairs_per_seed": [
+    40
+  ],
+  "reproduce": "Use make_claim_ladder.py with the six source inputs; this package does not run Stage 3.",
+  "schema": "exp05-public-stage3-preparation-v1",
+  "source_receipts": [
+    {
+      "basename": "stage3_gate_a_cache.jsonl",
+      "bytes": 3448568,
+      "label": "stage3_gate_a_cache",
+      "sha256": "36278f6ee0b2dd71da632951252a6e467f4698bd5b13fa7cea4cf273cfc5e6cf"
+    },
+    {
+      "basename": "stage3_split_manifest.json",
+      "bytes": 224964,
+      "label": "stage3_split_manifest",
+      "sha256": "75530f3def2be41b3046059d0260a7b3e661d829d4ff2c117a6fda705e1b6cc7"
+    },
+    {
+      "basename": "stage3_split_roles.csv",
+      "bytes": 91741,
+      "label": "stage3_split_roles",
+      "sha256": "319897bf69f7c3c2d36dcb5bca5c6883024b785ee6808f530848ee7b6253a487"
+    },
+    {
+      "basename": "stage3_prepare_manifest.json",
+      "bytes": 2363,
+      "label": "stage3_prepare_manifest",
+      "sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875"
+    }
+  ],
+  "source_status": "COMPLETE",
+  "stage3_seeds": [
+    20260806,
+    20260807,
+    20260808,
+    20260809,
+    20260810,
+    20260811,
+    20260812,
+    20260813
+  ],
+  "status": "PREPARATION_COMPLETE_Q4_PENDING"
+}

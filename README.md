@@ -9,8 +9,8 @@ previous step's failure rather than planned in advance: *toy models where the gr
 observable → a real model read correlationally → the same question asked causally → the mechanism
 itself.*
 
-Four experiments, and a fifth whose design is frozen, whose calibration and Stage 1 are complete, and
-whose Stage 2–3 adjudication runs have not started. The first replicates the *storage* account of
+Five experiments, with experiment 05 now carrying this repository's first adjudicated real-model
+mechanism result; its separate representation-span test remains pending. The first replicates the *storage* account of
 superposition. The second tests whether the same geometry also has a *computation* account and finds
 that it does — under a nonlinearity held fixed across arms, a monosemantic code reads a feature
 interaction at `0.494 ± 0.005` — on the chance line and provably unable to leave it, while mixed codes
@@ -24,16 +24,23 @@ measure at all — and then **declines to certify what it measured**, because a 
 frozen in an earlier commit than any of this experiment's output was missed by 0.006. Most of these
 produced results I did not want; all of them are reported in full.
 
-[Experiment 05](experiments/05_number_agreement_circuit/DESIGN.md) is the next step of that escalation
-and asks the mechanism question the first four could not: which attention heads move the number signal,
-and whether the twelve recurring experiment-04 decoder rows span more of the layer-8 transported delta
-than matched 12-dimensional spans.
-Its design is **frozen** — decision rules, thresholds, and the boundary sentences for near-threshold
-outcomes are all committed. Calibration is complete, and Stage 1 is complete ([`stage1.py`](experiments/05_number_agreement_circuit/stage1.py)
-→ [`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json),
-[`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md)); Stage 1 adjudicates none
-of Q1–Q4, and Stages 2–3 have not started. The design was therefore frozen on evidence about the
-stimuli; the Stage 1 ranking is descriptive and not a Q1–Q4 answer.
+[Experiment 05](experiments/05_number_agreement_circuit/writeup.md) asks the mechanism question the
+first four could not: which attention heads move the number signal, whether that effect is
+number-specific, and whether it arrives from the subject position. Across eight registered seeds,
+**L7H4 and L8H5 were the smallest tested set that consistently recovered more than half of the frozen
+direct effect** (`0.521–0.546`). The pair passed both specificity controls and produced a positive
+frozen-attention-pattern value-path transport effect in every seed. Independent pair-level
+recomputation, artifact-hash review, and a separate Pro Advisor review all accepted the result.
+
+That is an intervention-specific result, not a claim that these heads are necessary, sufficient, the
+complete circuit, or the model's unconstrained native path. The experiment's independent Q4 remains
+open: whether the twelve recurring experiment-04 decoder rows capture more of the layer-8 transported
+delta than matched 12-dimensional spans. Its Gate-A cache and held-out role split are complete and
+reviewable; no Q4 verdict is reported yet. The [frozen design](experiments/05_number_agreement_circuit/DESIGN.md)
+and [compact public evidence](experiments/05_number_agreement_circuit/results/RESULTS.md) keep those two
+claim levels separate.
+
+![Experiment 05 claim ladder: eight-head selection, eight-seed Q1–Q3 evidence, and the pending Stage-3 boundary](experiments/05_number_agreement_circuit/results/figure_exp05_main.png)
 
 **A note on the framing this repository started with.** Experiments 01 and 02 were built around
 superposition versus mixed selectivity — whether many features sharing few non-orthogonal directions is
@@ -313,18 +320,11 @@ to you.
 ## Next
 
 - **[Experiment 05 — the number-agreement circuit](experiments/05_number_agreement_circuit/DESIGN.md)**,
-  design frozen 2026-08-02 and amended through 2026-08-08, calibration and Stage 1 complete, and the
-  remaining runner code present but not tested or executed. Which attention
-  heads carry the subject's number to the verb position, is what they carry *number* rather than any
-  perturbation, does it arrive from the subject position, and does experiment 04's twelve-row decoder
-  span exceed matched-span chance at layer 8. Stage 1's [`stage1.py`](experiments/05_number_agreement_circuit/stage1.py) output
-  ([`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json),
-  [`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md)) is descriptive and
-  adjudicates none of Q1–Q4; the later axes retain two pre-declared scientific verdicts each plus
-  explicit blocked/inconclusive states for incomplete or unresolved evidence,
-  with the latent question adjudicated on seeds disjoint from the ones that selected those latents. No
-  peer-reviewed head-level *causal* baseline exists for this task in GPT-2-small, which is checked and
-  sourced in the design.
+  now has a completed, independently recomputed Stage-2 result: L7H4 and L8H5 form the minimum tested
+  compact set, pass both number-specificity controls, and transport subject-number information under
+  the registered frozen-pattern value-path intervention in all eight seeds. Next is the candidate-
+  independent Q4 run: compare the fixed twelve-row layer-8 decoder span with matched 12-dimensional
+  spans on held-out items. The prepared cache and split are complete; the scientific result is not.
 - Re-register experiment 04's Gate C on a decoder each arm actually ships with, with the floor
   pre-declared from a pilot on a *different* stimulus family so the threshold cannot be tuned to this
   one. Necessary but **not** sufficient: a rerun still has to clear every other frozen gate, and Gate D
@@ -368,19 +368,12 @@ Experiment 04 is four stages in the order they were actually run — go/no-go pi
 that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
 Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
-Experiment 05's calibration and Stage 1 are complete; the selection supplement and Stages 2–3 have
-not run. Its
-[pre-registration](experiments/05_number_agreement_circuit/DESIGN.md) is frozen. The calibration pilot
-artifacts are [`calibration_results.json`](experiments/05_number_agreement_circuit/calibration_results.json)
-and [`CALIBRATION_NOTES.md`](experiments/05_number_agreement_circuit/CALIBRATION_NOTES.md); Stage 1's
-artifacts are [`stage1.py`](experiments/05_number_agreement_circuit/stage1.py),
-[`stage1_results.json`](experiments/05_number_agreement_circuit/stage1_results.json), and
-[`STAGE1_NOTES.md`](experiments/05_number_agreement_circuit/STAGE1_NOTES.md). Stage 1 is deliberately
-non-adjudicating: it does not decide Q1–Q4.
-The result-free [`protocol_v1.json`](experiments/05_number_agreement_circuit/protocol_v1.json) and the
-remaining runner files are available for review. Their 12-test model-free contract suite passes; the
-model-backed selection and adjudication runs remain unexecuted, so code presence is not an experimental
-result.
+Experiment 05's calibration, fresh same-snapshot selection, and Stage 2 are complete. The compact
+claim inputs, per-seed statistics, checksums, and generation code live in
+[`results/`](experiments/05_number_agreement_circuit/results/); the multi-gigabyte raw execution
+artifacts stay outside Git and are identified by SHA-256. The Stage-2 invocation used 2,528 logical
+forward-equivalents and 6,272 seconds of CPU wall time. Stage 3's Gate-A cache and item-disjoint split
+are prepared, but Q4 has not run and no matched-span conclusion is licensed.
 
 ```bash
 ./.venv/bin/python -m unittest discover \

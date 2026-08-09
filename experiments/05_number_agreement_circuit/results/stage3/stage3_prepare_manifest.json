@@ -1,0 +1,86 @@
+{
+  "candidate_C_or_stage2_input": false,
+  "cross_hash_sha256": "e97531cbda2e187662e67c1daed29fb360cb50d3cf03e311c8f45359392fa4ef",
+  "gate_cache_sha256": "36278f6ee0b2dd71da632951252a6e467f4698bd5b13fa7cea4cf273cfc5e6cf",
+  "independent_review_required": true,
+  "protocol_sha256": "a3b68a4104a8f654f5982b78bfd9ba8746db0323a0ca5ea1e626b307953d7dee",
+  "q4_input_boundary": [
+    "protocol",
+    "stage3_gate_a_cache",
+    "stage3_split_manifest",
+    "stage3_prepare_manifest",
+    "review_receipt"
+  ],
+  "schema": "exp05-number-agreement-stage3-prepare-manifest-v1",
+  "seeds": [
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 235,
+      "seed": 20260806,
+      "status": "READY"
+    },
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 235,
+      "seed": 20260807,
+      "status": "READY"
+    },
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 231,
+      "seed": 20260808,
+      "status": "READY"
+    },
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 234,
+      "seed": 20260809,
+      "status": "READY"
+    },
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 229,
+      "seed": 20260810,
+      "status": "READY"
+    },
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 232,
+      "seed": 20260811,
+      "status": "READY"
+    },
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 235,
+      "seed": 20260812,
+      "status": "READY"
+    },
+    {
+      "evaluation_pairs": 150,
+      "gate_a_passed": true,
+      "rank_training_pairs": 40,
+      "retained_pairs": 236,
+      "seed": 20260813,
+      "status": "READY"
+    }
+  ],
+  "split_csv_path": "stage3_split_roles.csv",
+  "split_csv_sha256": "319897bf69f7c3c2d36dcb5bca5c6883024b785ee6808f530848ee7b6253a487",
+  "split_manifest_path": "stage3_split_manifest.json",
+  "split_manifest_sha256": "75530f3def2be41b3046059d0260a7b3e661d829d4ff2c117a6fda705e1b6cc7",
+  "status": "COMPLETE"
+}

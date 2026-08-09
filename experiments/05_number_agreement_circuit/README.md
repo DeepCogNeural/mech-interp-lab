@@ -1,8 +1,8 @@
 # Experiment 05 — the number-agreement circuit
 
-**Status: design frozen 2026-08-02 and amended through 2026-08-08 (Amendments 1–9); calibration,
-Stage 1, and the model-free contract suite are complete; no model-backed selection supplement,
-Stage 2 run, or Stage 3 run has started.**
+**Status: design frozen 2026-08-02 and amended through 2026-08-08 (Amendments 1–9);
+calibration, Stage 1, fresh same-snapshot selection, and Stage 2 are complete. Q1–Q3 are positive in
+8/8 registered seeds; Stage 3 preparation is complete and Q4 has not run.**
 [`DESIGN.md`](DESIGN.md) is the pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02)
 and nine dated amendments. [Amendment 2](DESIGN.md#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
 corrects three factual errors and repairs five rules that adversarial review found unexecutable;
@@ -34,36 +34,39 @@ The completed calibration pilot ([`calibrate.py`](calibrate.py) →
 the freeze. Stage 1 then completed ([`stage1.py`](stage1.py) →
 [`stage1_results.json`](stage1_results.json), [`STAGE1_NOTES.md`](STAGE1_NOTES.md)): it ran the true
 single-flip `z@final` head sweep, the required all-head `E_all`, residual `E_ref`, and top-24 `v@subject`
-sweep. Stage 1 adjudicates none of Q1–Q4; Stages 2 and 3 have not started.
+sweep. Stage 1 itself adjudicates none of Q1–Q4. The later fresh selection chose eight candidates;
+the completed Stage-2 run selected `[L7H4, L8H5]` as the minimum tested qualifying set and returned
+positive Q1, Q2, and Q3 decisions in all eight seeds. See the [public result](writeup.md) and
+[compact evidence packet](results/RESULTS.md).
 
-The Stage-1-informed **incomplete proxy/projection** of about 137 CPU-minutes is based on the measured
+The Stage-1-informed **incomplete proxy/projection** of about 137 CPU-minutes was based on the measured
 head-sweep, joint-patch, and per-seed fixed-overhead costs. It does not price Stage 3's per-seed PCA
 fitting or latent-candidate preparation, and it predates Amendment 7's fresh same-snapshot
 true/source-A selection. It is not a verified total runtime. Stage 1 touched no latent span, by construction, so the
-design was frozen on evidence about the stimuli, not about the answer. Amendment 7 freezes the
-pending same-snapshot selection supplement at 291 logical forward-equivalents; the shipped Stage-1
-cross-check adds 0 logical forward-equivalents. Neither is a measured wall-clock total.
+design was frozen on evidence about the stimuli, not about the answer. The actual fresh selection used
+291 logical forward-equivalents and 966 seconds; the completed Stage-2 invocation used 2,528 logical
+forward-equivalents and 6,272 seconds. Stage 3 remains separately unpriced and unadjudicated.
 
 | lifecycle gate | current state |
 |---|---|
 | frozen design and machine protocol | present; no result fields or protocol hash |
 | calibration | complete |
 | shipped Stage 1 scope | complete; descriptive only |
-| selection/core/Stage 2/Stage 3 implementation | present for static and Advisor review |
-| offline contract tests | 13/13 pass; protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4 helpers, artifact guards, and the empty-`C` terminal path |
-| model-backed selection supplement | not run; candidate `C` does not exist yet |
-| Stage 2 selection dependency | requires protocol/calibration/selection/candidate; no `--stage1`; not present/run |
-| Q1–Q4 adjudication | not run; no verdict exists |
+| fresh same-snapshot selection | complete; eight-head candidate set frozen |
+| Stage 2 | complete; Q1/Q2/Q3 each 8/8 positive; independently recomputed and Advisor-accepted |
+| Stage 3 preparation | complete; all eight Gate-A cells pass and have 40 rank-training / 150 evaluation pairs |
+| Stage 3 / Q4 | not run; no matched-span verdict exists |
+| offline contract tests | 15/15 pass; protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4 helpers, portable preparation binding, target-excluded matched pools, artifact guards, and the empty-`C` terminal path |
 
 The implementation files are [`selection_source_a.py`](selection_source_a.py),
 [`freeze_candidate.py`](freeze_candidate.py), [`exp05_core.py`](exp05_core.py),
-[`stage2.py`](stage2.py), and [`stage3.py`](stage3.py). Their presence is not execution evidence.
-Stage 2 requires the completed, self-hashed selection artifact as an explicit input
+[`stage2.py`](stage2.py), and [`stage3.py`](stage3.py). Stage 2 consumed the completed, self-hashed selection artifact as an explicit input
 (`--selection selection_source_a.json`) together with the protocol, calibration, and candidate
 artifacts; it no longer takes `--stage1`, because shipped Stage 1 is only a descriptive cross-check
-inside selection. The selection supplement's fresh true/source-A sweeps cost 291 logical FE; the
-historical cross-check costs 0 FE. The selection supplement and all model-backed Stage-2/3 commands
-remain unrun. The offline suite is model-free and can be reproduced from the repository root with:
+inside selection. The raw Stage-2 JSON is 1.4 GB and stays outside Git; its SHA-256 and the compact
+claim inputs are recorded under [`results/`](results/). Stage 3 will consume only the independently
+prepared cache, split, review, and harness receipts—not the head candidate or Stage-2 result. The
+offline suite is model-free and can be reproduced from the repository root with:
 
 ```bash
 ./.venv/bin/python -m unittest discover \
@@ -91,7 +94,8 @@ Q3's direct-recovery summary is descriptive only and has no across-seed inferent
 
 These labels do not prove necessity, mediation, or a native attention path. Q4 is only the layer-8,
 `both`-position decoder-row span compared with matched-dimension empirical chance. Stage 1 is a coarse
-ranking and adjudicates none of these four axes.
+historical ranking and adjudicates none of these four axes; the completed Stage-2 artifact now
+adjudicates Q1–Q3, while Q4 remains pending.
 
 Q1 alone is close to tautological — eight late heads can push a logit they sit one step away from —
 which is exactly why Q2 and Q3 are separate adjudicated axes and why the writeup may not present Q1
