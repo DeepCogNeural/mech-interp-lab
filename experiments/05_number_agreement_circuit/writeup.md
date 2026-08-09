@@ -1,4 +1,4 @@
-# Exp05 public result: a stable two-head set and subject-value transport
+# Exp05 public result: a stable two-head set, span concentration, and an exploratory bridge
 
 ## Question
 
@@ -28,6 +28,10 @@ JSON or the 73 MB pair-level CSV.
 
 ![Experiment 05 public evidence: selection, eight-seed Q1–Q3 results, and the positive Stage-3/Q4 matched-span result](results/figure_exp05_main.png)
 
+The post-Q4 bridge is summarized in [`figure_bridge_rescue.svg`](results/figure_bridge_rescue.svg)
+([PNG](results/figure_bridge_rescue.png)); its compact rows and claim boundary are in
+[`bridge_result_summary.json`](results/bridge_result_summary.json).
+
 ## Finding
 
 > Across eight seeds, two heads—L7H4 and L8H5—formed a stable minimal compact
@@ -48,6 +52,17 @@ geometric energy capture or full mediation. The mean `R_span` is `0.893525` (t(7
 geometric squared-norm fraction is about `0.525–0.544`; the generic-text PCA span/both comparator is
 a raw logit effect of `0.027400`, not 2.74% recovery.
 
+The single follow-up then tested a narrower causal bridge on eight fresh held-out seeds (`20260814–21`):
+L7H4 was intervened, the resulting delta was measured at `resid_pre8`, and the fixed 12-row span was
+rescued against 100 target-excluded matched rank-12 spans per seed. The target recovered `67.9%` of
+the directed effect (mean `R_target=0.678639`, 95% t(7) CI `[0.673841, 0.683437]`) and beat the
+actual maximum matched span in all eight seeds. The complementary ratio was `0.305339` (CI
+`[0.301260, 0.309418]`); the matched-span mean was `0.065910` (CI `[0.049408, 0.082411]`). Under
+an L8H5 final-value-path clamp to the source-A baseline, the target remained `0.674047` (CI
+`[0.669586, 0.678508]`), while the natural reader projection coefficient was only descriptive
+(`0.027–0.124`). This supports a reproducible causal subspace under the tested intervention, not
+dominant L8H5 final-value mediation. The bridge is exploratory and has no preregistered verdict.
+
 ## Not claimed
 
 These results do not establish that the two heads are required, that they alone
@@ -58,9 +73,13 @@ The Q4 span is not an activation reconstruction claim and does not establish nat
 latent activations, individual-latent causality, necessity or sufficiency, a natural head→span path or
 mediation, a complete circuit, or generalisation across models or tasks.
 
-The next step is one fresh held-out exploratory bridge chosen with the Advisor: L7H4 → `resid_pre8`
-target span → natural L8H5/readout, with an L8H5-clamp arm. Its executable design is
-[`bridge_rescue.py`](bridge_rescue.py); it has not yet run.
+The near-closure of target plus complement is a separate nonlinear arm and is not a linear attribution.
+The clamp does not show that L8H5 is irrelevant: parallel routes, other positions, and QK/attention
+routes were not tested. The bridge does not establish native latent semantics, individual-latent
+causality, necessity, sufficiency, a complete circuit, or generalisation across models or tasks. Its
+code is [`bridge_rescue.py`](bridge_rescue.py), and the compact evidence is linked above. The next
+frozen question is a small factorial that distinguishes a too-narrow clamp from an L8H5-parallel
+route; it is planned, not run.
 
 The prior failed run `30d941c` appears only in
 [`results/execution_ledger.csv`](results/execution_ledger.csv) with

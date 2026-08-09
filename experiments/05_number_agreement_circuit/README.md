@@ -2,7 +2,8 @@
 
 **Status: design frozen 2026-08-02 and amended through 2026-08-08 (Amendments 1–9);
 calibration, Stage 1, fresh same-snapshot selection, Stage 2, and Stage 3/Q4 are complete. Q1–Q4 are
-positive in 8/8 registered seeds.**
+positive in 8/8 registered seeds, and one exploratory bridge follow-up is complete on eight fresh
+held-out seeds.**
 [`DESIGN.md`](DESIGN.md) is the pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02)
 and nine dated amendments. [Amendment 2](DESIGN.md#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
 corrects three factual errors and repairs five rules that adversarial review found unexecutable;
@@ -48,7 +49,9 @@ design was frozen on evidence about the stimuli, not about the answer. The actua
 291 logical forward-equivalents and 966 seconds; the completed Stage-2 invocation used 2,528 logical
 forward-equivalents and 6,272 seconds. The Stage-3/Q4 invocation used 353,120 logical
 forward-equivalents and 1,265.99 seconds; its raw result remains outside Git and its compact evidence is
-under `results/`.
+under `results/`. The post-Q4 bridge used clean source `0d7c4db`, seeds `20260814–20260821`, 150 pairs
+per seed, 800 frozen matched spans, and 852.85 seconds. Its raw result is outside Git (SHA-256 prefix
+`9d8446…`); the independent artifact review is `SHIP`.
 
 | lifecycle gate | current state |
 |---|---|
@@ -59,6 +62,7 @@ under `results/`.
 | Stage 2 | complete; Q1/Q2/Q3 each 8/8 positive; independently recomputed and Advisor-accepted |
 | Stage 3 preparation | complete; all eight Gate-A cells pass and have 40 rank-training / 150 evaluation pairs |
 | Stage 3 / Q4 | complete; Q4 above matched-span chance in 8/8; mean `R_span=0.8935`, `R_comp=0.0848` |
+| exploratory bridge | complete; target span beats 100 matched spans in 8/8; `R_target=0.6786`, clamped `0.6740` |
 | offline contract tests | 20/20 pass; protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4/bridge helpers, portable preparation binding, target-excluded matched pools, artifact guards, and the empty-`C` terminal path |
 
 The implementation files are [`selection_source_a.py`](selection_source_a.py),
@@ -112,9 +116,28 @@ raw logit effect of `0.027400`, not 2.74% recovery.
 
 Q4 does not establish natural or monosemantic latent activations, individual-latent causality,
 necessity or sufficiency, a natural head→span path or mediation, a complete circuit, or
-generalisation across models or tasks. The next step is one fresh held-out exploratory bridge—L7H4 →
-`resid_pre8` target span → natural L8H5/readout, with an L8H5 clamp. Its executable design is in
-[`bridge_rescue.py`](bridge_rescue.py); it has not yet run.
+generalisation across models or tasks.
+
+**Exploratory bridge (post-Q4, no preregistered verdict).** On eight fresh held-out seeds, the fixed
+12-row layer-8 decoder span recovered `R_target=0.678639` (95% t(7) CI `[0.673841, 0.683437]`) of the
+directed L7H4→`resid_pre8` effect and exceeded the actual maximum of 100 target-excluded matched
+rank-12 spans on every seed (8/8). The complementary ratio was `R_comp=0.305339` (CI
+`[0.301260, 0.309418]`), while the aggregate matched-span mean was `0.065910` (CI
+`[0.049408, 0.082411]`). With L8H5's final value path clamped to the natural source-A baseline, the
+target remained `R_target=0.674047` (CI `[0.669586, 0.678508]`); the natural reader projection
+coefficient was only descriptive (`0.027–0.124` across seeds). This does not support dominant L8H5
+final-value mediation. It also does not show that L8H5 is irrelevant: parallel routes, other
+positions, and QK/attention routes were not tested. The near-closure of target plus complement is a
+separate nonlinear arm and is not a linear attribution.
+
+The compact packet is [`bridge_result_summary.json`](results/bridge_result_summary.json), with the
+matched rows in [`bridge_matched_ratios.csv`](results/bridge_matched_ratios.csv) and the overview in
+[`figure_bridge_rescue.svg`](results/figure_bridge_rescue.svg) ([PNG](results/figure_bridge_rescue.png)).
+The executable follow-up is [`bridge_rescue.py`](bridge_rescue.py); it is exploratory evidence, not a
+new preregistered axis.
+
+The next frozen research question is a small factorial distinguishing a too-narrow L8H5 clamp from an
+L8H5-parallel route. It is a plan only; no additional run is being claimed here.
 
 Q1 alone is close to tautological — eight late heads can push a logit they sit one step away from —
 which is exactly why Q2 and Q3 are separate adjudicated axes and why the writeup may not present Q1
