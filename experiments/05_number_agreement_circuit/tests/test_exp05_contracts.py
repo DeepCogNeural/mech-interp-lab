@@ -280,6 +280,64 @@ class Q4Contracts(unittest.TestCase):
 
 
 class ArtifactAndRunnerContracts(unittest.TestCase):
+    def test_stage2_joint_patch_hook_accepts_transformerlens_hook_keyword(self) -> None:
+        class Sliceable:
+            shape = (1,)
+
+            def __getitem__(self, _key: object) -> "Sliceable":
+                return self
+
+        class FakeValue:
+            def detach(self) -> "FakeValue":
+                return self
+
+            def float(self) -> "FakeValue":
+                return self
+
+            def cpu(self) -> "FakeValue":
+                return self
+
+        fake_torch = types.SimpleNamespace(
+            no_grad=contextlib.nullcontext,
+            cat=lambda values: tuple(values),
+        )
+
+        class FakeModel:
+            tokenizer = object()
+            cfg = types.SimpleNamespace(n_heads=12, d_head=64)
+
+            def run_with_hooks(self, _tokens: object, *, fwd_hooks: object, return_type: str) -> str:
+                self.assert_return_type = return_type
+                for _name, callback in fwd_hooks:  # type: ignore[assignment]
+                    callback("activation", hook="transformer-lens-hook")
+                return "logits"
+
+        pilot_stub = types.ModuleType("pilot")
+        pilot_stub.logit_difference = lambda *args, **kwargs: FakeValue()
+        with (
+            mock.patch.object(stage2, "torch", fake_torch),
+            mock.patch.object(stage2, "require_one_token", side_effect=[1, 2]),
+            mock.patch.object(stage2, "_patch_hook", return_value="patched") as patch_hook,
+            mock.patch.object(stage2, "_check_runtime"),
+            mock.patch.dict(sys.modules, {"pilot": pilot_stub}),
+        ):
+            result = stage2._run_selected_z(
+                FakeModel(),
+                Sliceable(),
+                Sliceable(),
+                [0],
+                {(0, 0): Sliceable()},
+                object(),
+                object(),
+                [{"layer": 0, "head": 0}],
+                "contract",
+                started=0.0,
+                cap=1.0,
+            )
+
+        self.assertEqual(len(result), 1)
+        patch_hook.assert_called_once()
+
     def test_stage2_requires_complete_selection_state_fingerprints(self) -> None:
         complete = {
             "schema": "exp05.model_state_fingerprint.v1",

@@ -971,8 +971,8 @@ def _run_selected_z(model: Any, base_tokens: torch.Tensor, base_lengths: torch.T
             layer, head = int(row["layer"]), int(row["head"])
             replacement = replacements[(layer, head)][start:stop]
 
-            def hook(activation: torch.Tensor, hook_name: Any, *, replacement: torch.Tensor = replacement, head: int = head) -> torch.Tensor:
-                del hook_name
+            def hook(activation: torch.Tensor, hook: Any, *, replacement: torch.Tensor = replacement, head: int = head) -> torch.Tensor:
+                del hook
                 return _patch_hook(
                     activation,
                     base_positions=chunk_positions,

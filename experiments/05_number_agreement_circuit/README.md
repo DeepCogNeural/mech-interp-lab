@@ -50,7 +50,7 @@ cross-check adds 0 logical forward-equivalents. Neither is a measured wall-clock
 | calibration | complete |
 | shipped Stage 1 scope | complete; descriptive only |
 | selection/core/Stage 2/Stage 3 implementation | present for static and Advisor review |
-| offline contract tests | 12/12 pass; protocol, splits, selection fingerprints, candidate/Q4 helpers, artifact guards, and the empty-`C` terminal path |
+| offline contract tests | 13/13 pass; protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4 helpers, artifact guards, and the empty-`C` terminal path |
 | model-backed selection supplement | not run; candidate `C` does not exist yet |
 | Stage 2 selection dependency | requires protocol/calibration/selection/candidate; no `--stage1`; not present/run |
 | Q1–Q4 adjudication | not run; no verdict exists |
