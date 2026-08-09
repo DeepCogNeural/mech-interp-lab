@@ -10,7 +10,7 @@ observable → a real model read correlationally → the same question asked cau
 itself.*
 
 Five experiments, with experiment 05 now carrying this repository's first adjudicated real-model
-mechanism result; its separate representation-span test remains pending. The first replicates the *storage* account of
+mechanism result and a positive matched-span representation result. The first replicates the *storage* account of
 superposition. The second tests whether the same geometry also has a *computation* account and finds
 that it does — under a nonlinearity held fixed across arms, a monosemantic code reads a feature
 interaction at `0.494 ± 0.005` — on the chance line and provably unable to leave it, while mixed codes
@@ -33,14 +33,22 @@ frozen-attention-pattern value-path transport effect in every seed. Independent 
 recomputation, artifact-hash review, and a separate Pro Advisor review all accepted the result.
 
 That is an intervention-specific result, not a claim that these heads are necessary, sufficient, the
-complete circuit, or the model's unconstrained native path. The experiment's independent Q4 remains
-open: whether the twelve recurring experiment-04 decoder rows capture more of the layer-8 transported
-delta than matched 12-dimensional spans. Its Gate-A cache and held-out role split are complete and
-reviewable; no Q4 verdict is reported yet. The [frozen design](experiments/05_number_agreement_circuit/DESIGN.md)
-and [compact public evidence](experiments/05_number_agreement_circuit/results/RESULTS.md) keep those two
-claim levels separate.
+complete circuit, or the model's unconstrained native path. The independent Stage-3/Q4 test is now
+positive as well: across eight seeds, projecting the registered layer-8 `both` intervention delta into
+the frozen 12-row SAE decoder span retained `R_span = 0.8935` (t(7) CI `[0.8905, 0.8966]`), exceeded
+the frozen second-largest edge of 100 matched spans in every seed, and left `R_comp = 0.0848` in the
+complementary subspace. The geometric squared-norm fraction was only about `0.525–0.544`, so this is a
+directed logit-effect ratio, not 89% activation reconstruction. The generic-text PCA comparator was a
+raw logit effect (`0.0274`), not 2.74% recovery. The [frozen design](experiments/05_number_agreement_circuit/DESIGN.md)
+and [compact public evidence](experiments/05_number_agreement_circuit/results/RESULTS.md) keep these claim
+levels separate.
 
-![Experiment 05 claim ladder: eight-head selection, eight-seed Q1–Q3 evidence, and the pending Stage-3 boundary](experiments/05_number_agreement_circuit/results/figure_exp05_main.png)
+The Q4 result does not establish natural or monosemantic latent activations, individual-latent
+causality, necessity or sufficiency, a natural head→span path or mediation, a complete circuit, or
+generalisation across models or tasks. The next high-information experiment is one fresh held-out
+bridge—L7H4 → `resid_pre8` target span → natural L8H5/readout, with an L8H5-clamp arm. It has not run.
+
+![Experiment 05 claim ladder: eight-head selection, eight-seed Q1–Q3 evidence, and the positive Stage-3/Q4 matched-span result](experiments/05_number_agreement_circuit/results/figure_exp05_main.png)
 
 **A note on the framing this repository started with.** Experiments 01 and 02 were built around
 superposition versus mixed selectivity — whether many features sharing few non-orthogonal directions is
@@ -320,11 +328,12 @@ to you.
 ## Next
 
 - **[Experiment 05 — the number-agreement circuit](experiments/05_number_agreement_circuit/DESIGN.md)**,
-  now has a completed, independently recomputed Stage-2 result: L7H4 and L8H5 form the minimum tested
+  with independently recomputed Stage-2 and Stage-3/Q4 results. L7H4 and L8H5 form the minimum tested
   compact set, pass both number-specificity controls, and transport subject-number information under
-  the registered frozen-pattern value-path intervention in all eight seeds. Next is the candidate-
-  independent Q4 run: compare the fixed twelve-row layer-8 decoder span with matched 12-dimensional
-  spans on held-out items. The prepared cache and split are complete; the scientific result is not.
+  the registered frozen-pattern value-path intervention in all eight seeds. Q4's frozen 12-row layer-8
+  span retains `0.8935` of the directed logit effect, beats the frozen matched-span edge in every seed,
+  and leaves `0.0848` in the complement. The next step is one fresh held-out L7H4→`resid_pre8` target-
+  span→natural-L8H5/readout rescue with an L8H5 clamp; it has not run.
 - Re-register experiment 04's Gate C on a decoder each arm actually ships with, with the floor
   pre-declared from a pilot on a *different* stimulus family so the threshold cannot be tuned to this
   one. Necessary but **not** sufficient: a rerun still has to clear every other frozen gate, and Gate D
@@ -368,12 +377,13 @@ Experiment 04 is four stages in the order they were actually run — go/no-go pi
 that redirected the control arm, the five-seed main run, and the post-unblinding robustness arms.
 Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes total.**
 
-Experiment 05's calibration, fresh same-snapshot selection, and Stage 2 are complete. The compact
-claim inputs, per-seed statistics, checksums, and generation code live in
-[`results/`](experiments/05_number_agreement_circuit/results/); the multi-gigabyte raw execution
-artifacts stay outside Git and are identified by SHA-256. The Stage-2 invocation used 2,528 logical
-forward-equivalents and 6,272 seconds of CPU wall time. Stage 3's Gate-A cache and item-disjoint split
-are prepared, but Q4 has not run and no matched-span conclusion is licensed.
+Experiment 05's calibration, fresh same-snapshot selection, Stage 2, and Stage-3/Q4 are complete. The
+compact claim inputs, per-seed statistics, checksums, and generation code live in
+[`results/`](experiments/05_number_agreement_circuit/results/); the raw execution artifacts stay outside
+Git and are identified by SHA-256. The Stage-2 invocation used 2,528 logical forward-equivalents and
+6,272 seconds of CPU wall time; Stage 3/Q4 used 353,120 logical forward-equivalents and about 1,266
+seconds. The public packet reports the bounded Q4 result and its non-claims; the bridge follow-up is not
+yet run.
 
 ```bash
 ./.venv/bin/python -m unittest discover \

@@ -1,0 +1,13 @@
+{
+  "gate_cache_sha256": "36278f6ee0b2dd71da632951252a6e467f4698bd5b13fa7cea4cf273cfc5e6cf",
+  "independent": true,
+  "model": "ChatGPT 5.6 Pro",
+  "prepare_manifest_sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875",
+  "pushed_evidence": "https://github.com/DeepCogNeural/mech-interp-lab/commit/6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+  "reviewed_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+  "reviewer": "ChatGPT 5.6 Pro Advisor",
+  "schema": "exp05-number-agreement-stage3-prepare-review-v1",
+  "self_sha256": "e5fa401293334e7be0890a7d780edf3eb3f78839a8728274bff3c25b742ef121",
+  "split_manifest_sha256": "75530f3def2be41b3046059d0260a7b3e661d829d4ff2c117a6fda705e1b6cc7",
+  "status": "ACCEPT"
+}

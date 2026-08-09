@@ -6,8 +6,11 @@
   "exact_input_copies": [
     "stage3/stage3_gate_a_cache.jsonl",
     "stage3/stage3_split_manifest.json",
-    "stage3/stage3_split_roles.csv",
-    "stage3/stage3_prepare_manifest.json"
+    "stage3/stage3_split_roles.csv"
+  ],
+  "exact_receipt_copies": [
+    "stage3/stage3_prepare_review.json",
+    "stage3/stage3_harness_receipt.json"
   ],
   "hashes": {
     "cache_manifest_protocol_sha256": "a3b68a4104a8f654f5982b78bfd9ba8746db0323a0ca5ea1e626b307953d7dee",
@@ -18,6 +21,18 @@
     "split_manifest_sha256": "75530f3def2be41b3046059d0260a7b3e661d829d4ff2c117a6fda705e1b6cc7"
   },
   "independent_review_required": true,
+  "portable_input_copies": [
+    {
+      "basename": "stage3_prepare_manifest.json",
+      "bytes": 2363,
+      "path": "stage3/stage3_prepare_manifest.json",
+      "rewritten_fields": {
+        "split_csv_path": "stage3_split_roles.csv",
+        "split_manifest_path": "stage3_split_manifest.json"
+      },
+      "sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875"
+    }
+  ],
   "q4_input_boundary": [
     "protocol",
     "stage3_gate_a_cache",
@@ -25,11 +40,49 @@
     "stage3_prepare_manifest",
     "review_receipt"
   ],
-  "q4_verdict_emitted": false,
+  "q4_raw_source_receipts": [
+    {
+      "basename": "stage3_results.json",
+      "bytes": 42508601,
+      "label": "stage3_results",
+      "sha256": "81a917da187a103a1e76d79ce86f672347d01110cd50c4a93a241302237671ac"
+    },
+    {
+      "basename": "stage3_draws.csv",
+      "bytes": 333374,
+      "label": "stage3_draws",
+      "sha256": "fe3fa182dd20fda64c9cc9b04980e7c311d737dccaab8ad8e78d7ac07ab040dd"
+    }
+  ],
+  "q4_receipt_bindings": [
+    {
+      "basename": "stage3_prepare_review.json",
+      "bytes": 736,
+      "label": "stage3_review_receipt",
+      "reviewed_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+      "schema": "exp05-number-agreement-stage3-prepare-review-v1",
+      "self_sha256": "e5fa401293334e7be0890a7d780edf3eb3f78839a8728274bff3c25b742ef121",
+      "sha256": "a08cc291753d1d557289737d2926a8e55408a133f8ded63eac21bc08ff5ccddd",
+      "status": "ACCEPT"
+    },
+    {
+      "basename": "stage3_harness_receipt.json",
+      "bytes": 700,
+      "label": "stage3_harness_receipt",
+      "reviewed_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+      "schema": "exp05-number-agreement-stage3-harness-receipt-v1",
+      "self_sha256": "cc669b761b57649809d05e6e4ad551a5db506b763d7009029791e33724a65962",
+      "sha256": "d2fd5c23dcc89a1217e4158721d8f165014fb11ca34da333e308d2fd2020823f",
+      "status": "ACCEPT"
+    }
+  ],
+  "q4_result_summary": "stage3_result_summary.json",
+  "q4_verdict": "POSITIVE",
+  "q4_verdict_emitted": true,
   "rank_training_pairs_per_seed": [
     40
   ],
-  "reproduce": "Use make_claim_ladder.py with the six source inputs; this package does not run Stage 3.",
+  "reproduce": "Use make_claim_ladder.py with the preparation/source inputs; this package does not run Stage 3.",
   "schema": "exp05-public-stage3-preparation-v1",
   "source_receipts": [
     {
@@ -52,9 +105,9 @@
     },
     {
       "basename": "stage3_prepare_manifest.json",
-      "bytes": 2363,
+      "bytes": 2455,
       "label": "stage3_prepare_manifest",
-      "sha256": "d1fe1b63d547c66faaf76ef96d16b774c7929292e890465f7218f5388d301875"
+      "sha256": "76faddf372fcc5bfd9e635208cc15be39fb3e595b5be757c27f048db7dd75d89"
     }
   ],
   "source_status": "COMPLETE",
@@ -68,5 +121,5 @@
     20260812,
     20260813
   ],
-  "status": "PREPARATION_COMPLETE_Q4_PENDING"
+  "status": "PREPARATION_COMPLETE_Q4_POSITIVE"
 }

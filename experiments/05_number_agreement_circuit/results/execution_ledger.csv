@@ -1,3 +1,4 @@
 run_id,artifact_scope,status,science_eligible,notes
 stage2_current_1808740a,Stage2 Q1-Q3,COMPLETE,true,single-invocation artifact bound to the public Stage2 summary
 30d941c,historical failed run,FAILED,false,execution history only; excluded from scientific evidence
+stage3_q4_376efabf,Stage3 Q4 matched-span comparison,COMPLETE,true,8/8 positive; compact matched ratios bound to raw stage3_results and draw CSV hashes; raw 41 MB result not copied
