@@ -218,7 +218,9 @@ the final-SHA review must name the clean commit and the canonical protocol hash 
 
 ## 9. Outcome-specific public claims
 
-- **NON_ESTIMABLE:** technical coverage was insufficient; no mechanism or span transfer conclusion.
+- **NON_ESTIMABLE:** one or more registered seeds failed the preregistered Gate-A
+  population-sufficiency gate; no mechanism- or span-transfer conclusion is issued. Technical,
+  runtime, binding, identity, finiteness, provenance, and execution failures remain **STOPPED**.
 - **MECHANISM_NEGATIVE:** under the registered relative-clause intervention, the fixed L7H4 handle did
   not meet the registered transfer criterion; the fixed span was not adjudicated.
 - **SPAN_NEGATIVE:** the L7H4 handle transferred, but the fixed span did not meet the registered
