@@ -706,3 +706,20 @@ candidates per basis** that were actually scored. The SAE's training-corpus size
 of 10⁸ tokens", is **recalled, not verified from the published SAE's card** and is labelled as such. And
 the `1.34e-4` figure narrated in Amendment 1a comes from runs that wrote no manifest, so it is not
 checkable against any shipped raw data.
+
+---
+
+# Correction 2 — 2026-08-10: experiment-02 null and generic-mixing references are retracted
+
+The frozen Decision rule says an interval containing zero under its precision conditions would
+"extend experiment 02's null"; the branch summary further says this would show that the benefit lives
+in mixing plus nonlinearity rather than the learned basis. Those interpretations are too strong.
+
+Experiment 02 registered no equivalence margin. Its corrected seed-level analysis supports only
+**"no reliable learned-versus-random advantage detected in this eight-seed sample"**. An interval
+containing zero does not establish equality, practical equivalence, or a generic property of mixing.
+The same limitation applies to the hypothetical Exp04 branch: without an equivalence estimand, it could
+report no reliable basis advantage detected under the registered precision rule, but not that the bases
+are equivalent or that a generic mixing account has been established. Exp04's actual verdict remains
+inconclusive, so this correction changes no measured outcome; it retracts only the counterfactual claim
+language in the frozen design.

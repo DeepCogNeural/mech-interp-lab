@@ -3,10 +3,18 @@
   "figure": "figure_bridge_rescue.svg",
   "panels": {
     "A": "per-seed natural target R versus maximum matched-span R",
-    "B": "per-seed natural target R versus L8H5-clamped target R",
+    "B": "per-seed natural target R versus complete L8H5 hook_z@final-clamped target R",
     "C": "per-seed descriptive L8 reader projection coefficient"
   },
   "png": "figure_bridge_rescue.png",
+  "regeneration": {
+    "historical_gate_identity_git_fields": "reported by the hash-pinned historical receipt; not revalidated in this invocation",
+    "historical_receipt_sha256": "f3ff8fdc8352531e13be5b7babcefe9fe4033513c4c7e04ed77d1bfdc8f1f9f1",
+    "matched_csv_sha256": "936f34b458f581330dca2b27dcf6039310ee55751949a6f50e580d19db6332e5",
+    "mode": "checked_in_hash_bound",
+    "raw_result_revalidated_this_invocation": false,
+    "seed_csv_sha256": "0845c76545bdd96a2f2f0b0e68cb5c6726cab2309a9c9ca062372d999ee2e92c"
+  },
   "schema": "exp05-public-bridge-figure-manifest-v1",
   "source": "bridge_seed_metrics.csv"
 }

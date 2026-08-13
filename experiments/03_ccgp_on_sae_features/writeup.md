@@ -2,11 +2,16 @@
 
 **Code:** `ccgp_sae.py` (offline CPU; five seeds; `SMOKE=1` for a plumbing subset). **Raw result:** `results.json`. **Figures:** `figures/`.
 
-`results.json` uses schema `exp03-results-v3`. Each `per_seed_rows` entry is `{seed, arm, sd, ccgp, gap, ...}`, where each metric maps a dichotomy type to balanced accuracy; `probe_fairness` and `legacy_fixed_standardise` hold the same rows under the other two probe settings. **Every number below is recomputed from those raw rows** as a two-sided 95% Student-t interval, `t(4) = 2.776` on five seeds. (Experiments 01–02 used a `1.96 × sd/√n` normal approximation with 8 seeds; at 5 seeds that convention is about 29% too narrow, so this experiment uses t and flags the inconsistency rather than hiding it.)
+`results.json` uses schema `exp03-results-v3`. Each `per_seed_rows` entry is `{seed, arm, sd, ccgp, gap, ...}`, where each metric maps a dichotomy type to balanced accuracy; `probe_fairness` and `legacy_fixed_standardise` hold the same rows under the other two probe settings. **Every number below is recomputed from those raw rows** as a two-sided 95% Student-t interval, `t(4) = 2.776` on five seeds. (Experiment 02 originally used a `1.96 × sd/√n` approximation and pooled `(seed,S)` rows; its raw rows, producer, and machine summary now use Student-t intervals over seed-level values.)
 
 ## The question
 
-Experiment 02 showed that a monosemantic code — one unit per feature — provably cannot let a linear readout see `XOR(a_i, a_j)`, while mixed codes reach ~0.80. Two of its caveats named this experiment: XOR accuracy is a task-specific proxy where shattering dimensionality / CCGP (Bernardi et al. 2020) is the task-agnostic measure, and the whole thing was a toy model.
+Experiment 02 showed that coordinate-wise additive scores cannot *perfectly separate*
+`XOR(a_i, a_j)` and that its shipped BCE-trained probe scores the tested mixed codes near `0.80`
+while returning `0.494` on the coordinate-wise control. A constructive coordinate-wise rule reaches
+`0.75`, so the latter is estimator-specific rather than a theorem-imposed chance ceiling. Two caveats
+named this experiment: XOR accuracy is task-specific where shattering dimensionality / CCGP
+(Bernardi et al. 2020) is task-agnostic, and the whole setup was a toy model.
 
 The naive extrapolation — "an SAE is monosemantic, so SAE features should fail the same way" — **is wrong, and saying why is part of the point.** Experiment 02's monosemantic arm was coordinate-wise *and* a compression (20 → 8). A real SAE encoder is an over-complete nonlinear *expansion* (768 → 24,576 with a ReLU), which by Cover's theorem raises linear separability on its own. The direction reverses.
 
@@ -142,7 +147,8 @@ An earlier attempt was blocked at Gate A because the execution sandbox had no DN
 - **The headline comparison is not adjudicated.** What would settle it: a five-seed run where every headline arm uses a probe fitted to a stated convergence criterion, with L2 selected item-disjointly per arm *and* per scaling on an interior grid, and both scaling estimates individually precise. Interval overlap would not be enough — two estimates agree when both are precise and close, not when one is precise and the other is too noisy to exclude anything.
 - One English template, five lexical draws, one layer, one model, one SAE. Nothing here generalises to GPT-2's representations at large.
 - Shattering dimensionality and CCGP describe code geometry under linear probes. They identify no circuit, no causal feature use, and no behavioural effect.
-- The only theorem this project cites is experiment 02's coordinate-wise compression result. Nothing measured here earns that word.
+- Experiment 02's theorem is limited to coordinate-wise additive nonseparability of XOR; it is not a
+  chance ceiling. Nothing measured here earns a stronger word.
 - Gemma-2 / GemmaScope and additional stimulus families are future work, not substitutes.
 
 ## Next

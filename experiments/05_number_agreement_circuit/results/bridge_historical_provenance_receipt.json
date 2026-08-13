@@ -1,0 +1,53 @@
+{
+  "schema": "exp05-bridge-historical-provenance-receipt-v1",
+  "status": "HISTORICAL_REPORT_NOT_REVALIDATED",
+  "origin": {
+    "source_commit": "10d5c05fc94cd8e0822de4842f391d48488e6061",
+    "summary_path": "experiments/05_number_agreement_circuit/results/bridge_result_summary.json",
+    "summary_file_sha256": "cc2957d22f813991e7b55cb535621446fbceccec395844c0eaa773a6cda7c7cf",
+    "reported_fields_canonicalization": "SHA-256 of UTF-8 Python canonical JSON for the original object {source_receipt, integrity}: sort_keys=true, separators=(',', ':'), ensure_ascii=false",
+    "reported_fields_canonical_sha256": "3043c8f9773d4924841b48df4616ff2ab7acc7b6742b1626a7352ccb094860a0"
+  },
+  "raw_result_receipt": {
+    "basename": "bridge_results.json",
+    "bytes": 653980,
+    "sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef"
+  },
+  "reported_integrity": {
+    "gate_a": {
+      "all_passed": true,
+      "evaluation_pairs_per_seed": [
+        150
+      ],
+      "passed_count": 8,
+      "retained_pairs_per_seed_range": [
+        230,
+        237
+      ],
+      "seed_count": 8
+    },
+    "git": {
+      "clean_final": true,
+      "clean_start": true,
+      "final_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
+      "final_status_porcelain": "",
+      "start_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
+      "start_status_porcelain": ""
+    },
+    "identity": {
+      "full_vs_true_final_logit_max_abs": 9.5367431640625e-06,
+      "full_vs_true_final_logit_tolerance": 1e-05,
+      "full_vs_true_final_logit_within_tolerance": true,
+      "non_final_positions_max_abs": 0.0,
+      "selected_positions_max_abs": 0.0,
+      "status": "PASS"
+    },
+    "raw_result_sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef"
+  },
+  "scope": {
+    "authority": "exact fields transcribed from the byte-hash-identified summary at the source commit",
+    "current_invocation_revalidated": false,
+    "current_invocation_may_claim": "the historical packet reported these fields; the current checked-in reaggregation did not revalidate them",
+    "current_invocation_may_not_claim": "fresh validation of the historical raw result, Gate A, identity checks, or Git runtime state"
+  }
+}

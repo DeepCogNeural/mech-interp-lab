@@ -24,17 +24,33 @@
     "bridge_result_summary.json",
     "figure_bridge_rescue.svg",
     "figure_bridge_rescue.png",
-    "bridge_figure_manifest.json"
+    "bridge_figure_manifest.json",
+    "bridge_historical_provenance_receipt.json"
   ],
   "bridge_followup": {
+    "historical_provenance_receipt": {
+      "path": "bridge_historical_provenance_receipt.json",
+      "raw_result_revalidated_this_invocation": false,
+      "sha256": "f3ff8fdc8352531e13be5b7babcefe9fe4033513c4c7e04ed77d1bfdc8f1f9f1"
+    },
     "raw_result_copied": false,
+    "reader_clamp": "complete L8H5 hook_z@final output; not value-only",
+    "regeneration": {
+      "historical_gate_identity_git_fields": "reported by the hash-pinned historical receipt; not revalidated in this invocation",
+      "historical_receipt_sha256": "f3ff8fdc8352531e13be5b7babcefe9fe4033513c4c7e04ed77d1bfdc8f1f9f1",
+      "matched_csv_sha256": "936f34b458f581330dca2b27dcf6039310ee55751949a6f50e580d19db6332e5",
+      "mode": "checked_in_hash_bound",
+      "raw_result_revalidated_this_invocation": false,
+      "seed_csv_sha256": "0845c76545bdd96a2f2f0b0e68cb5c6726cab2309a9c9ca062372d999ee2e92c"
+    },
+    "review_receipt": null,
     "source_sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef",
     "status": "COMPLETE_EXPLORATORY",
     "summary": "bridge_result_summary.json",
     "target_exceeds_matched_max_all_seeds": true
   },
   "checksums": "checksums.sha256",
-  "claim_boundary": "Q1-Q3 Stage2 evidence and the adjudicated Q4 matched-span comparison are public; Q4 is limited to the directed-logit target-span versus frozen matched-span test. The exploratory bridge packet is descriptive and carries no preregistered verdict or mediation claim. The exploratory bridge packet is descriptive and carries no preregistered verdict or mediation claim.",
+  "claim_boundary": "Q1-Q3 Stage2 evidence and the adjudicated Q4 matched-span comparison are public; Q4 is limited to the directed-logit target-span versus frozen matched-span test. The exploratory bridge packet is descriptive and carries no preregistered verdict or mediation claim.",
   "package_policy": {
     "bridge_exploratory_verdict_emitted": false,
     "historical_30d941c_science_eligible": false,

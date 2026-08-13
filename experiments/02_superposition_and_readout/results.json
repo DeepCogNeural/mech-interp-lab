@@ -1,4 +1,75 @@
 {
+ "schema": "exp02-results-v2",
+ "analysis": {
+  "independent_unit": "seed",
+  "confidence_interval": "two-sided Student-t over seed-level values",
+  "pooled_contrast": "average completed-run S values within seed, then summarize across seeds",
+  "equivalence_margin": null,
+  "supported_conclusion": "no reliable learned-v-random advantage detected in this 8-seed sample",
+  "coordinatewise_math": {
+   "theorem": "additive linear scores cannot perfectly separate XOR",
+   "chance_ceiling": false,
+   "constructive_witness_accuracy": 0.75,
+   "witness": "predict 1 iff ReLU(x_i)+ReLU(x_j)>0 on the balanced four-quadrant distribution"
+  },
+  "configured_bce_logistic_probe": {
+   "condition": {
+    "m": 8,
+    "S": 0.0,
+    "distractor_p": 0.0
+   },
+   "n_seeds": 8,
+   "monosemantic_test_accuracy_mean": 0.49379687446967835,
+   "monosemantic_test_accuracy_ci95_t_half_width": 0.005572990656822419,
+   "interpretation": "empirical estimator result; not a theorem-imposed chance ceiling",
+   "pooled_mixed_minus_coordinatewise": [
+    {
+     "arm": "random",
+     "baseline": "monosemantic",
+     "distractor_p": 0.0,
+     "n_seeds": 8,
+     "mean": 0.31279084907977706,
+     "ci95_t_half_width": 0.020728390260986957
+    },
+    {
+     "arm": "superposition",
+     "baseline": "monosemantic",
+     "distractor_p": 0.0,
+     "n_seeds": 8,
+     "mean": 0.2973691970974739,
+     "ci95_t_half_width": 0.019702120916440892
+    }
+   ]
+  },
+  "pooled_superposition_minus_random": [
+   {
+    "distractor_p": 0.0,
+    "n_seeds": 8,
+    "mean": -0.015421651982303183,
+    "ci95_t_half_width": 0.03198058082516037
+   },
+   {
+    "distractor_p": 0.05,
+    "n_seeds": 8,
+    "mean": 0.004120313050225377,
+    "ci95_t_half_width": 0.01905262446578968
+   },
+   {
+    "distractor_p": 0.1,
+    "n_seeds": 8,
+    "mean": 0.0021843752823770025,
+    "ci95_t_half_width": 0.010746884792741747
+   }
+  ]
+ },
+ "artifact_status": {
+  "raw_rows": "loaded unchanged from the existing completed run",
+  "analysis": "recomputed from shipped xor rows",
+  "figures": "regenerated from shipped rows without fitting a model or probe",
+  "mode": "CHECKED_IN_REAGGREGATION",
+  "public_artifact": true,
+  "output_root": "canonical experiment directory"
+ },
  "xor": [
   [
    5,

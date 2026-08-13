@@ -16,17 +16,166 @@ Template for a new entry:
 
 ---
 
+## 2026-08-13 — Pre-run evidence and provenance gate
+
+**Goal:** Make the existing Exp02/Exp05 evidence honest under static regeneration, and make Exp06
+executable only when its scientific objects and publication lifecycle are fully bound.
+
+**Did:** Repaired Exp02's continuous-magnitude XOR proof and relabeled the empirical probe/grid as
+configured or shipped rather than registered. Isolated `SMOKE=1` under `smoke_output/`, forced the
+headless `Agg` renderer, and staged figures before publishing `results.json` last. For Exp05, bound the
+two checked-in bridge CSV byte hashes to a separate whole-file-hash-pinned historical provenance
+receipt; current prose now attributes Gate-A, identity, and Git facts to the original packet and says
+the current invocation did not revalidate them. Rebuilt the bridge figure with a fixed-span-rescue
+title rather than an arrow diagram that implied mediation. For Exp06, froze exact GPT-2/SAE revisions,
+model/tokenizer/SAE file hashes, runtime versions, and before/after model-state and SAE-decoder
+fingerprints; rejected non-finite JSON/identity values; bound hashes to the bytes actually parsed or
+loaded; and made public packet generation stage completely before atomic publication.
+
+**Expected:** The earlier model-free contracts and prose corrections would be sufficient.
+
+**Happened:** Independent adversarial review found that name-level model/SAE loading, mutable carryover
+from the old Exp05 summary, `NaN` comparison semantics, in-place publication, and Exp02 smoke output
+were still provenance holes. After repair and static regeneration, the model-free suites passed
+`7/7` for Exp02, `25/25` for Exp05, and `12/12` for Exp06. All 28 Exp05 checksum entries passed, the
+Exp02 shipped-row hashes stayed fixed, and visual inspection confirmed the corrected three public
+figures. No GPT-2/SAE experiment ran, and Exp05's missing historical raw result was not reconstructed or
+claimed as revalidated.
+
+**Confused about / open:** An interactive AI-advisor decision is not external expert validation. The
+Exp06 final-SHA receipt remains absent, and the exact Q4 raw JSON required by its frozen byte hash is not
+currently available in the checked-in repository. These are execution gates, not scientific negative
+evidence.
+
+**Next:** Commit the clean pre-run state, ask separately before push, obtain the pushed-SHA AI-advisor
+receipt, and only then resolve the exact Q4 raw input and run Exp06. Package any result model-free and
+return the result packet for another bounded review before making a public claim.
+
+## 2026-08-10 — Experiment 06 frozen before the first run
+
+**Goal:** Turn the strongest application-narrative gap left by Experiment 05—whether its narrow causal
+object transfers beyond the original bridge template—into one result-blind, executable experiment.
+
+**Did:** Kept GPT-2-small, the res-jb SAE, L7H4, `resid_pre8` timing, the 12-row target span, and all
+100 ordinal-matched rank-12 spans fixed. Registered eight new seeds (`20260822–20260829`) on the
+relative-clause-with-adverb family already used in calibration/source-C. Drafted the design, machine
+protocol, fail-closed runner, and model-free packet generator without running any of them. Sent the
+protocol through three Advisor passes and a separate read-only implementation audit.
+
+**Expected:** A simple staged rule—first require a transferable L7H4 handle, then ask whether the target
+beats matched spans—would be enough.
+
+**Happened:** The first Advisor pass found four freedoms that would have weakened the result: 6/8
+technical coverage could turn missing execution into negative evidence; using the maximum matched draw
+changed Q4's comparator; source-A noun selection was not uniquely frozen; and separate 6/8 target and
+advantage gates could be satisfied by different seeds. The accepted protocol now requires a complete
+8/8 evidence set, reuses Q4's fixed matched sets and second-largest order statistic on raw signed
+effects, uses one global no-fixed-point cyclic source-A lemma map, and requires the same 6/8 seeds jointly to have positive target effect and matched
+advantage. A final correction separates scientific population failure from execution failure: only
+Gate A may yield `NON_ESTIMABLE`; binding, rank, token/position, identity, finiteness, runtime, or
+provenance failure yields `STOPPED` with no scientific verdict. The Advisor then returned
+`SECTION_3_PREREG_FINAL: APPROVE_DESIGN` with no remaining change. The independent implementation
+audit subsequently forced full-protocol literal binding, exact Q4 latent-ID checks, atomic output
+reservation, and independent recomputation of every adjudicating and descriptive packet field. After
+those repairs it returned `EXP06_STATIC_FINAL: ACCEPT / REMAINING: NONE`; the Advisor's implementation
+review then accepted the science contract, provenance, packet integrity, and claim boundary with
+`SECTION_3_IMPLEMENTATION_VERDICT: APPROVE_DESIGN / HARD_BLOCKER: NONE`. These are design-level
+decisions, not evidence that any command ran or that a scientific result exists.
+
+**Confused about / open:** The template family was exposed during calibration, so even a positive result
+cannot be sold as unseen-template validation. The exact scope is a mechanism-held-out evaluation on a
+calibration-exposed family. The fixed same-number source A controls lexical identity under one mapping;
+it does not isolate a pure number effect or remove every lexical confound. It also replaces the earlier
+bridge's seed-drawn source-A construction, so this is not a one-factor template-only contrast; a positive
+result could support reappearance under a second prompt/control construction, not isolate template change.
+The new verdict is also not
+Q4's normalized comparator: it uses the same frozen latent sets and second-largest tail-order statistic
+on raw signed-logit effects, a distinction the Advisor explicitly accepted before any run.
+
+**Next:** After explicit execution approval, run the model-free contract and corruption checks plus
+the required static regenerations first. Commit only the passing frozen state, ask separately before
+push, and return that pushed exact SHA to the Advisor for the still-missing final-SHA receipt. Only
+after that receipt and explicit model-run authorization may the 18–25 minute CPU experiment run. No
+Experiment 06 result exists at this entry.
+
+## 2026-08-10 — Experiment 02 correction: nonseparability is not a chance ceiling
+
+**Goal:** Re-audit the strongest theorem and null language in experiment 02 before using the repository
+as evidence for the next research stage.
+
+**Did:** Wrote the four-corner additive-score proof explicitly, then attacked it with a constructive
+classifier on the experiment's own balanced distribution. Recomputed the shipped learned-minus-random
+rows with the seed as the independent unit: average the five completed-run sparsities within each seed,
+then use a two-sided Student-t interval across eight seed means. Updated the producer, machine-readable
+analysis metadata, README, writeup, experiment-03 cross-reference, and this historical record. No probe,
+model, or experiment was rerun in this correction pass.
+
+**Expected:** The old argument said a coordinate-wise code was theorem-limited to chance, so the
+empirical `0.494` was merely finite-sample behaviour around a mathematical ceiling.
+
+**Happened:** That claim is false. Additive scores cannot *perfectly separate* XOR, but
+`predict 1 iff ReLU(x_i) + ReLU(x_j) > 0` correctly classifies `00`, `01`, and `10` and reaches `0.75`; it misses
+only `11`. The shipped `0.494 ± 0.006` is therefore a result of the configured BCE-trained logistic
+probe, not a universal accuracy bound. The corrected pooled superposition-minus-random contrasts are
+`−0.015 ± 0.032`, `+0.004 ± 0.019`, and `+0.002 ± 0.011` for `distractor_p = 0`, `0.05`, and `0.10`.
+
+**Confused about / open:** The mixed arms still reach about `0.80`, but the defensible claim is now
+estimator-specific: these mixed codes are easier for this probe. No equivalence margin was specified before analysis,
+so intervals containing zero establish neither equality nor a generic property of mixing. The old
+wording survived because the loss-minimizing behaviour of one estimator was silently promoted into a
+limit on the hypothesis class.
+
+**Next:** Regenerate the two figures and result artifact only after explicit execution approval, then
+send the full corrected section to the Advisor for a final claim review.
+
+---
+
+## 2026-08-10 — Experiment 05 correction: the reader clamp was complete `z@final`, not value-only
+
+**Goal:** Audit whether the bridge's clamp language and proposed next experiment match the actual hook
+semantics and causal timing.
+
+**Did:** Traced the bridge from capture through intervention. The code caches L8H5
+`blocks.8.attn.hook_z`, then overwrites `activation[row, final_position, L8H5, :]` during the clamped
+run. Separately, the timing identity proves the L7H4 final-only intervention changes no non-final
+`resid_pre8` position. I also checked the compact evidence index for a bridge-specific review receipt.
+No model, packager, test, or experiment was run in this correction pass.
+
+**Expected:** The public text described a narrow final-value-path clamp, leaving open a natural next
+factorial that would extend the same clamp across positions to distinguish a narrow intervention from a
+parallel route.
+
+**Happened:** `hook_z@final` is the complete per-head output after the attention pattern has aggregated
+values. Replacing it blocks the final-query contribution produced jointly by QK/pattern and V; it is not
+value-only. Extending that clamp to earlier query positions supplies no identifying contrast here:
+the upstream delta is final-position-only, and causal masking prevents earlier L8H5 outputs from seeing
+it. The public packet also contains no bridge-specific independent review receipt, so the old `SHIP`
+sentence is unsupported and withdrawn.
+
+**Confused about / open:** The clamp still leaves the target rescue large, which argues against dominant
+dependence on the tested final-position L8H5 output. It does not identify which parallel downstream route
+reads the span, and it does not show L8H5 is irrelevant. Checked-in compact rows are reaggregable, but
+the raw bridge result remains outside Git, so full packet regeneration is not repository-only.
+
+**Next:** Keep GPT-2, the SAE, L7H4, the 12-row target span, and the frozen matched spans fixed; move to
+the relative-clause family already used in calibration/source-C control. First ask whether the L7H4
+handle transfers, then—only if it does—whether the target span still exceeds the frozen matched edge.
+
+---
+
 ## 2026-08-09 — The bridge localises a reproducible causal subspace, not a complete path
 
 **Goal:** Test the highest-information alternative left by Q4: whether the fixed layer-8 span carries
 the effect induced upstream by L7H4, rather than merely correlating with the registered two-head
 intervention.
 
-**Did:** Ran the Advisor-chosen exploratory bridge from clean source `0d7c4db` on eight fresh held-out
-seeds (`20260814–20260821`), with 150 pairs per seed, 100 target-excluded matched rank-12 spans per
-seed (800 total), and the `L7_ONLY_RESID_PRE8` timing decision. The L8H5 final value path was then
-clamped to the natural source-A baseline as a dependence control. The invocation took 852.85 seconds;
-the raw result remains outside Git with SHA-256 prefix `9d8446…`.
+**Did:** The original raw-dependent packet reported an Advisor-chosen exploratory bridge from clean
+source `0d7c4db` on eight fresh held-out seeds (`20260814–20260821`), with 150 pairs per seed, 100
+target-excluded matched rank-12 spans per seed (800 total), and the `L7_ONLY_RESID_PRE8` timing
+decision. It reported overwriting the complete L8H5 `hook_z` output at the final query position with
+the natural source-A baseline as a dependence control. The current compact reaggregation did not
+revalidate those missing-raw integrity fields or runtime; the raw result remains outside Git with
+SHA-256 prefix `9d8446…`.
 
 **Expected:** If the Q4 span was downstream of the upstream head intervention, it should rescue a
 substantial fraction of the directed effect and beat matched spans. If it was only a task-aligned
@@ -35,17 +184,19 @@ subspace selected by the later intervention, the bridge should collapse or fail 
 **Happened:** The target recovered `R_target=0.678639` (t(7) CI `[0.673841, 0.683437]`) and exceeded
 the actual maximum of all 100 matched spans on every seed (8/8). The complement was `R_comp=0.305339`
 (CI `[0.301260, 0.309418]`), versus aggregate matched-span mean `0.065910` (CI `[0.049408, 0.082411]`).
-With the L8H5 final value path clamped, the target remained `R_target=0.674047` (CI
+With L8H5 `hook_z@final` clamped, the target remained `R_target=0.674047` (CI
 `[0.669586, 0.678508]`); the natural reader projection coefficient was descriptive and only
-`0.027–0.124` across seeds. The independent artifact review shipped `SHIP`.
+`0.027–0.124` across seeds. No bridge-specific independent review receipt is present in the public packet.
 
-**Confused about / open:** The clamp weakens a dominant L8H5-final-value explanation but does not
-show L8H5 is irrelevant. Other positions, QK/attention routes, and parallel routes were not tested.
+**Confused about / open:** The clamp weakens dominant dependence on the complete tested
+L8H5-final-position output but does not show L8H5 is irrelevant. At that query position it overwrites
+the joint result of QK/pattern and V rather than isolating either; other query positions and parallel routes remain untested.
 The target-plus-complement near-closure belongs to a separate nonlinear arm and cannot be read as a
 linear attribution. This is exploratory bridge evidence, not a preregistered mediation verdict.
 
-**Next:** Freeze a small factorial that distinguishes a too-narrow clamp from an L8H5-parallel route;
-do not run it until the design is written and reviewed.
+**Next (corrected 2026-08-10):** Do not run the non-identifying all-position-clamp factorial. Keep the
+span and matched controls fixed and test the L7H4 handle, then span specificity, as a mechanism-held-out
+evaluation on the calibration-exposed relative-clause family.
 
 ---
 
@@ -95,7 +246,7 @@ eight-head candidate set, and ran all eight Stage-2 seeds from zero. The complet
 regression-tested, and the adjudicating run restarted rather than resuming its scientific rows. I then
 gave the final artifact and its pair-level data to two independent reviewers—one recomputed the science
 without trusting runner verdicts, one checked hashes and execution coverage—and sent the compact result
-to the Pro Advisor for a separate claim-boundary review.
+to the interactive AI advisor for a separate claim-boundary review; this was not external expert validation.
 
 **Expected:** Genuinely open. The Stage-1 ranking suggested a distributed set, but it did not say how
 many heads would recover half of the joint effect, whether the apparent signal would survive sources
@@ -133,7 +284,7 @@ explanation, one follow-up—not another amendment cycle.
 protocol while preserving the line between a design decision, an implementation, and evidence from a
 model run.
 
-**Did:** Asked an independent Pro Advisor to adjudicate the places where the written design still
+**Did:** Asked a separate interactive AI advisor to adjudicate the places where the written design still
 allowed multiple scientifically different implementations, then recorded those decisions as
 Amendments 5–9 and a result-free machine protocol. Implemented separate selection, candidate-freeze,
 Stage-2, and Stage-3 entry points around that protocol. The implementation is still under static
@@ -285,7 +436,10 @@ Sixteen SAE coordinates recover half of that basis's own causal effect on subjec
 Worse, the sweep's own logic has a hole. When features outnumber samples, two codes related by an invertible linear map are close to indistinguishable to a decoder that carries no metric — so the metric has to come from somewhere, and it comes from the regulariser. That is the sharp version of experiment 03's finding, and it says the fair scaling point I would be hunting is probably not there to find.
 
 **Confused about / open:**
-- The honest re-score is that experiment 02 is not a null — it is a theorem-anchored positive result plus a discriminating secondary null. Experiment 03 is the precarious one, because "not adjudicated" is *weaker* than a null: a null answers the question, an instrument failure says the question could not be asked with that instrument. I had been counting both as the same kind of honesty. They are not.
+- **Corrected 2026-08-10:** experiment 02 is an estimator-specific positive contrast plus a secondary
+  no-detection result, not a theorem-backed chance result plus an equivalence null. Its theorem proves
+  only coordinate-wise additive nonseparability; a constructive rule reaches `0.75`. Experiment 03 is
+  still the more precarious instrument failure, but the old distinction overstated experiment 02 too.
 - The replacement design has a property I like more than its being the missing checklist item. The interchange edit `W_dec (f' − f)` is invariant to the exact rescaling that swung experiment 03 tenfold: rescale the code by `D` and the decoder by `D⁻¹` and the vector written into the residual stream is unchanged. The knob that made the old question unanswerable cannot touch the new one. First time the failure has told me something constructive about what to build next.
 - Named risk: the matched random expansion needs a decoder, and getting a random basis onto equal reconstruction footing with a trained SAE is fiddly. It is gated (Gate C) and prototyped first, with a smaller within-SAE result to fall back on. Better to find that out in twenty minutes than in a week.
 - Watching for the mirror of the experiment 03 mistake. There, three mutually reinforcing controls all sat downstream of one unexamined preprocessing choice. Here the analogous single point of failure is the coordinate ranking rule — so it gets the ranking-free `*_full` anchors and the `*_randk` controls around it, and both bases get the identical rule and the identical budget.
@@ -341,14 +495,24 @@ So the headline is now: **not adjudicated.** The convergence test that would set
 
 **Did:** Three geometry arms (monosemantic / random / frozen superposition) at fixed `(n,m)`, read XOR of a feature pair with a linear probe on `r = ReLU(Wx)`. 8 seeds, fixed balanced eval distribution, within-seed paired stats. `experiments/02_superposition_and_readout/`.
 
-**Expected:** monosemantic at chance (theorem: linear readout can't get the `x_i·x_j` term); mixed codes above chance; and — the part I was unsure about — maybe the storage-learned geometry beats random mixing.
+**Expected:** I expected the coordinate-wise arm at chance and called that a theorem; mixed codes above
+chance; and — the part I was unsure about — maybe the storage-learned geometry would beat random mixing.
+The first expectation was corrected on 2026-08-10: nonseparability does not imply a chance ceiling.
 
 **Happened:**
-- Headline came out clean and strong: monosemantic sits at 0.494±0.005 at every sparsity, both mixed codes at ~0.80, probe train-test gap +0.002. The theorem-backed anchor holds exactly.
-- The secondary question resolved to a **null**: superposition ≈ random (paired diffs hug zero, CIs include zero across `m`, `S`, and background). The readout benefit is from mixing+nonlinearity, not the specific learned geometry.
+- Headline observation: the configured BCE-trained probe scores the coordinate-wise arm at
+  `0.494 ± 0.006` and both mixed codes near `0.80`, with mean train-test gap `+0.002`. The theorem
+  supports only nonseparability; the near-chance score is empirical.
+- The secondary question produced **no reliable advantage detected** for learned over random mixing.
+  Corrected seed-level intervals include zero, but no equivalence margin was specified before analysis, so neither
+  equality nor a generic mixing property was established.
 
 **Confused about / open:**
-- Almost walked into a trap: my first instinct was a linear probe on the exp1 encoder `h = Wx`. That's identically chance for *any* geometry, because a linear readout of a linear projection can't represent XOR — the null would have been real but for a boring reason. The fix (and the actual insight) is that a nonlinearity is required, and it has to be held constant across arms so the comparison is about geometry, not about the nonlinearity.
+- The trap was misdiagnosed at the time. A linear probe on `h = Wx` stays additive and cannot perfectly
+  separate XOR, but it is not identically at chance; the coordinate-wise ReLU rule
+  `predict 1 iff ReLU(x_i)+ReLU(x_j)>0` reaches `0.75` here.
+  Holding `ReLU` constant across arms still makes the geometry comparison meaningful, but not for the
+  theorem-strength reason I originally wrote.
 - A 4-seed pilot hinted superposition beat random by ~+0.02 at high sparsity with background activity. At 8 seeds it washed out. Good reminder to not stop at the seed count that flatters the hypothesis.
 
 **Next:** shattering dimensionality / CCGP (the task-agnostic version of the headline); then ask the same enumeration-vs-computation question of real SAE features on a small transformer.

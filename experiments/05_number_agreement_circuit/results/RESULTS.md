@@ -85,28 +85,39 @@ list generated files and source receipts.  Verify the checked-in packet with
 
 The single follow-up is a fresh out-of-sample, exploratory bridge around the
 L7H4 intervention.  It asks whether the fixed 12-row layer-8 decoder span
-also carries that upstream head-induced effect, while clamping the L8H5 reader
-as a dependence control.  The compact evidence is in
+also carries that upstream head-induced effect, while replacing the complete
+L8H5 `hook_z` output at the final query position as a dependence control.  This
+is not a value-only clamp.  The compact evidence is in
 [`bridge_seed_metrics.csv`](bridge_seed_metrics.csv),
 [`bridge_matched_ratios.csv`](bridge_matched_ratios.csv), and
 [`bridge_result_summary.json`](bridge_result_summary.json); the raw 639 KB
-model result stays outside Git.
+model result stays outside Git. Its previously reported raw-dependent
+integrity fields are preserved in the separately hash-pinned
+[`bridge_historical_provenance_receipt.json`](bridge_historical_provenance_receipt.json).
+The current presentation can be regenerated
+from the two exact hash-bound checked-in CSVs without reopening the raw result;
+that narrower mode does not revalidate the historical Gate-A, identity, Git,
+or raw-receipt fields. Regenerating the full raw-dependent packet still
+requires that off-Git raw result. No
+bridge-specific independent review receipt is present in this packet.
 
 **Exploratory finding.** On eight fresh seeds, the target span had mean
 `R_target=0.6786` (95% t(7) CI `[0.6738, 0.6834]`) versus mean matched-span
 maximum `0.4110`, and exceeded the matched maximum on all 8 seeds.  The
-complement ratio was `0.3053`.  With L8H5 clamped, the target remained large:
+complement ratio was `0.3053`.  With L8H5 `hook_z@final` clamped, the target remained large:
 mean `R_target_clamped=0.6740` (95% t(7) CI `[0.6696, 0.6785]`).  This does
-not support dominant dependence on L8H5's tested final-value path or a mediation claim; it only says that this
+not support dominant dependence on L8H5's complete tested final-position head output or a mediation claim; it only says that this
 fixed span carries the tested L7H4-induced effect better than the matched
 controls in this exploratory sample.
 
-**Run integrity.** Gate A passed on 8/8 seeds, retaining 230–237 pairs per
-seed; the evaluation split contains 150 pairs per seed.  The timing identity
-checks have non-final and selected-position maxima of 0, and the full-vs-true
-final-logit maximum is `9.536743e-06 < 1e-5`.  The run started and finished
-with a clean worktree at commit `0d7c4db`; the raw result is bound by SHA-256
-`9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef`.
+**Historical run-integrity report.** The original raw-dependent packet reported
+Gate A passing on 8/8 seeds, 230–237 retained pairs per seed, 150 evaluation
+pairs per seed, zero non-final and selected-position identity maxima, a
+`9.536743e-06 < 1e-5` full-vs-true final-logit maximum, and a clean start and
+finish at commit `0d7c4db`. The hash-pinned historical receipt binds those
+reported fields to raw SHA-256
+`9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef`;
+this checked-in reaggregation did not reopen or revalidate the raw result.
 
 This follow-up has no preregistered verdict or threshold.  It does not
 establish naturalness, necessity, sufficiency, individual-latent causality,
@@ -117,5 +128,5 @@ Reproduce the compact packet with:
 
 ```bash
 python3 experiments/05_number_agreement_circuit/make_bridge_summary.py \
-  --bridge-results /path/to/bridge_results.json
+  --reaggregate-checked-in
 ```

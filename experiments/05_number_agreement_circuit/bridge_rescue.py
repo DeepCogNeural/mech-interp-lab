@@ -517,6 +517,9 @@ def _run_rescue_clamped(model: Any, tokens: Any, l7_positions: Any, l7_replaceme
             del hook
             rows = torch.arange(activation.shape[0], device=activation.device)
             positions_device = local_final.to(activation.device)
+            # TransformerLens hook_z is the complete per-head output after the
+            # attention pattern has aggregated values. This overwrites L8H5 at
+            # the final query position; it is not a value-only intervention.
             activation[rows, positions_device, READER_HEAD, :] = local_clamp.to(device=activation.device, dtype=activation.dtype)
             return activation
 
@@ -666,7 +669,14 @@ def _run_seed(model: Any, sae: Any, stack: Mapping[str, Any], *, seed: int, ordi
         "source_A": _arm_summary(clamp_a_d, signs, clamp_a_d),
         "full": _arm_summary(clamp_full_d, signs, clamp_a_d, clamp_full_d),
         "target": _arm_summary(clamp_target_d, signs, clamp_a_d, clamp_full_d),
-        "reader_clamp": "L8H5.final fixed to natural source-A L7H4 arm value",
+        "reader_clamp": {
+            "hook": f"blocks.{L8}.attn.hook_z",
+            "head": f"L{L8}H{READER_HEAD}",
+            "query_position": "final",
+            "replacement": "natural source-A L7H4-arm hook_z output",
+            "semantics": "complete per-head z after attention-pattern-weighted value aggregation",
+            "value_only": False,
+        },
     }
     def empirical_quantile(values: Sequence[float], q: float) -> float:
         if not values:
@@ -753,12 +763,12 @@ def run(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
             "verdict": None,
             "scientific_verdict_emitted": False,
             "inputs": {"q4_results_path": str(q4_path), "q4_results_sha256": q4_hash, "protocol_path": str(protocol_path) if protocol_path else None, "protocol_sha256": protocol_hash, "q4_seed_ordinals": [int(item["source_q4_seed"]) for item in frozen["ordinal_sets"]], "fresh_seeds": list(FRESH_SEEDS), "target_latent_ids": list(frozen["target_latent_ids"]), "q4_frozen_draw_count_per_seed": MATCHED_COUNT},
-            "design": {"timing_decision": "L7_ONLY_RESID_PRE8", "l7_intervention": "Q3 frozen-pattern z_star for L7H4 true-source and source-A arms", "baseline": "source-A L7H4 arm at blocks.8.hook_resid_pre", "estimand": "mean(sign*(d_arm-d_A))/mean(sign*(d_full-d_A))", "fresh_selection": "Gate-A then sorted retained pair ids capped at 150; no fresh latent re-selection", "natural_arms": ["full", "target", "complement", "100 matched"], "clamped_arms": ["full", "target"], "zero_ablation": False},
+            "design": {"timing_decision": "L7_ONLY_RESID_PRE8", "l7_intervention": "Q3 frozen-pattern z_star for L7H4 true-source and source-A arms", "baseline": "source-A L7H4 arm at blocks.8.hook_resid_pre", "estimand": "mean(sign*(d_arm-d_A))/mean(sign*(d_full-d_A))", "fresh_selection": "Gate-A then sorted retained pair ids capped at 150; no fresh latent re-selection", "natural_arms": ["full", "target", "complement", "100 matched"], "clamped_arms": ["full", "target"], "reader_clamp": "complete L8H5 hook_z@final output; not value-only", "zero_ablation": False},
             "offline_env": offline,
             "aggregate": aggregate,
             "seed_results": seed_results,
             "matched_rows": matched_rows,
-            "claim_boundary": {"supports": ["a fresh-seed causal rescue estimand for the tested L7H4 -> resid_pre8 -> L8H5/readout path", "comparison of the fixed target span with fixed matched rank-12 spans"], "does_not_support": ["activation reconstruction", "individual-latent causality", "necessity", "complete circuit", "full mediation", "generalization beyond the tested GPT-2-small prompts and intervention"], "reader_interpretation": "natural versus L8H5-clamped differences are exploratory partial mediation under the tested intervention"},
+            "claim_boundary": {"supports": ["a fresh-seed causal rescue estimand for the tested L7H4 -> resid_pre8 intervention", "comparison of the fixed target span with fixed matched rank-12 spans", "a dependence control on the complete L8H5 hook_z output at the final query position"], "does_not_support": ["activation reconstruction", "individual-latent causality", "necessity", "complete circuit", "partial or full mediation", "an identified L7H4-to-span-to-reader path", "an all-position-clamp versus parallel-route distinction", "generalization beyond the tested GPT-2-small prompts and intervention"], "reader_interpretation": "natural versus clamped is an exploratory dependence control on complete L8H5 hook_z@final output; it is not a partial-mediation estimand"},
             "runtime": {"wall_clock_seconds": time.perf_counter() - started, "batch_size": batch_size, "fresh_seed_count": len(seed_results), "matched_row_count": len(matched_rows)},
             "git": git,
             "git_final": final_git,
