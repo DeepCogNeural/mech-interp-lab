@@ -609,35 +609,35 @@ L 598.5 51.84
 " style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"/>
    </g>
    <g id="text_35">
-    <text style="font-size: 7.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #4b5563" x="358.425" y="63.34491" transform="rotate(-0 358.425 63.34491)">clamp leaves the target effect large</text>
+    <text style="font-size: 7.5px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #4b5563" x="358.425" y="63.34491" transform="rotate(-0 358.425 63.34491)">complete final-position head output replaced</text>
    </g>
    <g id="text_36">
-    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start" x="351" y="45.84" transform="rotate(-0 351 45.84)">B  natural vs L8H5-clamped target</text>
+    <text style="font-weight: 700; font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start" x="351" y="45.84" transform="rotate(-0 351 45.84)">B  natural vs final-position L8H5-z clamp</text>
    </g>
    <g id="legend_2">
     <g id="line2d_47">
-     <path d="M 522.20656 176.05981
-L 529.20656 176.05981
-L 536.20656 176.05981
+     <path d="M 473.6725 176.05981
+L 480.6725 176.05981
+L 487.6725 176.05981
 " style="fill: none; stroke: #b91c1c; stroke-width: 1.7; stroke-linecap: square"/>
      <g>
-      <use xlink:href="#clip_path_3" x="529.20656" y="176.05981" style="fill: #b91c1c; stroke: #b91c1c"/>
+      <use xlink:href="#clip_path_3" x="480.6725" y="176.05981" style="fill: #b91c1c; stroke: #b91c1c"/>
      </g>
     </g>
     <g id="text_37">
-     <text style="font-size: 7px; font-family: 'DejaVu Sans'; text-anchor: start" x="541.80656" y="178.50981" transform="rotate(-0 541.80656 178.50981)">natural target</text>
+     <text style="font-size: 7px; font-family: 'DejaVu Sans'; text-anchor: start" x="493.2725" y="178.50981" transform="rotate(-0 493.2725 178.50981)">natural target</text>
     </g>
     <g id="line2d_48">
-     <path d="M 522.20656 186.56036
-L 529.20656 186.56036
-L 536.20656 186.56036
+     <path d="M 473.6725 186.56036
+L 480.6725 186.56036
+L 487.6725 186.56036
 " style="fill: none; stroke-dasharray: 4.81,2.08; stroke-dashoffset: 0; stroke: #7c3aed; stroke-width: 1.3"/>
      <g>
-      <use xlink:href="#clip_path_5" x="529.20656" y="186.56036" style="fill: #7c3aed; stroke: #7c3aed; stroke-linejoin: miter"/>
+      <use xlink:href="#clip_path_5" x="480.6725" y="186.56036" style="fill: #7c3aed; stroke: #7c3aed; stroke-linejoin: miter"/>
      </g>
     </g>
     <g id="text_38">
-     <text style="font-size: 7px; font-family: 'DejaVu Sans'; text-anchor: start" x="541.80656" y="189.01036" transform="rotate(-0 541.80656 189.01036)">L8H5 clamped</text>
+     <text style="font-size: 7px; font-family: 'DejaVu Sans'; text-anchor: start" x="493.2725" y="189.01036" transform="rotate(-0 493.2725 189.01036)">L8H5 hook_z@final clamped</text>
     </g>
    </g>
   </g>
@@ -934,10 +934,10 @@ L 895.5 51.84
    </g>
   </g>
   <g id="text_59">
-   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: middle" x="450" y="15.06197" transform="rotate(-0 450 15.06197)">Exp05 exploratory bridge: L7H4 → fixed SAE span → readout</text>
+   <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: middle" x="450" y="15.06197" transform="rotate(-0 450 15.06197)">Exp05 exploratory bridge: fixed-span rescue of an L7H4-induced effect</text>
   </g>
   <g id="text_60">
-   <text style="font-size: 7.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #4b5563" x="450" y="252.72" transform="rotate(-0 450 252.72)">Fresh seeds; ratios are directed-logit effects. The clamp is a dependence control, not a mediation test.</text>
+   <text style="font-size: 7.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #4b5563" x="450" y="252.72" transform="rotate(-0 450 252.72)">Fresh seeds; directed-logit ratios. hook_z@final is the complete head output, not a value-only path.</text>
   </g>
  </g>
  <defs>

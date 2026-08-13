@@ -57,11 +57,13 @@ L7H4 was intervened, the resulting delta was measured at `resid_pre8`, and the f
 rescued against 100 target-excluded matched rank-12 spans per seed. The target recovered `67.9%` of
 the directed effect (mean `R_target=0.678639`, 95% t(7) CI `[0.673841, 0.683437]`) and beat the
 actual maximum matched span in all eight seeds. The complementary ratio was `0.305339` (CI
-`[0.301260, 0.309418]`); the matched-span mean was `0.065910` (CI `[0.049408, 0.082411]`). Under
-an L8H5 final-value-path clamp to the source-A baseline, the target remained `0.674047` (CI
-`[0.669586, 0.678508]`), while the natural reader projection coefficient was only descriptive
-(`0.027–0.124`). This supports a reproducible causal subspace under the tested intervention, not
-dominant L8H5 final-value mediation. The bridge is exploratory and has no preregistered verdict.
+`[0.301260, 0.309418]`); the matched-span mean was `0.065910` (CI `[0.049408, 0.082411]`). When the
+complete L8H5 `hook_z` output at the final query position was overwritten by the source-A baseline, the
+target remained `0.674047` (CI `[0.669586, 0.678508]`), while the natural reader projection coefficient
+was only descriptive (`0.027–0.124`). Because `hook_z` is the per-head output after
+attention-pattern-weighted value aggregation, this is not a value-only clamp. The result supports a
+reproducible causal subspace under the tested intervention, not dominant dependence on L8H5's tested
+final-position output or a mediation path. The bridge is exploratory and has no preregistered verdict.
 
 ## Not claimed
 
@@ -74,12 +76,16 @@ latent activations, individual-latent causality, necessity or sufficiency, a nat
 mediation, a complete circuit, or generalisation across models or tasks.
 
 The near-closure of target plus complement is a separate nonlinear arm and is not a linear attribution.
-The clamp does not show that L8H5 is irrelevant: parallel routes, other positions, and QK/attention
-routes were not tested. The bridge does not establish native latent semantics, individual-latent
+The clamp does not show that L8H5 is irrelevant: parallel downstream routes and other L8H5 query
+positions were not tested. At the final query it overwrites the output produced jointly by the
+attention pattern and value stream; it does not separately identify either contribution. The bridge does not establish native latent semantics, individual-latent
 causality, necessity, sufficiency, a complete circuit, or generalisation across models or tasks. Its
-code is [`bridge_rescue.py`](bridge_rescue.py), and the compact evidence is linked above. The next
-frozen question is a small factorial that distinguishes a too-narrow clamp from an L8H5-parallel
-route; it is planned, not run.
+code is [`bridge_rescue.py`](bridge_rescue.py), and the compact evidence is linked above. The proposed
+all-position-clamp factorial is non-identifying because the final-only upstream intervention changes no
+non-final `resid_pre8` position and causal masking prevents earlier query positions from seeing that
+edit. The [result-blind, interactive AI-advisor-reviewed Experiment 06 design](../06_cross_template_bridge/DESIGN.md) instead fixes
+the model, L7H4, span, and matched controls while moving to a mechanism-held-out evaluation on the
+calibration-exposed relative-clause family. It is implemented but has not run.
 
 The prior failed run `30d941c` appears only in
 [`results/execution_ledger.csv`](results/execution_ledger.csv) with
@@ -87,7 +93,7 @@ The prior failed run `30d941c` appears only in
 
 ## Reproduce the package
 
-Run the model-free packager against the six source artifacts:
+Run the model-free packager against the listed source artifacts:
 
 ```bash
 python3 experiments/05_number_agreement_circuit/make_claim_ladder.py \
@@ -101,8 +107,10 @@ python3 experiments/05_number_agreement_circuit/make_claim_ladder.py \
   --stage3-draws /tmp/exp05-stage3/stage3_draws.csv
 ```
 
-The script extracts only compact tables and generates the SVG/PNG figure; it
-does not run the model or Stage 3/Q4. Verify a checked-out packet with:
+The script extracts only compact tables and generates the SVG/PNG figure; it does not run the model or
+Stage 3/Q4. Those source artifacts, and the bridge raw result, are outside Git. Checked-in CSV/JSON rows
+support static reaggregation, but full packet regeneration requires the hash-bound off-Git inputs and a
+full model rerun additionally requires cached model/SAE assets. Verify a checked-out packet with:
 
 ```bash
 (cd experiments/05_number_agreement_circuit/results && sha256sum -c checksums.sha256)

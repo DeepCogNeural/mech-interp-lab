@@ -1,31 +1,59 @@
-# Experiment 02 — Mixed (superposed) coding has a computation reason, not just a storage reason
+# Experiment 02 — Mixed codes make XOR easier for the shipped probe; coordinate-wise scores are nonseparable
 
-**Code:** `readout.py` (CPU, ~10–15 min; `SMOKE=1` for a ~40s subset). **Figures:** `figures/`. **Raw numbers:** `results.json`.
+**Code:** `readout.py` (CPU, ~10–15 min; `SMOKE=1` for a ~40s subset;
+`REAGGREGATE_ONLY=1` rebuilds metadata and figures from shipped rows without fitting a model or probe).
+**Figures:** `figures/`. **Raw numbers:** `results.json`.
 
-`results.json` schema: every `xor` row is `(m, S, seed, dp, arm, test_acc, train_acc)`.
+`results.json` uses schema `exp02-results-v2`. Every `xor` row remains
+`(m, S, seed, dp, arm, test_acc, train_acc)`; the top-level `analysis` object records the independent
+unit, interval convention, analytic counterexample, and corrected pooled contrasts.
 
 ## The question
 
-Experiment 01 gives a *storage* reason for superposition: sparse features plus a bottleneck force the network to pack more features than it has dimensions. This experiment asks whether superposition also has a *computation* reason — and it is the question my neuroscience background makes natural.
+Experiment 01 gives a *storage* reason for superposition: sparse features plus a bottleneck force the
+network to pack more features than it has dimensions. This experiment asks a narrower computation
+question: under the shipped linear-probe estimator, does mixed geometry make a minimal nonlinear
+target easier to read? It is the question my neuroscience background makes natural.
 
 Two literatures describe the same geometry (many features sharing few non-orthogonal directions) with opposite value judgements:
 
 - **Interpretability, SAE lineage:** superposition is something to *undo*. You train a sparse autoencoder to disentangle the superposed directions so you can enumerate monosemantic features.
-- **Systems neuroscience, mixed selectivity (Rigotti et al. 2013):** the same kind of geometry is *functional* — mixing is what buys a linear readout the dimensionality it needs to compute nonlinear functions of the inputs.
+- **Systems neuroscience, mixed selectivity (Rigotti et al. 2013):** mixed responses can be
+  *functional* by expanding the nonlinear functions accessible to a linear readout.
 
 Both can be true, and the interpretability literature is not blind to the second point — Elhage et al. explicitly study *computation in superposition*. What a toy model adds is ground truth: I can build the geometries by hand and *measure* which framing the readout actually rewards.
 
-## Why a nonlinearity is unavoidable — and why that is not the trivial part
+## Why the fixed nonlinearity is informative — and what it does not prove
 
-Experiment 01's encoder is linear (`h = W x`). A linear probe on a linear projection is still linear in `x`, so it can **never** represent XOR, which needs the interaction term `x_i · x_j` — for *any* geometry. So a fair test needs a nonlinearity in the readout. I use `r = ReLU(W x)`.
+Experiment 01's encoder is linear (`h = W x`). A linear probe on a linear projection remains additive
+in `x`, so it cannot *perfectly separate* XOR for any geometry. But it is not thereby forced to chance:
+on the exact balanced quadrant distribution used here, the linear score on the experiment's actual
+coordinate-wise representation, `ReLU(x_i) + ReLU(x_j)`, predicts 1 whenever the score is positive,
+gets three of four quadrants right, and reaches `0.75` accuracy.
 
-The important move: the nonlinearity is held **constant across all three arms**. Only the geometry `W` changes. So the result is not "a nonlinearity lets you do XOR" (trivial). It is: under the *same* fixed nonlinearity, `ReLU(a single feature)` is still additive and reads out no interaction, whereas `ReLU(a mixture)` manufactures the equivalent cross-terms. **Geometry decides whether a linear readout can see the interaction.**
+I use `r = ReLU(W x)` and hold that nonlinearity **constant across all three arms**; only the geometry
+`W` changes. This makes the comparison informative about how geometry changes the behaviour of the
+configured estimator. It does not make the coordinate-wise arm a theorem-backed chance control.
 
-## The math anchor (the one place "provably" is earned)
+## The math anchor — nonseparability, not a chance ceiling
 
-Any *monosemantic* code — one where each unit is a function of a single input feature, `r_k = f_k(x_{i_k})` — cannot represent `XOR(a_i, a_j)` through a linear readout. `XOR(a, b) = a + b − 2ab` requires the product `ab`, and `ab` is not in the span of `{1, f(a), g(b)}`. This is a theorem, not a trained result — the contrast with the (deleted) over-claim in exp1 that a trained `W` was "an optimum" is deliberate.
+For any coordinate-wise code — each unit is a function of one input feature — a linear readout has an
+additive score. Fix any positive represented magnitudes `p,q > 0`. The four ReLU states satisfy
 
-The **strong** form of the anchor, which is what I test, is that this holds *even when the monosemantic code perfectly encodes both features*. So every XOR pair here is drawn from the features the monosemantic arm actually represents (indices `0..m-1`). Its chance-level XOR is the theorem, not a coverage artifact.
+`s(0,q) + s(p,0) = s(0,0) + s(p,q)`.
+
+Perfect separation would require both terms on the left to be above the decision threshold and both
+terms on the right below it, which contradicts that equality. A classifier that separated the full
+continuous support would have to separate this four-point subset for every `p,q`; **perfect linear
+separation is therefore impossible.** That is the theorem.
+
+It does **not** imply that accuracy is capped at chance. Under this experiment's balanced four-quadrant
+distribution, `predict 1 iff ReLU(x_i) + ReLU(x_j) > 0` correctly classifies `00`, `01`, and `10`,
+misses only `11`, and reaches `0.75`. This is a linear threshold on the coordinate-wise representation,
+not on the raw signed-coordinate sum. This explicit witness is the adversarial check the original report omitted.
+Every XOR pair is drawn from features the coordinate-wise arm represents (`0..m-1`), so missing
+coverage is not the explanation for the configured BCE-trained probe's empirical `0.494`; that number
+is still an estimator result, not a universal theorem.
 
 ## Setup
 
@@ -33,51 +61,68 @@ Three geometry arms at fixed `(n=20, m=8)`, differing **only** in `W`:
 
 | arm | `W` | role |
 |---|---|---|
-| monosemantic | selection matrix (feature `k` → axis `k`) | theorem-backed negative-control anchor |
+| monosemantic | selection matrix (feature `k` → axis `k`) | coordinate-wise estimator control |
 | random | Gaussian, Frobenius-norm-matched to the learned `W` | a capacity ruler |
 | superposition | the frozen `W` that exp1's storage objective trains at sparsity `S` | the research object |
 
-Task: for a feature pair `(i, j)`, `a_i = 1[x_i > 0]`, label `y = a_i XOR a_j`, read with a **linear** logistic probe on `r = ReLU(W x)`. The eval distribution is **fixed** and class-balanced (the pair forced into the four quadrants `{00,01,10,11}`, every other feature a fixed `Bernoulli(distractor_p)·Uniform`), identical across every sparsity and geometry — `S` only changes the frozen `W`. 8 seeds; balanced accuracy; mean ± 95% CI; within-seed paired (superposition − random) differences.
+Task: for a feature pair `(i, j)`, `a_i = 1[x_i > 0]`, label `y = a_i XOR a_j`, read with a
+**linear** logistic probe on `r = ReLU(W x)`. The eval distribution is **fixed** and class-balanced
+(the pair forced into `{00,01,10,11}`, every other feature a fixed
+`Bernoulli(distractor_p)·Uniform`), identical across every sparsity and geometry — `S` only changes the
+frozen `W`. There are 8 independent seeds. Per-condition intervals are two-sided Student-t intervals
+across seeds. A contrast pooled across sparsity first averages the five completed-run `S` values within
+each seed, then forms its interval across the 8 seed means; the 40 `(seed,S)` rows are not 40 replicates.
 
-## Result 1 (headline) — monosemantic can't, mixed can
+## Result 1 (headline) — mixed codes are easier for the shipped logistic probe
 
 Isolated pair (`distractor_p = 0`), `m = 8`, 8 seeds:
 
-![Monosemantic XOR readout remains at chance while random and learned mixed codes reach about 0.80 accuracy](figures/01_monosemantic_cannot_read_xor.png)
+![The shipped BCE-trained logistic probe scores the coordinate-wise arm near 0.50 while random and learned mixed codes reach about 0.80 accuracy](figures/01_configured_probe_xor_accuracy.png)
 
-Caption — with the same ReLU nonlinearity in every arm, only the mixed geometries make XOR linearly readable.
+Caption — with the same ReLU nonlinearity in every arm, the shipped BCE-trained probe fits the
+mixed geometries substantially better. The analytic coordinate-wise witness at `0.75` prevents reading
+the empirical `0.494` as a universal ceiling.
 
 | arm | XOR readout accuracy (across `S`) |
 |---|---|
-| monosemantic | **0.494 ± 0.005** at every sparsity — flat on the chance line (flat by construction — this arm's W does not depend on S; the finding is the level, not the flatness). The interval lies just below 0.50 rather than astride it, which is expected: the theorem forbids *above*-chance performance, and a fitted probe evaluated on held-out data scores a little under chance from finite-sample variance. |
+| monosemantic | **0.494 ± 0.006** at every sparsity under the configured estimator (flat because this arm's `W` does not depend on `S`; empirical, not theorem-bound to chance) |
 | random | 0.79 → 0.81 |
 | superposition | 0.78 → 0.81 (0.815 peak at S=0.9; a dip to 0.74 at S=0.7 — see the note below) |
 
-The monosemantic anchor is exactly at chance regardless of sparsity, as the theorem says. Both mixed codes read the interaction at ~0.80. The probe train-minus-test gap on the mixed arms is **+0.002**, so the 0.80 is not overfitting.
+The fitted coordinate-wise arm lands near chance; both mixed codes reach about `0.80`. The mean
+train-minus-test gap on the mixed arms is `+0.002`, evidence of a small generalization gap under this
+fit, not a proof against every form of overfitting. Averaging the five completed-run `S` values within
+each seed, the paired test-accuracy gaps are random − coordinate-wise `+0.313 ± 0.021` and
+superposition − coordinate-wise `+0.297 ± 0.020` (Student-t intervals over eight seed means).
 
-The interpretation is the one that matters for interpretability: **an exactly monosemantic
-representation carries a computational cost.** One feature per unit maximizes enumerability and, in
-that exact limit, leaves a linear readout unable to see feature interactions at all. Mixing is not just
-a storage compromise; it is also what keeps a nonlinear interaction linearly legible downstream. That
-is Rigotti's mixed-selectivity argument, here with fully observable ground truth. This is a claim about
-representations, not about SAEs as a tool — see Caveats below.
+The interpretability-relevant conclusion is narrower: a coordinate-wise representation cannot make XOR
+perfectly linearly separable, and these mixed representations make it much easier for the configured
+logistic estimator. This does not prove a universal computational cost of monosemanticity or that
+mixing is necessary for above-chance accuracy. This is a claim about representations under a probe,
+not about SAEs as a tool — see Caveats below.
 
-## Result 2 (honest secondary) — the *learned* geometry has no reliable edge over random
+## Result 2 (secondary) — no reliable *learned*-versus-random advantage detected
 
 Does the specific storage-optimized geometry beat random mixing of the same norm? Within-seed paired differences:
 
 ![Paired differences between learned superposition and equal-norm random mixing remain centered near zero](figures/02_superposition_vs_random_paired.png)
 
-Caption — the learned geometry has no reliable readout advantage over equal-norm random mixing.
+Caption — no reliable learned-versus-random advantage is detected per sparsity in this eight-seed
+sample; this is not an equivalence result.
 
 | | superposition − random |
 |---|---|
-| `distractor_p = 0.0` (pooled) | −0.015 ± 0.017 |
-| `distractor_p = 0.05` (pooled) | +0.004 ± 0.008 |
-| `distractor_p = 0.1` (pooled) | +0.002 ± 0.005 |
+| `distractor_p = 0.0` (five `S` values averaged within seed) | −0.015 ± 0.032 |
+| `distractor_p = 0.05` (five `S` values averaged within seed) | +0.004 ± 0.019 |
+| `distractor_p = 0.1` (five `S` values averaged within seed) | +0.002 ± 0.011 |
 | robustness `m = 5 / 8 / 12` (dp=0) | −0.040 / −0.015 / +0.001 |
 
-The differences hug zero; the 95% CIs include zero in essentially every cell. A 4-seed pilot had hinted at a small positive effect at high sparsity with background activity; at 8 seeds it washes out. **The honest conclusion is a null: the readout capacity comes from mixing-plus-nonlinearity itself, not from the particular geometry exp1 learns.** The headline (Result 1) does not depend on exp1 at all — random mixing suffices; exp1 simply supplies one storage-trained, ground-truth-known instance of a mixed code.
+All three corrected pooled intervals include zero. A four-seed pilot had hinted at a small positive
+effect at high sparsity with background activity; the shipped eight-seed sample does not detect it
+reliably. **No equivalence margin was specified before this analysis**, so this does not establish equality, practical
+equivalence, or that the benefit is a generic property of mixing. Result 1 does not require the learned
+geometry to be unique: the equal-norm random mixed arm also reaches about `0.80`, while experiment 01
+supplies one storage-trained, ground-truth-known instance.
 
 (The `S = 0.7`, `dp = 0` dip is a seed effect, and a broader one than a single outlier: the eight seeds
 split bimodally, five at 0.63–0.73 and three at 0.82. Those `S = 0.7` codes are also the least mixed in
@@ -87,22 +132,32 @@ training variance; random and monosemantic, being constructed, do not.)
 
 ## Controls and checks
 
-- **Strong anchor.** XOR pairs are drawn only from features the monosemantic arm represents (`0..m-1`), so its chance accuracy is the theorem, not missing coverage.
+- **Coverage control.** XOR pairs are drawn only from features the coordinate-wise arm represents
+  (`0..m-1`), so missing features do not explain its empirical score. The theorem guarantees only
+  nonseparability; the `0.75` witness rules out a chance ceiling.
 - **The "superposition" arm really is in superposition.** For the learned `W` at `m = 8`: features represented `= 16–20 > m = 8`, `Σ Dᵢ` is an effective-dimension upper bound that gets close to `m` only when the bottleneck is well used (7.9–8.0 here), and off-diagonal Gram energy goes from `0.085` at `S = 0` (near-orthogonal) to `0.252` at `S = 0.99`
   (dense interference), though not monotonically — `S = 0.7` is the least mixed point in the sweep, at
   `0.051`. The label is earned; sparsity moves interference across the range, but it is not a clean
   monotone knob.
-- **Not overfit.** Probe train−test gap `+0.002` on the mixed arms.
+- **Observed generalization gap.** Mean probe train−test gap is `+0.002` on the mixed arms.
 - **Nonlinearity held constant** across all three arms — the manipulated variable is geometry alone.
 
 ## Enumeration nuance (why the tension is the hard one, not the easy one)
 
-A tempting story is "mixing buys computation by sacrificing enumeration." The data do **not** support that clean tradeoff. Mean per-feature linear decodability (can a probe read individual feature indicators off `r`?) at `distractor_p = 0.1`: monosemantic `0.614`, random `0.596`, superposition `0.621` — the mixed superposed code is about as enumerable as the monosemantic one here. So the tension is not "mixing destroys enumeration." It is the sharper one: **mixing is necessary for linearly reading an interaction, and the most-enumerable limit (pure monosemanticity) provably cannot read one at all.**
+A tempting story is "mixing buys computation by sacrificing enumeration." The data do **not** support
+that clean tradeoff. Mean per-feature linear decodability at `distractor_p = 0.1` is: monosemantic
+`0.614`, random `0.596`, superposition `0.621`. In this toy setup the superposed code is about as
+enumerable as the coordinate-wise one. The defensible tension is only that coordinate-wise additive
+scores cannot perfectly separate XOR while the tested mixed codes are easier for this estimator — not
+that mixing is universally necessary for interaction readout.
 
 ## Caveats (what this is and is not)
 
 - Toy model, not a transformer. It shows the mechanism cleanly; it does not show any real model represents or reads features this way.
-- This result says that if a system's representation is truly monosemantic, a linear readout cannot see feature interactions; it does **not** say that an SAE harms a model's computation. An SAE is a readout lens alongside the residual stream: downstream model components still read the mixed residual stream, the SAE does not replace the model's representation with a monosemantic basis, and this experiment does not measure that question.
+- A coordinate-wise representation cannot make XOR perfectly linearly separable, but it can support
+  above-chance classification. The empirical `0.494` belongs to this BCE-trained probe. None of this
+  says that an SAE harms a model's computation: downstream components still read the residual stream,
+  and this experiment never substitutes an SAE code into a transformer.
 - XOR is one interaction. It is the minimal nonlinear-readout probe, not a claim about all computation.
 - This is **compression** (`n → m`, `m < n`). Rigotti's mixed selectivity is **expansion** (few task variables → many mixed neurons). The geometries are cousins (non-orthogonal mixing) but the dimension direction is opposite; I test whether compression-style superposition stays computationally legible, not Rigotti's expansion regime.
 - XOR readout accuracy is a task-specific proxy. The native mixed-selectivity metric is shattering dimensionality / CCGP (Bernardi et al. 2020) — a cleaner, task-agnostic measure. That is the next step.

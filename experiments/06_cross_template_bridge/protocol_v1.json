@@ -1,0 +1,227 @@
+{
+  "schema": "exp06-cross-template-bridge-protocol-v1",
+  "status": "FROZEN_NO_RUN",
+  "date": "2026-08-13",
+  "result_observed": false,
+  "contract_id": "exp06-v1-ai-advisor-reviewed-raw-effect-8of8-20260813",
+  "advisor_review": {
+    "status": "INTERACTIVE_AI_REVIEW_COMPLETE",
+    "decision": "SECTION_3_PREREG_FINAL",
+    "comparator_decision": "SECTION_3_COMPARATOR: APPROVE_CLARIFICATION",
+    "scope": "result-blind protocol and implementation-boundary review by an interactive AI advisor; not external expert validation; final-SHA receipt pending",
+    "receipt": null
+  },
+  "scientific_object": {
+    "model": "gpt2-small",
+    "sae": "res-jb layer-8 direct decoder",
+    "l7_head": {
+      "layer_zero_indexed": 7,
+      "head_zero_indexed": 4
+    },
+    "capture_hook": "blocks.8.hook_resid_pre",
+    "intervention_timing": "L7H4 frozen base-pattern subject-value replacement at final query",
+    "edited_resid_pre8_positions": [
+      "matrix_subject",
+      "final"
+    ],
+    "reader_clamp": null
+  },
+  "asset_contract": {
+    "gpt2": {
+      "repo_id": "gpt2",
+      "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+      "files": {
+        "model.safetensors": "248dfc3911869ec493c76e65bf2fcf7f615828b0254c12b473182f0f81d3a707",
+        "config.json": "0daed7749b4f02b8f76240d5444551d7b08712dab4d0adb8239c56ba823bb7b4",
+        "tokenizer.json": "8414cab924d8b9b33013f0d221c5862f365ee9be39c5c2bfae8a5a9e970478a6",
+        "tokenizer_config.json": "5e04eb606e3a1583530a42e36c2a6b6615c86f34fe77e44d9ddeb43ff940931f",
+        "merges.txt": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
+        "vocab.json": "196139668be63f3b5d6574427317ae82f612a97c5d1cdaf36ed2256dbf636783"
+      }
+    },
+    "sae": {
+      "repo_id": "jbloom/GPT2-Small-SAEs-Reformatted",
+      "revision": "57d08a4fd333fbf18caf3fbea63ceeb88e2f50d9",
+      "files": {
+        "blocks.8.hook_resid_pre/sae_weights.safetensors": "d46a41aa7a9e0475c135e41dde0cb3d8510528ce3140568a18a0e29d3a624d8b",
+        "blocks.8.hook_resid_pre/cfg.json": "f8c690c02ea3e1a29713748dd3922404fe59310cafaab6e376b4526b5f69c12c"
+      }
+    },
+    "runtime_versions": {
+      "torch": "2.13.0",
+      "transformer-lens": "3.5.1",
+      "transformers": "5.14.1",
+      "huggingface_hub": "1.23.0",
+      "safetensors": "0.8.0"
+    },
+    "state_fingerprint": {
+      "model_scheme": "lexicographic state_dict keys; key/dtype/shape JSON plus uncast contiguous tensor bytes; uint64 length framing",
+      "sae_decoder_scheme": "dtype/shape JSON plus uncast contiguous tensor bytes; uint64 length framing",
+      "require_before_after_equal": true
+    }
+  },
+  "frozen_q4_input": {
+    "raw_sha256": "81a917da187a103a1e76d79ce86f672347d01110cd50c4a93a241302237671ac",
+    "target_decoder_row_count": 12,
+    "target_must_be_constant_across_q4_seeds": true,
+    "matched_draws_per_ordinal_seed": 100,
+    "matched_rank": 12,
+    "matched_target_overlap_allowed": false,
+    "binding": "sort Q4 source seeds; zip to sorted Experiment 06 seeds",
+    "fresh_reselection_allowed": false
+  },
+  "registered_seeds": [
+    20260822,
+    20260823,
+    20260824,
+    20260825,
+    20260826,
+    20260827,
+    20260828,
+    20260829
+  ],
+  "stimuli": {
+    "family": "source_C_relative_clause_with_adverb",
+    "template": "The {SUBJ} that the {ATTRACTOR} often {RELVERB}",
+    "public_label": "mechanism-held-out evaluation on a calibration-exposed template family",
+    "fully_unseen_claim_allowed": false,
+    "generated_pairs_per_seed": 240,
+    "max_evaluated_pairs_per_seed": 150,
+    "retained_pair_order": "ascending pair id",
+    "directions_per_pair": 2,
+    "source_true": "opposite number, same matrix-subject lemma",
+    "source_A": "same number as base; fixed cyclic successor of the matrix-subject lemma; same template",
+    "source_A_lemma_order": [
+      ["cat", "cats"],
+      ["dog", "dogs"],
+      ["child", "children"],
+      ["student", "students"],
+      ["teacher", "teachers"],
+      ["artist", "artists"],
+      ["pilot", "pilots"],
+      ["singer", "singers"],
+      ["doctor", "doctors"],
+      ["farmer", "farmers"],
+      ["driver", "drivers"],
+      ["actor", "actors"],
+      ["chef", "chefs"],
+      ["writer", "writers"],
+      ["friend", "friends"],
+      ["neighbor", "neighbors"],
+      ["visitor", "visitors"],
+      ["player", "players"],
+      ["dancer", "dancers"],
+      ["reader", "readers"]
+    ],
+    "source_A_mapping": "cyclic successor with reader mapping to cat; no fixed points; identical for both directions and all seeds",
+    "held_constant": [
+      "attractor",
+      "relative_verb",
+      "adverb",
+      "all_non_subject_tokens",
+      "template_positions"
+    ]
+  },
+  "gate_a": {
+    "both_members_signed_correct_fraction_at_least": 0.6,
+    "retained_pairs_at_least": 140,
+    "median_plural_minus_singular_gap_at_least": 1.0
+  },
+  "arms": [
+    "source_A",
+    "true",
+    "full_delta",
+    "target_projection",
+    "complement_projection",
+    "100_frozen_matched_projections"
+  ],
+  "estimands": {
+    "readout": "logit(' are') - logit(' is')",
+    "direction_sign": "+1 singular-base to plural-true; -1 plural-base to singular-true",
+    "D_s": "mean(sign * (d_true - d_A))",
+    "T_s": "mean(sign * (d_target - d_A))",
+    "M_sj": "mean(sign * (d_matched_j - d_A))",
+    "E_s": "second-largest_j(M_sj), the raw-effect edge over the 100 frozen Q4 matched latent sets",
+    "A_s": "T_s - E_s",
+    "verdict_uses_ratios": false,
+    "descriptive_only": [
+      "target_over_direct_ratio",
+      "matched_over_direct_ratios",
+      "complement",
+      "target_plus_complement_signed_effect_sum",
+      "target_plus_complement_minus_full_signed_effect",
+      "target_plus_complement_over_full_ratio"
+    ]
+  },
+  "coverage": {
+    "required_gate_a_valid_registered_seeds": 8,
+    "outcome_based_seed_selection_allowed": false,
+    "scientific_non_estimable_trigger": "any registered seed fails Gate A population sufficiency",
+    "execution_guards": [
+      "q4_hash_schema_and_status",
+      "target_and_matched_binding",
+      "projector_rank",
+      "token_and_position_identity",
+      "finite_statistics",
+      "non_final_resid_pre8_delta_tolerance",
+      "full_rescue_final_logit_identity",
+      "clean_source_provenance"
+    ]
+  },
+  "statistics": {
+    "unit": "registered_seed",
+    "interval": "two-sided 95% Student-t",
+    "degrees_of_freedom": 7,
+    "analysis_population": "all eight registered seeds; a Gate-A population failure makes the result non-estimable, while missing execution or guard failure stops without a scientific verdict"
+  },
+  "decision_rule": {
+    "status": "FROZEN",
+    "non_estimable": "any of the eight registered seeds fails Gate A population sufficiency",
+    "stopped_without_scientific_verdict": "any missing execution, runtime cap, unexpected exception, binding, artifact-rank, token/position, non-final-delta, full-rescue-identity, or nonfinite-statistic guard failure",
+    "mechanism_transfer": {
+      "all_required": [
+        "lower_95pct_t_bound(mean(D_s)) > 0",
+        "count_registered_seeds(D_s >= 0.05) >= 6"
+      ],
+      "absolute_floor": 0.05,
+      "floor_source": "chosen result-blind at less than half the previous original-template minimum direct handle 0.104946173032125"
+    },
+    "mechanism_negative": "all eight seeds pass Gate A and mechanism_transfer fails; span not adjudicated",
+    "positive": {
+      "requires_mechanism_transfer": true,
+      "all_required": [
+        "lower_95pct_t_bound(mean(T_s)) > 0",
+        "lower_95pct_t_bound(mean(A_s)) > 0",
+        "count_registered_seeds(T_s > 0 and A_s > 0) >= 6"
+      ]
+    },
+    "span_negative": "mechanism_transfer passes and any positive-span condition fails"
+  },
+  "artifact_contract": {
+    "model_output_path_must_be_outside_source_tree": true,
+    "model_output_path_must_not_exist_before_run": true,
+    "clean_tree_and_exact_commit_required": true,
+    "offline_model_and_sae_loading_required": true,
+    "compact_result_includes_all_seed_rows": true,
+    "adjudicable_eight_seed_run_requires_exactly_800_matched_rows": true,
+    "non_estimable_run_may_have_fewer_matched_rows": true,
+    "activation_payloads_allowed": false,
+    "directional_verdict_on_incomplete_eight_seed_evidence": false
+  },
+  "claim_boundary": {
+    "strongest_positive": "fixed-object reappearance under a second prompt/control construction in a mechanism-held-out evaluation on one calibration-exposed relative-clause family",
+    "control_construction_disclosure": "the relative-clause family and source-A construction both differ from the Experiment 05 exploratory bridge; this is not a one-factor template-only contrast",
+    "comparator_disclosure": "reuses Q4 fixed latent sets and second-largest tail-order statistic, not Q4 normalized R estimand",
+    "does_not_support": [
+      "fully unseen template transfer",
+      "independent external validation",
+      "natural or monosemantic latent semantics",
+      "individual-latent causality",
+      "necessity or sufficiency",
+      "mediation",
+      "complete circuit",
+      "generalisation across models or tasks",
+      "isolating template-family change from source-A-control construction"
+    ]
+  }
+}

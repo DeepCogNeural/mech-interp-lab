@@ -49,9 +49,17 @@ design was frozen on evidence about the stimuli, not about the answer. The actua
 291 logical forward-equivalents and 966 seconds; the completed Stage-2 invocation used 2,528 logical
 forward-equivalents and 6,272 seconds. The Stage-3/Q4 invocation used 353,120 logical
 forward-equivalents and 1,265.99 seconds; its raw result remains outside Git and its compact evidence is
-under `results/`. The post-Q4 bridge used clean source `0d7c4db`, seeds `20260814–20260821`, 150 pairs
-per seed, 800 frozen matched spans, and 852.85 seconds. Its raw result is outside Git (SHA-256 prefix
-`9d8446…`); the independent artifact review is `SHIP`.
+under `results/`. The original raw-dependent post-Q4 bridge packet reported clean source `0d7c4db`,
+seeds `20260814–20260821`, 150 pairs per seed, and 800 frozen matched spans. The current compact
+reaggregation attributes those fields through a hash-pinned historical receipt but did not revalidate
+the missing raw input. Its raw result is outside Git (SHA-256 prefix `9d8446…`); the public packet
+contains no bridge-specific independent review receipt.
+
+Reproducibility has three distinct levels. The checked-in CSV/JSON packet supports static
+reaggregation of the reported summaries. Regenerating the packet requires the hash-bound Stage-2/Q4/
+bridge raw inputs outside Git. Repeating the model-backed experiment additionally requires the cached
+GPT-2 and SAE assets and execution environment; the repository alone does not provide an end-to-end
+rerun.
 
 | lifecycle gate | current state |
 |---|---|
@@ -63,7 +71,7 @@ per seed, 800 frozen matched spans, and 852.85 seconds. Its raw result is outsid
 | Stage 3 preparation | complete; all eight Gate-A cells pass and have 40 rank-training / 150 evaluation pairs |
 | Stage 3 / Q4 | complete; Q4 above matched-span chance in 8/8; mean `R_span=0.8935`, `R_comp=0.0848` |
 | exploratory bridge | complete; target span beats 100 matched spans in 8/8; `R_target=0.6786`, clamped `0.6740` |
-| offline contract tests | 20/20 pass; protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4/bridge helpers, portable preparation binding, target-excluded matched pools, artifact guards, and the empty-`C` terminal path |
+| offline contract tests | model-free suites cover protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4/bridge helpers, portable preparation binding, target-excluded matched pools, artifact guards, and the empty-`C` terminal path; execution evidence is reported separately from this static description |
 
 The implementation files are [`selection_source_a.py`](selection_source_a.py),
 [`freeze_candidate.py`](freeze_candidate.py), [`exp05_core.py`](exp05_core.py),
@@ -123,12 +131,14 @@ generalisation across models or tasks.
 directed L7H4→`resid_pre8` effect and exceeded the actual maximum of 100 target-excluded matched
 rank-12 spans on every seed (8/8). The complementary ratio was `R_comp=0.305339` (CI
 `[0.301260, 0.309418]`), while the aggregate matched-span mean was `0.065910` (CI
-`[0.049408, 0.082411]`). With L8H5's final value path clamped to the natural source-A baseline, the
-target remained `R_target=0.674047` (CI `[0.669586, 0.678508]`); the natural reader projection
-coefficient was only descriptive (`0.027–0.124` across seeds). This does not support dominant L8H5
-final-value mediation. It also does not show that L8H5 is irrelevant: parallel routes, other
-positions, and QK/attention routes were not tested. The near-closure of target plus complement is a
-separate nonlinear arm and is not a linear attribution.
+`[0.049408, 0.082411]`). With L8H5's complete `hook_z` output at the final query position overwritten
+by the natural source-A baseline, the target remained `R_target=0.674047` (CI
+`[0.669586, 0.678508]`); the natural reader projection coefficient was only descriptive
+(`0.027–0.124` across seeds). `hook_z` is the per-head output after the attention pattern aggregates
+values, so this is not a value-only clamp. It does not support dominant dependence on the tested
+final-position L8H5 output or establish mediation. It also does not show that L8H5 is irrelevant:
+parallel downstream routes and other L8H5 query positions remain outside the tested intervention. The
+near-closure of target plus complement is a separate nonlinear arm and is not a linear attribution.
 
 The compact packet is [`bridge_result_summary.json`](results/bridge_result_summary.json), with the
 matched rows in [`bridge_matched_ratios.csv`](results/bridge_matched_ratios.csv) and the overview in
@@ -136,8 +146,19 @@ matched rows in [`bridge_matched_ratios.csv`](results/bridge_matched_ratios.csv)
 The executable follow-up is [`bridge_rescue.py`](bridge_rescue.py); it is exploratory evidence, not a
 new preregistered axis.
 
-The next frozen research question is a small factorial distinguishing a too-narrow L8H5 clamp from an
-L8H5-parallel route. It is a plan only; no additional run is being claimed here.
+An all-position-clamp factorial would not identify that distinction here. The L7H4 intervention is
+final-position-only and produces zero non-final `resid_pre8` delta; causal masking means earlier L8H5
+query outputs cannot depend on that final-position edit. The next experiment therefore keeps GPT-2,
+the SAE, L7H4, the frozen 12-row span, and the 100 matched spans fixed, then evaluates them on the relative-clause
+family already used as calibration/source-C control under a globally fixed cyclic source-A map. Because
+the earlier bridge used seed-drawn source-A nouns, this is not a one-factor template-only contrast. The
+result-blind [Experiment 06 protocol](../06_cross_template_bridge/DESIGN.md), reviewed interactively by
+an AI advisor, first tests whether the L7H4 causal
+handle meets its within-family gate and only then whether the target span exceeds the second-largest raw-effect edge among
+the 100 frozen Q4 matched latent sets. This reuses Q4's sets and tail-order statistic, not its normalized
+`R` estimand.
+It is a mechanism-held-out evaluation on a calibration-exposed template family, not a completely
+unseen-template claim. It is implemented but has not run.
 
 Q1 alone is close to tautological — eight late heads can push a logit they sit one step away from —
 which is exactly why Q2 and Q3 are separate adjudicated axes and why the writeup may not present Q1

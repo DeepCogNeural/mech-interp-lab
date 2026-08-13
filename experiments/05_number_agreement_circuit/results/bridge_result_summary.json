@@ -3,6 +3,7 @@
   "claim_boundary": "The bridge packet is descriptive follow-up evidence, not a preregistered adjudication.",
   "compact_artifacts": {
     "figure": "figure_bridge_rescue.svg",
+    "historical_provenance_receipt": "bridge_historical_provenance_receipt.json",
     "matched_ratios": "bridge_matched_ratios.csv",
     "raw_result_copied": false,
     "seed_metrics": "bridge_seed_metrics.csv"
@@ -11,41 +12,73 @@
     "fixed_decoder_span": "12 layer-8 res-jb decoder rows from Q4",
     "follow_up_type": "fresh out-of-sample exploratory bridge",
     "matched_control": "100 rank-12 target-excluded spans per seed",
-    "reader_clamp": "L8H5.final fixed to natural source-A L7H4 arm value",
+    "reader_clamp": {
+      "head": "L8H5",
+      "hook": "blocks.8.attn.hook_z",
+      "query_position": "final",
+      "replacement": "natural source-A L7H4-arm hook_z output",
+      "semantics": "complete per-head z after attention-pattern-weighted value aggregation",
+      "value_only": false
+    },
     "reader_head": "L8H5",
     "timing_decision": "L7_ONLY_RESID_PRE8",
     "upstream_head": "L7H4"
   },
   "integrity": {
-    "gate_a": {
-      "all_passed": true,
-      "evaluation_pairs_per_seed": [
-        150
-      ],
-      "passed_count": 8,
-      "retained_pairs_per_seed_range": [
-        230,
-        237
-      ],
-      "seed_count": 8
+    "historical_raw_dependent_report": {
+      "authority_receipt": {
+        "bytes": 2240,
+        "path": "bridge_historical_provenance_receipt.json",
+        "sha256": "f3ff8fdc8352531e13be5b7babcefe9fe4033513c4c7e04ed77d1bfdc8f1f9f1"
+      },
+      "origin": {
+        "reported_fields_canonical_sha256": "3043c8f9773d4924841b48df4616ff2ab7acc7b6742b1626a7352ccb094860a0",
+        "reported_fields_canonicalization": "SHA-256 of UTF-8 Python canonical JSON for the original object {source_receipt, integrity}: sort_keys=true, separators=(',', ':'), ensure_ascii=false",
+        "source_commit": "10d5c05fc94cd8e0822de4842f391d48488e6061",
+        "summary_file_sha256": "cc2957d22f813991e7b55cb535621446fbceccec395844c0eaa773a6cda7c7cf",
+        "summary_path": "experiments/05_number_agreement_circuit/results/bridge_result_summary.json"
+      },
+      "reported_integrity": {
+        "gate_a": {
+          "all_passed": true,
+          "evaluation_pairs_per_seed": [
+            150
+          ],
+          "passed_count": 8,
+          "retained_pairs_per_seed_range": [
+            230,
+            237
+          ],
+          "seed_count": 8
+        },
+        "git": {
+          "clean_final": true,
+          "clean_start": true,
+          "final_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
+          "final_status_porcelain": "",
+          "start_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
+          "start_status_porcelain": ""
+        },
+        "identity": {
+          "full_vs_true_final_logit_max_abs": 9.5367431640625e-06,
+          "full_vs_true_final_logit_tolerance": 1e-05,
+          "full_vs_true_final_logit_within_tolerance": true,
+          "non_final_positions_max_abs": 0.0,
+          "selected_positions_max_abs": 0.0,
+          "status": "PASS"
+        },
+        "raw_result_sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef"
+      },
+      "status": "REPORTED_BY_ORIGINAL_PACKET_NOT_REVALIDATED"
     },
-    "git": {
-      "clean_final": true,
-      "clean_start": true,
-      "final_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
-      "final_status_porcelain": "",
-      "start_commit": "0d7c4db33926b01e45ef1ca4e6039303c5aa4295",
-      "start_status_porcelain": ""
-    },
-    "identity": {
-      "full_vs_true_final_logit_max_abs": 9.5367431640625e-06,
-      "full_vs_true_final_logit_tolerance": 1e-05,
-      "full_vs_true_final_logit_within_tolerance": true,
-      "non_final_positions_max_abs": 0.0,
-      "selected_positions_max_abs": 0.0,
-      "status": "PASS"
-    },
-    "raw_result_sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef"
+    "reaggregation": {
+      "historical_gate_identity_git_fields": "reported by the hash-pinned historical receipt; not revalidated in this invocation",
+      "historical_receipt_sha256": "f3ff8fdc8352531e13be5b7babcefe9fe4033513c4c7e04ed77d1bfdc8f1f9f1",
+      "matched_csv_sha256": "936f34b458f581330dca2b27dcf6039310ee55751949a6f50e580d19db6332e5",
+      "mode": "checked_in_hash_bound",
+      "raw_result_revalidated_this_invocation": false,
+      "seed_csv_sha256": "0845c76545bdd96a2f2f0b0e68cb5c6726cab2309a9c9ca062372d999ee2e92c"
+    }
   },
   "matched_per_seed": 100,
   "matched_rows": 800,
@@ -53,84 +86,84 @@
     "R_complement": {
       "ci95": {
         "high": 0.3094182813449743,
-        "low": 0.3012603734852325
+        "low": 0.3012603734852327
       },
       "degrees_of_freedom": 7,
       "finite_count": 8,
-      "mean": 0.3053393274151034,
-      "standard_error": 0.0017247162494168655,
+      "mean": 0.3053393274151035,
+      "standard_error": 0.0017247162494168145,
       "status": "ESTIMABLE",
       "t_critical": 2.365
     },
     "R_matched_max": {
       "ci95": {
         "high": 0.5681158826463573,
-        "low": 0.2538980971382866
+        "low": 0.2538980971382867
       },
       "degrees_of_freedom": 7,
       "finite_count": 8,
-      "mean": 0.41100698989232193,
-      "standard_error": 0.06643082146048004,
+      "mean": 0.411006989892322,
+      "standard_error": 0.06643082146048002,
       "status": "ESTIMABLE",
       "t_critical": 2.365
     },
     "R_matched_mean": {
       "ci95": {
-        "high": 0.08241096522610206,
-        "low": 0.049408345618835725
+        "high": 0.08241096522610207,
+        "low": 0.04940834561883571
       },
       "degrees_of_freedom": 7,
       "finite_count": 8,
       "mean": 0.06590965542246889,
-      "standard_error": 0.00697729801422121,
+      "standard_error": 0.006977298014221215,
       "status": "ESTIMABLE",
       "t_critical": 2.365
     },
     "R_matched_second_largest": {
       "ci95": {
         "high": 0.5259763840662812,
-        "low": 0.231447787392171
+        "low": 0.2314477873921708
       },
       "degrees_of_freedom": 7,
       "finite_count": 8,
-      "mean": 0.3787120857292261,
-      "standard_error": 0.06226820225668291,
+      "mean": 0.37871208572922604,
+      "standard_error": 0.06226820225668297,
       "status": "ESTIMABLE",
       "t_critical": 2.365
     },
     "R_target": {
       "ci95": {
         "high": 0.6834368332068662,
-        "low": 0.6738412044176022
+        "low": 0.673841204417602
       },
       "degrees_of_freedom": 7,
       "finite_count": 8,
-      "mean": 0.6786390188122342,
-      "standard_error": 0.0020286741626351153,
+      "mean": 0.6786390188122341,
+      "standard_error": 0.002028674162635159,
       "status": "ESTIMABLE",
       "t_critical": 2.365
     },
     "R_target_clamped": {
       "ci95": {
-        "high": 0.6785077911279654,
-        "low": 0.6695859559686784
+        "high": 0.6785077911279656,
+        "low": 0.6695859559686785
       },
       "degrees_of_freedom": 7,
       "finite_count": 8,
-      "mean": 0.6740468735483219,
-      "standard_error": 0.00188622307807336,
+      "mean": 0.674046873548322,
+      "standard_error": 0.0018862230780733662,
       "status": "ESTIMABLE",
       "t_critical": 2.365
     },
     "target_reader_coefficient": {
       "ci95": {
-        "high": 0.12042046856694504,
-        "low": 0.06808986772980154
+        "high": 0.1204204685669451,
+        "low": 0.06808986772980155
       },
       "degrees_of_freedom": 7,
       "finite_count": 8,
-      "mean": 0.09425516814837329,
-      "standard_error": 0.011063551974026108,
+      "mean": 0.09425516814837333,
+      "standard_error": 0.01106355197402612,
       "status": "ESTIMABLE",
       "t_critical": 2.365
     }
@@ -139,18 +172,36 @@
     "This is an exploratory follow-up with no preregistered verdict or threshold.",
     "It does not establish that the fixed span is a natural, necessary, or sufficient representation.",
     "It does not establish individual-latent causality, a complete circuit, or full mediation.",
-    "The L8H5 reader clamp is a dependence control, not a proof of an L7H4-to-span-to-readout mediation path.",
+    "The L8H5 hook_z@final clamp overwrites the complete per-head output at the final query position; it is not a value-only clamp.",
+    "The clamp is a dependence control, not a proof of an L7H4-to-span-to-readout mediation path.",
+    "It does not distinguish an all-position clamp from a parallel route under this final-only upstream intervention.",
     "R_target is a directed-logit effect ratio, not an activation-reconstruction percentage."
   ],
+  "regeneration": {
+    "historical_gate_identity_git_fields": "reported by the hash-pinned historical receipt; not revalidated in this invocation",
+    "historical_receipt_sha256": "f3ff8fdc8352531e13be5b7babcefe9fe4033513c4c7e04ed77d1bfdc8f1f9f1",
+    "matched_csv_sha256": "936f34b458f581330dca2b27dcf6039310ee55751949a6f50e580d19db6332e5",
+    "mode": "checked_in_hash_bound",
+    "raw_result_revalidated_this_invocation": false,
+    "seed_csv_sha256": "0845c76545bdd96a2f2f0b0e68cb5c6726cab2309a9c9ca062372d999ee2e92c"
+  },
   "reproduce": {
-    "command": "python3 experiments/05_number_agreement_circuit/make_bridge_summary.py --bridge-results /path/to/bridge_results.json",
+    "command": "python3 experiments/05_number_agreement_circuit/make_bridge_summary.py --reaggregate-checked-in",
     "independent_checks": [
+      "verify the fixed seed/matched CSV SHA-256 values before reaggregation",
       "recompute per-seed matched maxima from bridge_matched_ratios.csv",
       "recompute aggregate means and t(7) intervals from bridge_seed_metrics.csv",
       "sha256sum -c checksums.sha256"
     ],
+    "raw_dependent_command": "python3 experiments/05_number_agreement_circuit/make_bridge_summary.py --bridge-results /absolute/path/to/bridge_results.json",
     "script": "experiments/05_number_agreement_circuit/make_bridge_summary.py"
   },
+  "reproducibility": {
+    "checked_in_reaggregation": "requires the exact hash-bound checked-in seed and matched-span CSV rows",
+    "full_model_rerun": "requires the model, SAE, cached assets, and execution environment; not reproducible from Git alone",
+    "raw_dependent_packaging": "requires the off-Git bridge_results.json bound by source_receipt.sha256; it was not available in this invocation"
+  },
+  "review_receipt": null,
   "schema": "exp05-public-bridge-rescue-summary-v1",
   "seed_count": 8,
   "seeds": [
@@ -164,9 +215,12 @@
     20260821
   ],
   "source_receipt": {
+    "authority_receipt": "bridge_historical_provenance_receipt.json",
     "basename": "bridge_results.json",
     "bytes": 653980,
-    "sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef"
+    "current_invocation_revalidated": false,
+    "sha256": "9d844605de4d20ec5638bf793d21e8750ea606984d7229531fdc9910aa1e45ef",
+    "status": "HISTORICAL_REPORTED_NOT_REVALIDATED"
   },
   "status": "COMPLETE",
   "target_exceeds_matched_max_all_seeds": true,

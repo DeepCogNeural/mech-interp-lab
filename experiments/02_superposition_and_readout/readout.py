@@ -1,44 +1,52 @@
 """
-Experiment 02 — Mixed (superposed) coding has a computation reason, not just a storage reason.
+Experiment 02 — Mixed (superposed) coding under the shipped linear-probe estimator.
 
 exp1 (Toy Models of Superposition) gives a STORAGE reason for superposition: sparse
-features + a bottleneck force non-orthogonal packing. This experiment gives an
-orthogonal COMPUTATION reason, and it is the part a comp-neuro background makes natural.
+features + a bottleneck force non-orthogonal packing. This experiment asks an
+orthogonal COMPUTATION question, and it is the part a comp-neuro background makes natural.
 
-The claim (this is Rigotti et al. 2013's "mixed selectivity", with ground truth):
-a mixed, superposed code keeps a *downstream linear readout* able to read feature
-*interactions*; a purely monosemantic code — one feature per unit, the ideal endpoint
-an SAE pushes toward — provably cannot.
+The empirical contrast (motivated by Rigotti et al. 2013's "mixed selectivity") is:
+under this fixed BCE-trained logistic estimator, mixed codes make XOR much easier to
+read than the coordinate-wise control. This is estimator-specific evidence, not a
+universal theorem that mixing is necessary for above-chance XOR accuracy.
 
-Why a nonlinearity is unavoidable, and why that is NOT the trivial part:
+Why the fixed nonlinearity is informative, and what it does NOT prove:
 exp1's encoder is linear (h = W x). A linear probe on a linear projection is still
-linear in x, so it can never represent XOR, which needs the interaction term x_i*x_j —
-for ANY geometry. So we read from a fixed nonlinearity r = ReLU(W x). The nonlinearity
-is held CONSTANT across all three arms; only the representation geometry W changes.
-Result is therefore not "a nonlinearity lets you do XOR" (trivial) but: under the same
-fixed nonlinearity, r = ReLU(single feature) is still additive and reads no interaction,
-whereas r = ReLU(mixture) manufactures the equivalent cross-terms. Geometry decides it.
+additive in x, so it cannot perfectly separate XOR for ANY geometry. It is not thereby
+forced to chance: on the exact balanced quadrant distribution used here, the rule
+"predict 1 iff ReLU(x_i) + ReLU(x_j) > 0" gets three quadrants right and reaches
+0.75 accuracy.
+We read from r = ReLU(W x), holding that nonlinearity CONSTANT across all three arms;
+only W changes. The design therefore tests how geometry changes the behaviour of the
+configured estimator. It does not turn the coordinate-wise arm into a chance theorem.
 
-Math anchor (a theorem, not a trained result — the one place "provably" is earned):
-any monosemantic code r_k = f_k(x_{i_k}) cannot represent XOR(a_i, a_j) via a linear
-readout, because XOR(a,b) = a + b - 2ab needs the product ab, and ab is not in the span
-of {1, f(a), g(b)}. The strong form of the anchor — the one we test — is that this holds
-EVEN when the monosemantic code perfectly encodes both features. So every XOR pair here
-is drawn from the features the monosemantic arm actually represents (indices 0..m-1);
-its chance-level XOR is the theorem, not a coverage artifact.
+Math anchor (the deliberately narrow theorem): any coordinate-wise code gives an
+additive linear score. Fix any positive represented magnitudes p and q. The four
+coordinate-wise ReLU states obey s(0,q)+s(p,0)=s(0,0)+s(p,q), so the two XOR-positive
+states cannot both score above a threshold while both negative states score below it.
+Perfect separation over the continuous support is impossible because it would have to
+separate this four-point subset for every p,q>0. The identity says nothing about a chance
+ceiling; the constructive 0.75 witness above is the counterexample. Every XOR pair is
+still drawn from represented features (indices 0..m-1), so missing coverage is not the
+explanation for the empirical 0.494 returned by the configured BCE-trained logistic probe.
 
 Three geometry arms at fixed (n, m), differing ONLY in W:
-  monosemantic   selection matrix (feature k -> axis k). The theorem-backed anchor.
+  monosemantic   selection matrix (feature k -> axis k). Coordinate-wise control.
   random         Gaussian, Frobenius-norm-matched to the learned W. A capacity ruler.
   superposition  the frozen W that exp1's storage objective trains at sparsity S.
 
 Discipline (the over-claiming traps we explicitly avoid):
-  - 8 seeds; mean +/- 95% CI; within-seed PAIRED (superposition - random) differences.
+  - 8 seeds; two-sided Student-t 95% CIs over independent seeds; within-seed PAIRED
+    (superposition - random) differences.
+  - Any pooled contrast first averages the completed-run S values within each seed, then forms
+    its interval across the 8 seed means. The 40 (seed,S) rows are never treated as 40
+    independent replicates.
   - Output metric is task accuracy on a FIXED, class-balanced eval distribution,
     identical across every sparsity and geometry. S only changes the frozen W. We never
     compare reconstruction loss across distributions.
   - Chance line (0.5) on every accuracy plot. Probe train-vs-test gap reported.
-  - "provably" only for the monosemantic theorem, never for a trained W.
+  - "provably" only for coordinate-wise nonseparability, never for chance accuracy or a
+    trained W. No equivalence claim is made because no margin was specified before analysis.
   - We verify the "superposition" arm is actually in superposition at each S
     (features represented > m, sum of per-feature dimensionality ~ m), so the label is earned.
   - m is not a knife-edge: repeated at m in {5, 8, 12}.
@@ -46,18 +54,40 @@ Discipline (the over-claiming traps we explicitly avoid):
 CPU only. ~10-15 min for the full run; SMOKE=1 gives a ~40s subset.
 """
 
+import hashlib
 import json
 import os
+import shutil
+import tempfile
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-FIGDIR = os.path.join(HERE, "figures")
-os.makedirs(FIGDIR, exist_ok=True)
 SMOKE = os.environ.get("SMOKE", "0") == "1"
+REAGGREGATE_ONLY = os.environ.get("REAGGREGATE_ONLY", "0") == "1"
+
+
+def _output_root(here, smoke):
+    return os.path.join(here, "smoke_output") if smoke else here
+
+
+OUTPUT_ROOT = _output_root(HERE, SMOKE)
+FIGDIR = os.path.join(OUTPUT_ROOT, "figures")
+RESULT_PATH = os.path.join(OUTPUT_ROOT, "results.json")
+os.makedirs(FIGDIR, exist_ok=True)
+HEADLINE_FIGURE = "01_configured_probe_xor_accuracy.png"
+SHIPPED_RAW_SHA256 = {
+    "xor": "42f12943b1649bc1f8a78d7041a9709d9f9b0378c4e67e8d0b4966249de0d514",
+    "enum": "91144e72f8dd60f6cf777bf5c68300c280180098f5baaba322b0ae40845c39c8",
+    "status": "40e539944eab6cd62e0c361dae71e93a9f99fd706280b3f6678ca4472bab69cb",
+    "combined": "d31965b7a01bb3760ae5a16169bb429a63eab9d9753835c2f2768b06fc40d253",
+}
 
 
 # ---------------------------------------------------------------- exp1 model (replicated so this experiment is self-contained)
@@ -202,12 +232,221 @@ def enum_acc(W, n, dp, seed):
 # ---------------------------------------------------------------- run
 
 
+_T975 = {
+    # The experiment uses n=3 in smoke mode and n=8 in the full protocol. Keeping the
+    # supported sample sizes explicit prevents silently falling back to a normal CI.
+    2: 4.302652730,
+    7: 2.364624252,
+}
+
+
 def ci95(v):
+    """Two-sided 95% Student-t half-width over independent observations."""
     v = np.asarray(v, float)
-    return 1.96 * v.std(ddof=1) / np.sqrt(len(v)) if len(v) > 1 else 0.0
+    if len(v) <= 1:
+        return 0.0
+    df = len(v) - 1
+    if df not in _T975:
+        raise ValueError(f"no supported t critical value for n={len(v)}")
+    return _T975[df] * v.std(ddof=1) / np.sqrt(len(v))
+
+
+def _canonical_sha256(value):
+    encoded = json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def validate_shipped_raw_rows(xor_rows, enum_rows, status_rows):
+    """Fail closed before deriving claims from the one shipped full-run grid.
+
+    ``REAGGREGATE_ONLY`` is intentionally narrower than a general result loader:
+    it may re-present the original completed run, but it may not silently accept
+    a missing, duplicate, reordered, or edited scientific row. A fresh experiment
+    run has a different lifecycle and must not enter through this path.
+    """
+
+    m_values = (5, 8, 12)
+    sparsities = (0.0, 0.7, 0.9, 0.97, 0.99)
+    seeds = tuple(range(8))
+    dps = (0.0, 0.05, 0.1)
+    arms = ("monosemantic", "random", "superposition")
+
+    expected_xor = {
+        (m, S, seed, dp, arm)
+        for m in m_values
+        for S in sparsities
+        for seed in seeds
+        for dp in (dps if m == 8 else (0.0,))
+        for arm in arms
+    }
+    expected_enum = {
+        (S, seed, dp, arm)
+        for S in sparsities
+        for seed in seeds
+        for dp in dps
+        for arm in arms
+    }
+    expected_status = {(m, S, seed) for m in m_values for S in sparsities for seed in seeds}
+
+    def finite_number(value, label):
+        if isinstance(value, bool):
+            raise ValueError(f"{label} is boolean, not numeric")
+        try:
+            number = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{label} is not numeric: {value!r}") from exc
+        if not np.isfinite(number):
+            raise ValueError(f"{label} is not finite: {value!r}")
+        return number
+
+    observed_xor = set()
+    for index, row in enumerate(xor_rows):
+        if not isinstance(row, (list, tuple)) or len(row) != 7:
+            raise ValueError(f"xor row {index} must contain seven fields")
+        m, S, seed, dp, arm, test_acc, train_acc = row
+        if not isinstance(m, int) or isinstance(m, bool) or not isinstance(seed, int) or isinstance(seed, bool):
+            raise ValueError(f"xor row {index} has a non-integer m or seed")
+        key = (m, finite_number(S, f"xor row {index} sparsity"), seed, finite_number(dp, f"xor row {index} distractor_p"), arm)
+        if not isinstance(arm, str) or key in observed_xor:
+            raise ValueError(f"xor row {index} has an invalid or duplicate key: {key!r}")
+        observed_xor.add(key)
+        for label, value in (("test accuracy", test_acc), ("train accuracy", train_acc)):
+            number = finite_number(value, f"xor row {index} {label}")
+            if not 0.0 <= number <= 1.0:
+                raise ValueError(f"xor row {index} {label} is outside [0, 1]")
+    if observed_xor != expected_xor:
+        raise ValueError(
+            f"xor grid drift: missing={len(expected_xor - observed_xor)}, "
+            f"unexpected={len(observed_xor - expected_xor)}"
+        )
+
+    observed_enum = set()
+    for index, row in enumerate(enum_rows):
+        if not isinstance(row, (list, tuple)) or len(row) != 5:
+            raise ValueError(f"enum row {index} must contain five fields")
+        S, seed, dp, arm, accuracy = row
+        if not isinstance(seed, int) or isinstance(seed, bool):
+            raise ValueError(f"enum row {index} has a non-integer seed")
+        key = (finite_number(S, f"enum row {index} sparsity"), seed, finite_number(dp, f"enum row {index} distractor_p"), arm)
+        if not isinstance(arm, str) or key in observed_enum:
+            raise ValueError(f"enum row {index} has an invalid or duplicate key: {key!r}")
+        observed_enum.add(key)
+        value = finite_number(accuracy, f"enum row {index} accuracy")
+        if not 0.0 <= value <= 1.0:
+            raise ValueError(f"enum row {index} accuracy is outside [0, 1]")
+    if observed_enum != expected_enum:
+        raise ValueError(
+            f"enum grid drift: missing={len(expected_enum - observed_enum)}, "
+            f"unexpected={len(observed_enum - expected_enum)}"
+        )
+
+    observed_status = set()
+    for index, row in enumerate(status_rows):
+        if not isinstance(row, (list, tuple)) or len(row) != 6:
+            raise ValueError(f"status row {index} must contain six fields")
+        m, S, seed, represented, sum_d, gram_off = row
+        if not isinstance(m, int) or isinstance(m, bool) or not isinstance(seed, int) or isinstance(seed, bool):
+            raise ValueError(f"status row {index} has a non-integer m or seed")
+        key = (m, finite_number(S, f"status row {index} sparsity"), seed)
+        if key in observed_status:
+            raise ValueError(f"status row {index} has a duplicate key: {key!r}")
+        observed_status.add(key)
+        represented_value = finite_number(represented, f"status row {index} represented count")
+        if represented_value != int(represented_value) or not 0 <= represented_value <= 20:
+            raise ValueError(f"status row {index} represented count is invalid")
+        finite_number(sum_d, f"status row {index} dimensionality sum")
+        finite_number(gram_off, f"status row {index} Gram statistic")
+    if observed_status != expected_status:
+        raise ValueError(
+            f"status grid drift: missing={len(expected_status - observed_status)}, "
+            f"unexpected={len(observed_status - expected_status)}"
+        )
+
+    payloads = {"xor": xor_rows, "enum": enum_rows, "status": status_rows}
+    for label, rows in payloads.items():
+        observed_hash = _canonical_sha256(rows)
+        if observed_hash != SHIPPED_RAW_SHA256[label]:
+            raise ValueError(f"{label} shipped-row SHA-256 drift: {observed_hash}")
+    combined_hash = _canonical_sha256(payloads)
+    if combined_hash != SHIPPED_RAW_SHA256["combined"]:
+        raise ValueError(f"combined shipped-row SHA-256 drift: {combined_hash}")
+
+
+def result_payload(xor_rows, enum_rows, status_rows, m_main, dps, artifact_status):
+    analysis = analysis_summary(xor_rows, m_main, dps)
+    if SMOKE:
+        analysis["supported_conclusion"] = "SMOKE_ONLY_NO_SCIENTIFIC_CONCLUSION"
+        analysis["scope"] = "three-seed execution smoke; not a public or adjudicable artifact"
+    return {
+        "schema": "exp02-results-v2",
+        "analysis": analysis,
+        "artifact_status": artifact_status,
+        "xor": xor_rows,
+        "enum": enum_rows,
+        "status": status_rows,
+    }
+
+
+def reaggregate_existing():
+    """Regenerate derived metadata and figures from shipped raw rows; fit no model or probe."""
+    if SMOKE:
+        raise RuntimeError("SMOKE=1 cannot be combined with REAGGREGATE_ONLY=1")
+    result_path = os.path.join(HERE, "results.json")
+    with open(result_path) as f:
+        existing = json.load(f)
+    xor_rows = [tuple(r) for r in existing["xor"]]
+    enum_rows = [tuple(r) for r in existing["enum"]]
+    status_rows = [tuple(r) for r in existing["status"]]
+    validate_shipped_raw_rows(xor_rows, enum_rows, status_rows)
+
+    n = 20
+    m_main = 8
+    m_values = sorted({r[0] for r in xor_rows})
+    sparsities = sorted({r[1] for r in xor_rows if r[0] == m_main})
+    seeds = sorted({r[2] for r in xor_rows})
+    dps = sorted({r[3] for r in xor_rows if r[0] == m_main})
+    preferred_arms = ["monosemantic", "random", "superposition"]
+    observed_arms = {r[4] for r in xor_rows}
+    arms = [arm for arm in preferred_arms if arm in observed_arms]
+
+    payload = result_payload(
+        xor_rows,
+        enum_rows,
+        status_rows,
+        m_main,
+        dps,
+        {
+            "raw_rows": "loaded unchanged from the existing completed run",
+            "analysis": "recomputed from shipped xor rows",
+            "figures": "regenerated from shipped rows without fitting a model or probe",
+            "mode": "CHECKED_IN_REAGGREGATION",
+            "public_artifact": True,
+            "output_root": "canonical experiment directory",
+        },
+    )
+    _publish_payload_and_figures(
+        payload,
+        result_path,
+        xor_rows,
+        enum_rows,
+        status_rows,
+        n,
+        m_main,
+        m_values,
+        sparsities,
+        seeds,
+        dps,
+        arms,
+    )
+    return xor_rows
 
 
 def run():
+    if SMOKE and REAGGREGATE_ONLY:
+        raise RuntimeError("SMOKE=1 cannot be combined with REAGGREGATE_ONLY=1")
+    if REAGGREGATE_ONLY:
+        return reaggregate_existing()
+
     n = 20
     m_values = [8] if SMOKE else [5, 8, 12]
     sparsities = [0.0, 0.9, 0.99] if SMOKE else [0.0, 0.7, 0.9, 0.97, 0.99]
@@ -238,9 +477,34 @@ def run():
                             enum_rows.append((S, seed, dp, arm, enum_acc(geos[arm], n, dp, seed)))
                     print(f"  m={m} S={S:<5} seed={seed} dp={dp} done")
 
-    json.dump({"xor": xor_rows, "enum": enum_rows, "status": status_rows},
-              open(os.path.join(HERE, "results.json"), "w"), indent=1)
-    plot_and_summarize(xor_rows, enum_rows, status_rows, n, m_main, m_values, sparsities, seeds, dps, arms)
+    payload = result_payload(
+        xor_rows,
+        enum_rows,
+        status_rows,
+        m_main,
+        dps,
+        {
+            "raw_rows": "generated by this invocation",
+            "figures": "generated by this invocation under the v2 analysis",
+            "mode": "SMOKE_ONLY" if SMOKE else "FULL_CONFIGURED_GRID",
+            "public_artifact": not SMOKE,
+            "output_root": "smoke_output" if SMOKE else "canonical experiment directory",
+        },
+    )
+    _publish_payload_and_figures(
+        payload,
+        RESULT_PATH,
+        xor_rows,
+        enum_rows,
+        status_rows,
+        n,
+        m_main,
+        m_values,
+        sparsities,
+        seeds,
+        dps,
+        arms,
+    )
     return xor_rows
 
 
@@ -250,7 +514,7 @@ def xor_mean_ci(rows, m, S, dp, arm):
 
 
 def paired_diff(rows, m, dp):
-    """within-seed (superposition - random) per (S, seed) at given m, dp -> list of (S, diff)."""
+    """Within-seed superposition-random rows as (S, seed, difference)."""
     out = []
     Ss = sorted({r[1] for r in rows if r[0] == m and r[3] == dp})
     seeds = sorted({r[2] for r in rows if r[0] == m and r[3] == dp})
@@ -259,11 +523,147 @@ def paired_diff(rows, m, dp):
             sup = [r[5] for r in rows if r[:5] == (m, S, seed, dp, "superposition")]
             ran = [r[5] for r in rows if r[:5] == (m, S, seed, dp, "random")]
             if sup and ran:
-                out.append((S, sup[0] - ran[0]))
+                out.append((S, seed, sup[0] - ran[0]))
     return out
 
 
-def plot_and_summarize(xor_rows, enum_rows, status_rows, n, m_main, m_values, sparsities, seeds, dps, arms):
+def pooled_seed_diffs(rows, m, dp):
+    """Average the completed-run S contrasts within seed; return one value per seed."""
+    diffs = paired_diff(rows, m, dp)
+    seeds = sorted({seed for _, seed, _ in diffs})
+    return [np.mean([d for _, s, d in diffs if s == seed]) for seed in seeds]
+
+
+def pooled_seed_arm_diffs(rows, m, dp, arm, baseline):
+    """Average an arbitrary paired arm-baseline contrast across completed-run S within seed."""
+    seeds = sorted({r[2] for r in rows if r[0] == m and r[3] == dp})
+    sparsities = sorted({r[1] for r in rows if r[0] == m and r[3] == dp})
+    out = []
+    for seed in seeds:
+        per_s = []
+        for S in sparsities:
+            arm_value = [r[5] for r in rows if r[:5] == (m, S, seed, dp, arm)]
+            baseline_value = [r[5] for r in rows if r[:5] == (m, S, seed, dp, baseline)]
+            if arm_value and baseline_value:
+                per_s.append(arm_value[0] - baseline_value[0])
+        if per_s:
+            out.append(np.mean(per_s))
+    return out
+
+
+def analysis_summary(rows, m_main, dps):
+    mono = [
+        r[5]
+        for r in rows
+        if r[0] == m_main and r[1] == 0.0 and r[3] == 0.0 and r[4] == "monosemantic"
+    ]
+    pooled = []
+    for dp in dps:
+        values = pooled_seed_diffs(rows, m_main, dp)
+        pooled.append({
+            "distractor_p": dp,
+            "n_seeds": len(values),
+            "mean": float(np.mean(values)),
+            "ci95_t_half_width": float(ci95(values)),
+        })
+    mixed_minus_coordinatewise = []
+    for arm in ("random", "superposition"):
+        values = pooled_seed_arm_diffs(rows, m_main, 0.0, arm, "monosemantic")
+        mixed_minus_coordinatewise.append({
+            "arm": arm,
+            "baseline": "monosemantic",
+            "distractor_p": 0.0,
+            "n_seeds": len(values),
+            "mean": float(np.mean(values)),
+            "ci95_t_half_width": float(ci95(values)),
+        })
+    return {
+        "independent_unit": "seed",
+        "confidence_interval": "two-sided Student-t over seed-level values",
+        "pooled_contrast": "average completed-run S values within seed, then summarize across seeds",
+        "equivalence_margin": None,
+        "supported_conclusion": "no reliable learned-v-random advantage detected in this 8-seed sample",
+        "coordinatewise_math": {
+            "theorem": "additive linear scores cannot perfectly separate XOR",
+            "chance_ceiling": False,
+            "constructive_witness_accuracy": 0.75,
+            "witness": "predict 1 iff ReLU(x_i)+ReLU(x_j)>0 on the balanced four-quadrant distribution",
+        },
+        "configured_bce_logistic_probe": {
+            "condition": {"m": m_main, "S": 0.0, "distractor_p": 0.0},
+            "n_seeds": len(mono),
+            "monosemantic_test_accuracy_mean": float(np.mean(mono)),
+            "monosemantic_test_accuracy_ci95_t_half_width": float(ci95(mono)),
+            "interpretation": "empirical estimator result; not a theorem-imposed chance ceiling",
+            "pooled_mixed_minus_coordinatewise": mixed_minus_coordinatewise,
+        },
+        "pooled_superposition_minus_random": pooled,
+    }
+
+
+def _publish_payload_and_figures(
+    payload,
+    result_path,
+    xor_rows,
+    enum_rows,
+    status_rows,
+    n,
+    m_main,
+    m_values,
+    sparsities,
+    seeds,
+    dps,
+    arms,
+):
+    """Stage both figures and publish the result manifest last."""
+
+    result_parent = os.path.dirname(result_path)
+    os.makedirs(result_parent, exist_ok=True)
+    stage_root = tempfile.mkdtemp(prefix=".exp02-stage.", dir=result_parent)
+    stage_figures = os.path.join(stage_root, "figures")
+    os.makedirs(stage_figures, exist_ok=True)
+    stage_result = os.path.join(stage_root, "results.json")
+    try:
+        plot_and_summarize(
+            xor_rows,
+            enum_rows,
+            status_rows,
+            n,
+            m_main,
+            m_values,
+            sparsities,
+            seeds,
+            dps,
+            arms,
+            figure_dir=stage_figures,
+        )
+        with open(stage_result, "x") as handle:
+            json.dump(payload, handle, indent=1, allow_nan=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.makedirs(FIGDIR, exist_ok=True)
+        for name in (HEADLINE_FIGURE, "02_superposition_vs_random_paired.png"):
+            os.replace(os.path.join(stage_figures, name), os.path.join(FIGDIR, name))
+        os.replace(stage_result, result_path)
+    finally:
+        shutil.rmtree(stage_root, ignore_errors=True)
+
+
+def plot_and_summarize(
+    xor_rows,
+    enum_rows,
+    status_rows,
+    n,
+    m_main,
+    m_values,
+    sparsities,
+    seeds,
+    dps,
+    arms,
+    *,
+    figure_dir=None,
+):
+    figure_dir = FIGDIR if figure_dir is None else figure_dir
     colors = {"monosemantic": "#8a8a8a", "random": "#e08214", "superposition": "#3b6ea5"}
 
     # ---- figure 1: headline. Three arms, dp=0, XOR accuracy vs sparsity ----
@@ -273,18 +673,20 @@ def plot_and_summarize(xor_rows, enum_rows, status_rows, n, m_main, m_values, sp
         e = [xor_mean_ci(xor_rows, m_main, S, 0.0, arm)[1] for S in sparsities]
         ax.errorbar(sparsities, y, yerr=e, marker="o", lw=2, capsize=3, color=colors[arm], label=arm)
     ax.axhline(0.5, ls="--", color="crimson", lw=1.3, label="chance (0.5)")
+    ax.axhline(0.75, ls=":", color="#555555", lw=1.3,
+               label="constructive coordinate-wise witness (0.75)")
     ax.set_xlabel("sparsity S the code was trained at")
     ax.set_ylabel("balanced XOR readout accuracy\n(LINEAR probe on r = ReLU(Wx))")
     ax.set_title(
-        f"A monosemantic code can't linearly read a feature interaction; a mixed code can\n"
-        f"(n={n}, m={m_main}; identical fixed nonlinearity across arms; XOR of an isolated feature pair)",
+        f"The shipped BCE probe favours mixed codes; chance is not a theorem for the control\n"
+        f"(n={n}, m={m_main}; identical fixed nonlinearity; balanced isolated-pair XOR)",
         fontsize=10,
     )
     ax.set_ylim(0.45, 1.0)
     ax.legend(fontsize=9, loc="center right")
     ax.grid(alpha=0.25)
     fig.tight_layout()
-    p1 = os.path.join(FIGDIR, "01_monosemantic_cannot_read_xor.png")
+    p1 = os.path.join(figure_dir, HEADLINE_FIGURE)
     fig.savefig(p1, dpi=150)
     plt.close(fig)
     print(f"  saved {p1}")
@@ -294,23 +696,23 @@ def plot_and_summarize(xor_rows, enum_rows, status_rows, n, m_main, m_values, sp
     dpc = {0.0: "#c2a5cf", 0.05: "#9970ab", 0.1: "#5e3c99"}
     for dp in dps:
         diffs = paired_diff(xor_rows, m_main, dp)
-        Ss = sorted({s for s, _ in diffs})
-        y = [np.mean([d for s, d in diffs if s == S]) for S in Ss]
-        e = [ci95([d for s, d in diffs if s == S]) for S in Ss]
+        Ss = sorted({s for s, _, _ in diffs})
+        y = [np.mean([d for s, _, d in diffs if s == S]) for S in Ss]
+        e = [ci95([d for s, _, d in diffs if s == S]) for S in Ss]
         ax.errorbar(Ss, y, yerr=e, marker="s", lw=1.8, capsize=3, color=dpc[dp],
                     label=f"background activity dp={dp}")
     ax.axhline(0.0, ls="--", color="black", lw=1.1, label="no difference")
     ax.set_xlabel("sparsity S the code was trained at")
     ax.set_ylabel("XOR accuracy: superposition − random\n(within-seed paired difference)")
     ax.set_title(
-        f"Storage-learned superposition gives no reliable readout edge over random mixing\n"
-        f"(n={n}, m={m_main}, {len(seeds)} seeds; within-seed paired differences hug zero across sparsity and background)",
+        f"No reliable learned-v-random advantage detected in this sample\n"
+        f"(n={n}, m={m_main}, {len(seeds)} seeds; per-S Student-t intervals over paired seed differences)",
         fontsize=10,
     )
     ax.legend(fontsize=8.5, loc="best")
     ax.grid(alpha=0.25)
     fig.tight_layout()
-    p2 = os.path.join(FIGDIR, "02_superposition_vs_random_paired.png")
+    p2 = os.path.join(figure_dir, "02_superposition_vs_random_paired.png")
     fig.savefig(p2, dpi=150)
     plt.close(fig)
     print(f"  saved {p2}")
@@ -322,21 +724,34 @@ def plot_and_summarize(xor_rows, enum_rows, status_rows, n, m_main, m_values, sp
             mu, c = xor_mean_ci(xor_rows, m_main, S, 0.0, arm)
             print(f"  {arm:<13} S={S:<5} XOR={mu:.3f}±{c:.3f}")
     # probe overfit check
-    gaps = [r[6] - r[5] for r in xor_rows if r[0] == m_main and r[4] in ("random", "superposition")]
-    print(f"\n  probe train-minus-test gap (mixed arms): mean={np.mean(gaps):+.3f} (small => not overfit)")
+    gap_seed_means = []
+    for seed in seeds:
+        gaps = [
+            r[6] - r[5]
+            for r in xor_rows
+            if r[0] == m_main and r[2] == seed and r[4] in ("random", "superposition")
+        ]
+        gap_seed_means.append(np.mean(gaps))
+    print(
+        f"\n  probe train-minus-test gap (mixed arms, S/dp averaged within seed): "
+        f"mean={np.mean(gap_seed_means):+.3f} ± {ci95(gap_seed_means):.3f}"
+    )
 
     print("\n================  SUPERPOSITION-VS-RANDOM (paired, m=8)  ================")
     for dp in dps:
-        dv = [d for _, d in paired_diff(xor_rows, m_main, dp)]
-        print(f"  dp={dp}: mean(super-random)={np.mean(dv):+.3f} ± {ci95(dv):.3f} (n={len(dv)})")
+        dv = pooled_seed_diffs(xor_rows, m_main, dp)
+        print(
+            f"  dp={dp}: mean(super-random)={np.mean(dv):+.3f} ± {ci95(dv):.3f} "
+            f"(n_seeds={len(dv)}; S averaged within seed)"
+        )
         for S in sparsities:
-            ds = [d for s, d in paired_diff(xor_rows, m_main, dp) if s == S]
+            ds = [d for s, _, d in paired_diff(xor_rows, m_main, dp) if s == S]
             if ds:
                 print(f"       S={S:<5} {np.mean(ds):+.3f} ± {ci95(ds):.3f}")
 
     print("\n================  ROBUSTNESS ACROSS m (dp=0, paired super-random)  ================")
     for m in m_values:
-        dv = [d for _, d in paired_diff(xor_rows, m, 0.0)]
+        dv = pooled_seed_diffs(xor_rows, m, 0.0)
         print(f"  m={m:<3} mean={np.mean(dv):+.3f} ± {ci95(dv):.3f}")
 
     print("\n================  IS 'super' ACTUALLY SUPERPOSITION? (learned W, m=8)  ================")
@@ -351,12 +766,19 @@ def plot_and_summarize(xor_rows, enum_rows, status_rows, n, m_main, m_values, sp
     print("\n================  ENUMERATION nuance (m=8, mean per-feature decodability, dp>0 only)  ================")
     for dp in [d for d in dps if d > 0]:  # dp=0 is degenerate (all-zero inputs) -- see enum_acc note
         for arm in arms:
-            v = [r[4] for r in enum_rows if r[2] == dp and r[3] == arm]
+            v = []
+            for seed in seeds:
+                per_seed = [r[4] for r in enum_rows if r[1] == seed and r[2] == dp and r[3] == arm]
+                if per_seed:
+                    v.append(np.mean(per_seed))
             if v:
                 print(f"  dp={dp} {arm:<13} enum={np.mean(v):.3f}±{ci95(v):.3f}")
 
 
 if __name__ == "__main__":
-    print(f"Experiment 02 — superposition and readout  (SMOKE={SMOKE})")
+    print(
+        f"Experiment 02 — superposition and readout  "
+        f"(SMOKE={SMOKE}, REAGGREGATE_ONLY={REAGGREGATE_ONLY})"
+    )
     run()
     print("\nDone.")

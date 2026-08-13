@@ -1,22 +1,27 @@
 # mech-interp-lab
 
 Self-directed mechanistic-interpretability research, run from a computational-neuroscience starting
-point (probabilistic inference, stochastic modeling, primate V1 electrophysiology). CPU-only and
-reproducible end to end.
+point (probabilistic inference, stochastic modeling, primate V1 electrophysiology). Runs are CPU-only.
+Checked-in compact packets support static reaggregation; raw-dependent repackaging and full model
+reruns require off-Git source artifacts and cached assets, so the repository alone is not end-to-end
+reproducible.
 
 The through-line is not a thesis but an **escalation of method**, and every step was forced by the
 previous step's failure rather than planned in advance: *toy models where the ground truth is fully
 observable → a real model read correlationally → the same question asked causally → the mechanism
 itself.*
 
-Five experiments, with experiment 05 now carrying this repository's first adjudicated real-model
-mechanism result and a positive matched-span representation result. The first replicates the *storage* account of
-superposition. The second tests whether the same geometry also has a *computation* account and finds
-that it does — under a nonlinearity held fixed across arms, a monosemantic code reads a feature
-interaction at `0.494 ± 0.005` — on the chance line and provably unable to leave it, while mixed codes
-reach `0.81`. (The interval sits a hair below 0.50 rather than astride it: the theorem forbids
-performance *above* chance, and a fitted probe scoring slightly under it on held-out data is the
-expected finite-sample behaviour, not a violation.) The third takes that question to real SAE features
+Five completed experiments, with experiment 05 now carrying this repository's first adjudicated
+real-model mechanism result and a positive matched-span representation result, plus a result-blind
+sixth-experiment protocol reviewed interactively by an AI advisor, implemented but unrun; its
+final-SHA receipt is still pending. The first replicates the *storage* account of
+superposition. The second asks whether the same geometry changes interaction readout under a fixed
+estimator. Its shipped BCE-trained logistic probe scores the coordinate-wise control at
+`0.494 ± 0.006` and the mixed codes near `0.81`. The mathematics proves only that an additive
+coordinate-wise score cannot *perfectly separate* XOR; it does not impose a chance ceiling. Indeed,
+`predict 1 iff ReLU(x_i) + ReLU(x_j) > 0` reaches `0.75` on the experiment's balanced four quadrants. The result is
+therefore estimator-specific evidence that these mixed codes make XOR easier for this probe, not a
+proof that mixing is necessary for above-chance interaction readout. The third takes that question to real SAE features
 on GPT-2-small and **fails to settle it** — the answer moved by more than tenfold under a rescaling a
 fitted probe is not invariant to, and that is reported as unsettled rather than dressed up. The fourth
 removes the failed instrument entirely, intervening causally so that the rescaling cannot move the
@@ -30,7 +35,8 @@ number-specific, and whether it arrives from the subject position. Across eight 
 **L7H4 and L8H5 were the smallest tested set that consistently recovered more than half of the frozen
 direct effect** (`0.521–0.546`). The pair passed both specificity controls and produced a positive
 frozen-attention-pattern value-path transport effect in every seed. Independent pair-level
-recomputation, artifact-hash review, and a separate Pro Advisor review all accepted the result.
+recomputation, artifact-hash review, and a separate interactive AI-advisor review (not external
+expert validation) all accepted the result.
 
 That is an intervention-specific result, not a claim that these heads are necessary, sufficient, the
 complete circuit, or the model's unconstrained native path. The independent Stage-3/Q4 test is now
@@ -48,14 +54,18 @@ causality, necessity or sufficiency, a natural head→span path or mediation, a 
 generalisation across models or tasks. A single high-information exploratory bridge has now run on
 fresh held-out seeds. The fixed 12-row span recovered `0.6786` (t(7) CI `[0.6738, 0.6834]`) of the
 directed L7H4→`resid_pre8` effect and beat the maximum of 100 target-excluded matched rank-12 spans
-in all eight seeds; its complement retained `0.3053` (CI `[0.3013, 0.3094]`). With L8H5's final
-value path clamped to the source-A baseline, the target remained `0.6740` (CI `[0.6696, 0.6785]`).
-This supports a reproducible causal subspace under the tested intervention, not dominant L8H5
-mediation, native latent semantics, necessity, or a complete circuit. The run used clean source
-`0d7c4db`, fresh seeds `20260814–20260821`, 150 pairs per seed, and 800 frozen matched draws; the
-raw result stays outside Git (SHA-256 prefix `9d8446…`) and the independent artifact review was
-`SHIP`. The [Fellow-level research brief](experiments/05_number_agreement_circuit/RESEARCH_BRIEF.md)
-is the short public entry point.
+in all eight seeds; its complement retained `0.3053` (CI `[0.3013, 0.3094]`). With L8H5's complete
+`hook_z` output at the final query position overwritten by the source-A baseline, the target remained
+`0.6740` (CI `[0.6696, 0.6785]`). This clamp occurs after attention-pattern-weighted value aggregation;
+it is not a value-only intervention. The result does not support dominant dependence on L8H5's tested
+final-position head output, and it does not establish mediation, native latent semantics, necessity,
+or a complete circuit. The original raw-dependent bridge packet reported clean source `0d7c4db`,
+fresh seeds `20260814–20260821`, 150 pairs per seed, and 800 frozen matched draws. The current compact
+reaggregation attributes those fields through a hash-pinned historical receipt but did not revalidate
+the missing raw input. That raw result stays outside Git (SHA-256 prefix `9d8446…`); no bridge-specific
+independent review receipt is checked into the public packet. The
+[short research brief](experiments/05_number_agreement_circuit/RESEARCH_BRIEF.md) is the short public
+entry point.
 
 ![Experiment 05 claim ladder: eight-head selection, eight-seed Q1–Q3 evidence, and the positive Stage-3/Q4 matched-span result](experiments/05_number_agreement_circuit/results/figure_exp05_main.png)
 
@@ -224,14 +234,14 @@ harms a model's computation. These are properties of a code under a probe.
 
 ---
 
-## Experiment 02 — a monosemantic code cannot linearly read a feature interaction; a mixed one can
+## Experiment 02 — mixed codes make XOR easier for the shipped probe; coordinate-wise scores are nonseparable
 
 [Full writeup](experiments/02_superposition_and_readout/writeup.md) · [code](experiments/02_superposition_and_readout/readout.py) · [per-seed results](experiments/02_superposition_and_readout/results.json)
 
 The SAE lineage in interpretability treats superposed coding as something to undo — disentangle the
 mixed directions so features can be enumerated. The mixed-selectivity literature in systems
-neuroscience (Rigotti et al. 2013) treats the same geometry as *functional*: mixing is what buys a
-linear readout the dimensionality it needs to compute nonlinear functions. Both can be true, and
+neuroscience (Rigotti et al. 2013) treats mixed selectivity as *functional*: it can expand the set of
+nonlinear functions accessible to a linear readout. Both perspectives can be useful, and
 interpretability is not blind to the second point — Elhage et al. study computation in superposition
 directly. What a toy model adds is ground truth: I can build the geometries by hand and measure which
 framing the readout actually rewards.
@@ -240,62 +250,62 @@ Three geometry arms at fixed `n = 20, m = 8`, differing **only** in the encoder 
 selection matrix), random (Gaussian, Frobenius-norm-matched), and superposition (the frozen `W` that
 experiment 01's storage objective learns). Each is read by a **linear** logistic probe on
 `r = ReLU(W x)`, asked for the XOR of a feature pair. 8 seeds, balanced accuracy, a fixed
-class-balanced eval distribution shared across every arm and sparsity, within-seed paired statistics.
+class-balanced eval distribution shared across every arm and sparsity, within-seed paired statistics,
+and two-sided Student-t intervals across independent seed-level values.
 
-![A linear readout of a monosemantic code sits exactly on the chance line at every sparsity, while the random and learned mixed codes both reach about 0.80 XOR accuracy](experiments/02_superposition_and_readout/figures/01_monosemantic_cannot_read_xor.png)
+![The shipped BCE-trained logistic probe scores the coordinate-wise arm near 0.50 while random and learned mixed codes reach about 0.80 XOR accuracy](experiments/02_superposition_and_readout/figures/01_configured_probe_xor_accuracy.png)
 
 | arm | XOR readout accuracy (across sparsity `S`) |
 |---|---|
-| monosemantic | **0.494 ± 0.005** at every sparsity — exactly on the chance line |
+| monosemantic | **0.494 ± 0.006** at every sparsity under the shipped BCE-trained probe — an empirical estimator result, not a theorem-imposed ceiling |
 | random | 0.79 → 0.81 |
 | superposition | 0.78 → 0.81 (dip to 0.74 at `S = 0.7`; the eight seeds split bimodally there) |
 
-The monosemantic arm is a **theorem**, not a trained result: `XOR(a, b) = a + b − 2ab` needs the
-product term `ab`, and `ab` is not in the span of `{1, f(a), g(b)}`, so no code with one feature per
-unit can carry an interaction to a linear readout. I test the *strong* form of it — every XOR pair is
-drawn only from the features the monosemantic arm actually represents, so its chance accuracy is the
-theorem and not missing coverage. What the experiment adds on top of the theorem is the quantitative
-ruler (how much mixing buys, against an equal-norm random control) and the fact that the nonlinearity
-is held fixed across all three arms, so the manipulated variable is geometry alone. `ReLU(a single
-feature)` is still additive and reads out no interaction; `ReLU(a mixture)` manufactures the
-cross-terms. The probe's train-minus-test gap on the mixed arms is `+0.002`, so 0.80 is not
-overfitting.
+The theorem is narrower. A coordinate-wise code followed by a linear readout has an additive score
+`s(a,b) = c + u(a) + v(b)`. Its four XOR corners obey
+`s(0,q) + s(p,0) = s(0,0) + s(p,q)` for any fixed `p,q > 0`, which makes perfect separation impossible: the two positive
+corners cannot both lie above a threshold while both negative corners lie below it. But this is
+**nonseparability, not a chance ceiling**. On the exact balanced distribution here, the linear rule
+`predict 1 iff ReLU(x_i) + ReLU(x_j) > 0` gets `00`, `01`, and `10` right and only `11` wrong, for `0.75`
+accuracy. Drawing every XOR pair from features the coordinate-wise arm represents removes missing
+coverage as an explanation; it does not convert the configured probe's empirical `0.494` into a
+universal theorem. The small average train-minus-test gap (`+0.002`) is a check on this fitted probe,
+not a proof against every form of overfitting. Averaging the five completed-run sparsities within each
+seed, the paired mixed-minus-coordinate-wise gaps are `+0.313 ± 0.021` for random mixing and
+`+0.297 ± 0.020` for learned superposition (Student-t intervals over eight seed means).
 
-The interpretability-relevant reading: **an exactly monosemantic representation carries a
-computational cost.** One feature per unit maximizes enumerability and, in that exact limit, leaves a
-linear readout unable to see feature interactions at all. And the tradeoff is *not* the tidy one you
-might expect — mean per-feature decodability is 0.621 for the superposed code versus 0.614 for the
-monosemantic one, so mixing did not destroy enumerability here. The tension is the sharper version:
-mixing is necessary to linearly read an interaction, and the most-enumerable limit provably cannot
-read one at all.
+The interpretability-relevant reading is deliberately limited: a fully coordinate-wise representation
+cannot make XOR perfectly linearly separable, while the tested mixed representations make it much easier
+for this configured logistic estimator. Mean per-feature decodability is `0.621` for the superposed code
+versus `0.614` for the coordinate-wise one, so this toy run also does not show a clean
+enumeration-versus-readout tradeoff. It does **not** establish that mixing is necessary for above-chance
+accuracy or that every monosemantic representation carries the same downstream cost.
 
-### The null, stated plainly
+### The learned-versus-random comparison, stated plainly
 
-Does the *storage-learned* geometry beat equal-norm random mixing? **No.** Within-seed paired
-differences (superposition − random) are `−0.015 ± 0.017` at `distractor_p = 0`, `+0.004 ± 0.008` and
-`+0.002 ± 0.005` with background activity; the 95% CIs include zero in essentially every cell. A
-4-seed pilot had hinted at a small positive effect at high sparsity; **at 8 seeds it washed out, and I
-am reporting the null rather than the pilot.**
+Does the *storage-learned* geometry beat equal-norm random mixing? **No reliable advantage was detected
+in this eight-seed sample.** For each seed, first averaging the five completed-run sparsities and then
+forming a Student-t interval across the eight seed means gives superposition − random differences of
+`−0.015 ± 0.032` at `distractor_p = 0`, `+0.004 ± 0.019` at `0.05`, and `+0.002 ± 0.011` at `0.10`.
+All three intervals include zero. A four-seed pilot had hinted at a small positive effect at high
+sparsity; the shipped eight-seed sample did not detect it reliably.
 
-That is a discriminating answer, not a failed run. The readout capacity comes from
-mixing-plus-nonlinearity itself, not from the particular geometry experiment 01 learns: the storage
-objective shapes *which* mixed geometry appears, but the computational benefit is a generic property of
-mixing rather than something that geometry is optimized for. The headline above does not depend on this
-— random mixing suffices; experiment 01 just supplies one storage-trained instance of a mixed code
-whose ground truth I know.
+No equivalence margin was specified before this analysis, so these intervals do **not** establish equality, practical
+equivalence, or a generic property of mixing. They support only the narrower sentence above. Random
+mixing supplies a second mixed code that also reaches about `0.80`; experiment 01 supplies one
+storage-trained instance whose ground truth is known.
 
 ### The probe design trap
 
-My first instinct was the obvious one: run a linear probe directly on experiment 01's encoder,
-`h = W x`. That design is **identically at chance for any geometry whatsoever** — a linear readout of a
-linear projection is still linear in `x`, and XOR needs the interaction term. I would have gotten a
-real null for an entirely boring reason, and the geometry question would have been untouched.
+My first instinct was to run a linear probe directly on experiment 01's encoder, `h = W x`. My original
+reason for rejecting it was too strong. A linear readout of a linear projection remains additive and
+cannot *perfectly separate* XOR, but it is not forced to chance: the `0.75` witness above already shows
+that. What the design would miss is the geometry-dependent piecewise-linear feature map introduced by
+the shared ReLU.
 
-The fix is the actual content of the design: a nonlinearity is unavoidable, *and* it has to be held
-constant across the arms. With `r = ReLU(W x)` fixed everywhere and only `W` varying, the result cannot
-be "a nonlinearity lets you do XOR" (trivially true). It becomes the claim I wanted to test —
-**geometry decides whether a linear readout can see the interaction.** The negative control (a
-theorem-backed arm that must land at chance) is what makes the positive result readable at all.
+With `r = ReLU(W x)` fixed everywhere and only `W` varying, the experiment asks whether geometry changes
+the configured probe's ability to fit XOR. The coordinate-wise control establishes the empirical
+baseline for that estimator; the theorem establishes only that its additive score cannot be perfect.
 
 ### Scope — what this does not say
 
@@ -303,7 +313,8 @@ This is a claim about **representations**, not about SAEs as a tool. It does **n
 model's computation. An SAE is a readout lens alongside the residual stream: downstream components
 still read the mixed residual stream, the SAE does not replace the model's representation with a
 monosemantic basis, and this experiment does not measure that question at all. Also: a toy model, not a
-transformer; XOR is one minimal interaction, not all computation; and this is compression
+transformer; XOR is one minimal interaction, not all computation; above-chance additive classification
+remains possible; and this is compression
 (`n → m`, `m < n`) whereas Rigotti's mixed selectivity is expansion — cousin geometries, opposite
 dimension direction.
 
@@ -346,11 +357,22 @@ to you.
   subject-number information under the registered frozen-pattern value-path intervention in all eight
   seeds. Q4's frozen 12-row layer-8 span retains `0.8935` of the directed logit effect, beats the
   frozen matched-span edge in every seed, and leaves `0.0848` in the complement. The fresh bridge then
-  recovers `0.6786` of the L7H4→`resid_pre8` effect (clamped-reader arm `0.6740`) and beats all 100
+  recovers `0.6786` of the L7H4→`resid_pre8` effect (final-position L8H5-`z` clamp arm `0.6740`) and beats all 100
   matched spans per seed. It is exploratory evidence for a reproducible causal subspace, not a
-  dominant L8H5 mediation or complete-circuit claim. The next frozen question is a small factorial
-  that can distinguish a clamp that is simply too narrow from an L8H5-parallel route; it is planned,
-  not run.
+  dominant L8H5 mediation or complete-circuit claim.
+- **[Experiment 06 — fixed-object cross-template bridge](experiments/06_cross_template_bridge/DESIGN.md)**
+  has a result-blind protocol and implementation reviewed interactively by an AI advisor, but remains
+  unrun and has no final-SHA receipt. It holds exact GPT-2/SAE revisions and file hashes, L7H4, the 12-row
+  span, and the 100 matched spans fixed while moving to the relative-clause family already used in
+  calibration/source-C. It first asks whether the L7H4 true-versus-fixed-source-A handle transfers;
+  only then does it compare the target with the second-largest raw-effect edge among the 100 frozen Q4
+  matched latent sets. It reuses Q4's sets and tail-order statistic, not Q4's normalized `R` estimand. The protocol
+  requires all 8/8 seeds for a directional verdict, uses a globally fixed no-fixed-point source-A
+  lemma map, and distinguishes Gate-A `NON_ESTIMABLE` from implementation/provenance `STOPPED`. This is
+  a mechanism-held-out evaluation on a calibration-exposed template family, not an unseen-template
+  result, and no Experiment 06 result is claimed. Because the Experiment 05 bridge used seed-drawn
+  source-A nouns, Experiment 06 is a second prompt/control construction, not a one-factor
+  template-only contrast.
 - Re-register experiment 04's Gate C on a decoder each arm actually ships with, with the floor
   pre-declared from a pilot on a *different* stimulus family so the threshold cannot be tuned to this
   one. Necessary but **not** sufficient: a rerun still has to clear every other frozen gate, and Gate D
@@ -380,6 +402,7 @@ python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirem
 
 ```bash
 (cd experiments/02_superposition_and_readout && python readout.py)        # ~10-15 min; SMOKE=1 for a ~40s subset
+(cd experiments/02_superposition_and_readout && REAGGREGATE_ONLY=1 python readout.py)  # reuse shipped raw rows; fit no model/probe
 ```
 
 ```bash
@@ -397,10 +420,12 @@ Measured on an M1 Pro CPU: 42.3 s + 647 s + 1,760 s + 1,344 s, **63.2 minutes to
 Experiment 05's calibration, fresh same-snapshot selection, Stage 2, Stage-3/Q4, and one exploratory
 bridge follow-up are complete. The compact claim inputs, per-seed statistics, checksums, and generation code live in
 [`results/`](experiments/05_number_agreement_circuit/results/); the raw execution artifacts stay outside
-Git and are identified by SHA-256. The Stage-2 invocation used 2,528 logical forward-equivalents and
-6,272 seconds of CPU wall time; Stage 3/Q4 used 353,120 logical forward-equivalents and about 1,266
-seconds; the bridge used 852.85 seconds on eight fresh seeds. The public packet reports the bounded
-Q4 result and the exploratory bridge with their non-claims; it does not copy the raw model outputs.
+Git and are identified by SHA-256. The original raw-dependent packets reported 2,528 logical
+forward-equivalents and 6,272 seconds for Stage 2, and 353,120 logical forward-equivalents and about
+1,266 seconds for Stage 3/Q4; they also reported an eight-seed bridge. The current checked-in compact
+reaggregation did not revalidate those raw run-integrity or runtime fields. The public packet reports
+the bounded Q4 result and the exploratory bridge with their non-claims; it does not copy the raw model
+outputs.
 
 ```bash
 ./.venv/bin/python -m unittest discover \
@@ -425,5 +450,5 @@ dated correction that retracts three claims made in the frozen text. Each amendm
 commit containing the output it governs — commit order, which is weaker than proof of when anything was
 read, and the writeup says so.
 [`lab-notebook.md`](lab-notebook.md) is the dated process record, including the traps I nearly
-fell into and the pilot-versus-full-run story behind the null.
+fell into and the pilot-versus-full-run story behind the secondary comparison.
 [`learning-roadmap.md`](learning-roadmap.md) is where this is going next.
