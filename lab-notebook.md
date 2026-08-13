@@ -36,10 +36,11 @@ loaded; and made public packet generation stage completely before atomic publica
 
 **Happened:** Independent adversarial review found that name-level model/SAE loading, mutable carryover
 from the old Exp05 summary, `NaN` comparison semantics, in-place publication, and Exp02 smoke output
-were still provenance holes. After repair and static regeneration, the model-free suites passed
-`7/7` for Exp02, `25/25` for Exp05, and `12/12` for Exp06. All 28 Exp05 checksum entries passed, the
-Exp02 shipped-row hashes stayed fixed, and visual inspection confirmed the corrected three public
-figures. No GPT-2/SAE experiment ran, and Exp05's missing historical raw result was not reconstructed or
+were still provenance holes. After repair and static regeneration, locally reported model-free test
+runs passed `7/7` for Exp02, `27/27` for Exp05, and `13/13` for Exp06. The repository contains the test
+source and this local report, not an independently authenticated execution receipt. All 28 Exp05
+checksum entries passed, the Exp02 shipped-row hashes stayed fixed, and visual inspection confirmed the
+corrected three public figures. No GPT-2/SAE experiment ran, and Exp05's missing historical raw result was not reconstructed or
 claimed as revalidated.
 
 **Confused about / open:** An interactive AI-advisor decision is not external expert validation. The

@@ -6,6 +6,10 @@
 > the blinding claims. **The frozen text is preserved unedited on purpose** — editing a pre-registration
 > after the fact destroys the only thing it is for — so you will meet those claims before you meet their
 > retraction.
+>
+> **Notice added 2026-08-13.** [Correction 3](#correction-3--2026-08-13-experiment-02s-theorem-does-not-impose-chance)
+> also supersedes the Experiment 02 summary in "Where the project stands": additive coordinate-wise
+> scores cannot perfectly separate XOR, but this does not impose chance accuracy.
 
 **Status: design only, frozen before implementation. Nothing in this document has been run, and no
 number below is a measurement.** Every threshold here is pre-declared so it cannot be chosen after
@@ -723,3 +727,23 @@ report no reliable basis advantage detected under the registered precision rule,
 are equivalent or that a generic mixing account has been established. Exp04's actual verdict remains
 inconclusive, so this correction changes no measured outcome; it retracts only the counterfactual claim
 language in the frozen design.
+
+---
+
+# Correction 3 — 2026-08-13: experiment-02's theorem does not impose chance
+
+The frozen project summary above says an exactly monosemantic code cannot let a linear readout "see" an
+interaction while mixed codes can. That wording is retracted. Experiment 02 proves only that an
+additive coordinate-wise score cannot **perfectly separate** XOR: for any fixed positive magnitudes
+`p,q`, its four scores obey
+
+```
+s(0,q) + s(p,0) = s(0,0) + s(p,q).
+```
+
+This identity rules out perfect separation, not above-chance performance. A constructive threshold
+reaches `0.75` accuracy on the balanced four-quadrant population. The reported `0.494` is therefore a
+property of the shipped configured BCE probe under the tested conditions, not a theorem-imposed ceiling.
+The mixed codes performed better in that experiment, but the secondary comparison supports only **no
+reliable learned-versus-random advantage detected**; it does not establish equivalence or a generic
+benefit of mixing.
