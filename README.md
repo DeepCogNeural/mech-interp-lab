@@ -11,67 +11,50 @@ previous step's failure rather than planned in advance: *toy models where the gr
 observable → a real model read correlationally → the same question asked causally → the mechanism
 itself.*
 
-Five completed experiments, with experiment 05 now carrying this repository's first adjudicated
-real-model mechanism result and a positive matched-span representation result, plus a result-blind
-sixth-experiment protocol reviewed interactively by an AI advisor, implemented but unrun; its
-final-SHA receipt is still pending. The first replicates the *storage* account of
-superposition. The second asks whether the same geometry changes interaction readout under a fixed
-estimator. Its shipped BCE-trained logistic probe scores the coordinate-wise control at
-`0.494 ± 0.006` and the mixed codes near `0.81`. The mathematics proves only that an additive
-coordinate-wise score cannot *perfectly separate* XOR; it does not impose a chance ceiling. Indeed,
-`predict 1 iff ReLU(x_i) + ReLU(x_j) > 0` reaches `0.75` on the experiment's balanced four quadrants. The result is
-therefore estimator-specific evidence that these mixed codes make XOR easier for this probe, not a
-proof that mixing is necessary for above-chance interaction readout. The third takes that question to real SAE features
-on GPT-2-small and **fails to settle it** — the answer moved by more than tenfold under a rescaling a
-fitted probe is not invariant to, and that is reported as unsettled rather than dressed up. The fourth
-removes the failed instrument entirely, intervening causally so that the rescaling cannot move the
-measure at all — and then **declines to certify what it measured**, because a faithfulness threshold
-frozen in an earlier commit than any of this experiment's output was missed by 0.006. Most of these
-produced results I did not want; all of them are reported in full.
+## Start here — Experiment 05 causal-subspace study
 
-[Experiment 05](experiments/05_number_agreement_circuit/writeup.md) asks the mechanism question the
-first four could not: which attention heads move the number signal, whether that effect is
-number-specific, and whether it arrives from the subject position. Across eight registered seeds,
-**L7H4 and L8H5 were the smallest tested set that consistently recovered more than half of the frozen
-direct effect** (`0.521–0.546`). The pair passed both specificity controls and produced a positive
-frozen-attention-pattern value-path transport effect in every seed. Independent pair-level
-recomputation, artifact-hash review, and a separate interactive AI-advisor review (not external
-expert validation) all accepted the result.
+If you only have five minutes, start with the [research brief](experiments/05_number_agreement_circuit/RESEARCH_BRIEF.md),
+then open the [compact evidence packet](experiments/05_number_agreement_circuit/results/RESULTS.md) or the
+[full writeup](experiments/05_number_agreement_circuit/writeup.md). This is a narrow study of GPT-2-small on
+subject–verb number agreement. It asks whether a fixed representation-level object carries an upstream
+head-induced effect under causal intervention; it is not a claim about the model's full circuit.
 
-That is an intervention-specific result, not a claim that these heads are necessary, sufficient, the
-complete circuit, or the model's unconstrained native path. The independent Stage-3/Q4 test is now
-positive as well: across eight seeds, projecting the registered layer-8 `both` intervention delta into
-the frozen 12-row SAE decoder span retained `R_span = 0.8935` (t(7) CI `[0.8905, 0.8966]`), exceeded
-the frozen second-largest edge of 100 matched spans in every seed, and left `R_comp = 0.0848` in the
-complementary subspace. The geometric squared-norm fraction was only about `0.525–0.544`, so this is a
-directed logit-effect ratio, not 89% activation reconstruction. The generic-text PCA comparator was a
-raw logit effect (`0.0274`), not 2.74% recovery. The [frozen design](experiments/05_number_agreement_circuit/DESIGN.md)
-and [compact public evidence](experiments/05_number_agreement_circuit/results/RESULTS.md) keep these claim
-levels separate.
+### What is established
 
-The Q4 result does not establish natural or monosemantic latent activations, individual-latent
-causality, necessity or sufficiency, a natural head→span path or mediation, a complete circuit, or
-generalisation across models or tasks. A single high-information exploratory bridge has now run on
-fresh held-out seeds. The fixed 12-row span recovered `0.6786` (t(7) CI `[0.6738, 0.6834]`) of the
-directed L7H4→`resid_pre8` effect and beat the maximum of 100 target-excluded matched rank-12 spans
-in all eight seeds; its complement retained `0.3053` (CI `[0.3013, 0.3094]`). With L8H5's complete
-`hook_z` output at the final query position overwritten by the source-A baseline, the target remained
-`0.6740` (CI `[0.6696, 0.6785]`). This clamp occurs after attention-pattern-weighted value aggregation;
-it is not a value-only intervention. The result does not support dominant dependence on L8H5's tested
-final-position head output, and it does not establish mediation, native latent semantics, necessity,
-or a complete circuit. The original raw-dependent bridge packet reported clean source `0d7c4db`,
-fresh seeds `20260814–20260821`, 150 pairs per seed, and 800 frozen matched draws. The current compact
-reaggregation attributes those fields through a hash-pinned historical receipt but did not revalidate
-the missing raw input. That raw result stays outside Git (SHA-256 prefix `9d8446…`); no bridge-specific
-independent review receipt is checked into the public packet. The
-[short research brief](experiments/05_number_agreement_circuit/RESEARCH_BRIEF.md) is the short public
-entry point.
+- **Mechanism handle (registered Q1–Q3).** Across eight seeds, L7H4 + L8H5 were the smallest tested set
+  that passed both number-specificity controls and the frozen-pattern transport test, recovering
+  `0.521–0.546` of the frozen direct effect in every seed.
+- **Endpoint span (Q4).** The fixed 12-row layer-8 SAE decoder span retained `R_span = 0.8935`
+  (t(7) CI `[0.8905, 0.8966]`), beat the frozen second-largest edge of 100 matched spans in all
+  eight seeds, and left `R_comp = 0.0848` in the complement.
+- **Exploratory bridge.** On fresh seeds `20260814–20260821`, the same span retained `R_target = 0.6786`
+  (t(7) CI `[0.6738, 0.6834]`) of the directed L7H4→`resid_pre8` effect and beat the maximum of
+  100 target-excluded matched rank-12 spans in all eight seeds. With the complete L8H5 `hook_z@final`
+  output replaced after attention-pattern-weighted value aggregation, it remained `0.6740`
+  (CI `[0.6696, 0.6785]`).
 
-![Experiment 05 claim ladder: eight-head selection, eight-seed Q1–Q3 evidence, and the positive Stage-3/Q4 matched-span result](experiments/05_number_agreement_circuit/results/figure_exp05_main.png)
+`R_span` and `R_target` are directed logit-effect ratios, not activation-reconstruction percentages.
+The bridge is exploratory, has no preregistered verdict, and its compact reaggregation does not reopen
+the off-Git raw model result (SHA-256 prefix `9d8446…`).
 
-The bridge follow-up is shown in [`figure_bridge_rescue.svg`](experiments/05_number_agreement_circuit/results/figure_bridge_rescue.svg)
-([PNG](experiments/05_number_agreement_circuit/results/figure_bridge_rescue.png)); its compact
-seed-level and matched-span evidence is in [`bridge_result_summary.json`](experiments/05_number_agreement_circuit/results/bridge_result_summary.json).
+### What is not established
+
+This evidence does not establish natural or monosemantic latent semantics, individual-latent causality,
+necessity, sufficiency, mediation, a complete circuit, or generalisation across models or tasks. The
+L8H5 clamp is a dependence control, not a proof of an L7H4→span→readout mediation path. No bridge-specific
+independent review receipt is checked into the public packet.
+
+![Experiment 05 causal-subspace bridge: target span versus matched spans across eight fresh seeds](experiments/05_number_agreement_circuit/results/figure_bridge_rescue.svg)
+
+## Research arc
+
+The five completed experiments escalate method rather than defend one thesis: toy models with visible
+ground truth, a real-model correlational read, a causal intervention, and finally the mechanism itself.
+Experiments 01–02 establish the toy geometry and its estimator-specific XOR readout result. Experiment 03
+reports an unresolved SAE comparison because probe rescaling changes the answer. Experiment 04 removes
+that probe and declines to certify a faithfulness result that misses its frozen threshold. A result-blind
+Experiment 06 protocol has been reviewed interactively by an AI advisor, implemented but unrun; no
+Experiment 06 result is claimed.
 
 **A note on the framing this repository started with.** Experiments 01 and 02 were built around
 superposition versus mixed selectivity — whether many features sharing few non-orthogonal directions is
