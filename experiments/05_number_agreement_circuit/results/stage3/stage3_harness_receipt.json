@@ -1,0 +1,15 @@
+{
+  "checks": {
+    "causal_handle_floor": "PASS",
+    "prompt_swap": "PASS",
+    "start_at_layer8_equivalence": "PASS",
+    "zero": "PASS"
+  },
+  "evidence_scope": "Internal binding/check record; not independently verified.",
+  "independent": false,
+  "protocol_sha256": "4ff6914bbea4a1471f313514048025d02a188e09a6f86c02b12bcd84a978258f",
+  "schema": "exp05-number-agreement-stage3-harness-receipt-v1",
+  "self_sha256": "544d4bf40d1a6296cbb2af47ad0ae991d19f49152112b17f0f57f5a1c190c33e",
+  "source_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+  "status": "REPORTED"
+}

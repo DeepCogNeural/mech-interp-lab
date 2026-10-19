@@ -1,0 +1,454 @@
+# Local packet hashes. Run shasum -a 256 -c checksums.sha256 here.
+# Raw labels are relative to exp07/; sibling/ is relative to its parent.
+# Raw files are not bundled. Each summary is bound to its source bytes below.
+d51aa93e99409189860fa257a40b4df9af12999086f5e91ddaf77d2cdc85a671  README.md
+# attention_per_seed.csv <- fc360cbe0e6676677ac58fe1dd99d9ef6f3f3394907de92eca36196ce8228267  raw:stage3/circuit_summary.json
+# attention_per_seed.csv <- f4c2e738f0b2db032f7856052c66ec1afbdd6467f999afac9de8b6ad24ca4502  raw:stage3/readouts/readout_20261201.json
+# attention_per_seed.csv <- 7ba582f4fc01209704f079471a68dfc822a1d20f93b0eeafd2d9ff6be67af141  raw:stage3/readouts/readout_20261202.json
+# attention_per_seed.csv <- 1e21020270f64e9ce415f920ba6241a89a57e48e670ae22e2e6ad742f4b67d22  raw:stage3/readouts/readout_20261203.json
+# attention_per_seed.csv <- 35257a21f8d5422103bedeb3ca9855a44fe0f7f78821e1181dfad4906be0c2e5  raw:stage3/readouts/readout_20261204.json
+# attention_per_seed.csv <- 02b64e50fcf271a6fde22159a58dbee4c3a79d4d9e94c1b176b665498dd38bd9  raw:stage3/readouts/readout_20261205.json
+# attention_per_seed.csv <- 6bfb13c638d43529b5e227010565e7d2be4bf2912dd1ea5c83bb57ef6ee127a3  raw:stage3/readouts/readout_20261206.json
+# attention_per_seed.csv <- 1bbe5476b1e4fd9837c09fe6bb9d2daa99320dc7133dfcede623cc778f578fae  raw:stage3/readouts/readout_20261207.json
+# attention_per_seed.csv <- a6ea4c83a538540cec5ab6736d067d2e14b82b43ad17467c4c0a9639c738425b  raw:stage3/readouts/readout_20261208.json
+aff872c26c937b325bce95b37cdc07ebfcb040fff95eaa552946c4e576ef385f  attention_per_seed.csv
+# attention_readouts.json <- fc360cbe0e6676677ac58fe1dd99d9ef6f3f3394907de92eca36196ce8228267  raw:stage3/circuit_summary.json
+# attention_readouts.json <- f4c2e738f0b2db032f7856052c66ec1afbdd6467f999afac9de8b6ad24ca4502  raw:stage3/readouts/readout_20261201.json
+# attention_readouts.json <- 7ba582f4fc01209704f079471a68dfc822a1d20f93b0eeafd2d9ff6be67af141  raw:stage3/readouts/readout_20261202.json
+# attention_readouts.json <- 1e21020270f64e9ce415f920ba6241a89a57e48e670ae22e2e6ad742f4b67d22  raw:stage3/readouts/readout_20261203.json
+# attention_readouts.json <- 35257a21f8d5422103bedeb3ca9855a44fe0f7f78821e1181dfad4906be0c2e5  raw:stage3/readouts/readout_20261204.json
+# attention_readouts.json <- 02b64e50fcf271a6fde22159a58dbee4c3a79d4d9e94c1b176b665498dd38bd9  raw:stage3/readouts/readout_20261205.json
+# attention_readouts.json <- 6bfb13c638d43529b5e227010565e7d2be4bf2912dd1ea5c83bb57ef6ee127a3  raw:stage3/readouts/readout_20261206.json
+# attention_readouts.json <- 1bbe5476b1e4fd9837c09fe6bb9d2daa99320dc7133dfcede623cc778f578fae  raw:stage3/readouts/readout_20261207.json
+# attention_readouts.json <- a6ea4c83a538540cec5ab6736d067d2e14b82b43ad17467c4c0a9639c738425b  raw:stage3/readouts/readout_20261208.json
+e7f5f20aff5f86acc66490f604283e83f54bb369d3718a28a620f90766fd769c  attention_readouts.json
+# behaviour_27b.json <- 1543bb1d007da957f92edb37b43557efef827a64d7447236aa633e70d1df7e4c  raw:behaviour_27B_summary.json
+1d683ce065a8680df56db63ca9b5fcd89fd9734c31830a5ddcd7c54fabb2db12  behaviour_27b.json
+# controls.json <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# controls.json <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# controls.json <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# controls.json <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# controls.json <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# controls.json <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# controls.json <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# controls.json <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# controls.json <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# controls.json <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+e6e6fcddeb2a7a614bb4dcee72bf36c8dc0ae6d224f9a97eb593520b661f600e  controls.json
+# controls_per_seed.csv <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# controls_per_seed.csv <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# controls_per_seed.csv <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# controls_per_seed.csv <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# controls_per_seed.csv <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# controls_per_seed.csv <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# controls_per_seed.csv <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# controls_per_seed.csv <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# controls_per_seed.csv <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# controls_per_seed.csv <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+f87eb9aa0aa943509fd1429436a924844b70cb048b5ee79f5fa1da4d2a07d6d7  controls_per_seed.csv
+# direct_readouts.json <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# direct_readouts.json <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# direct_readouts.json <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# direct_readouts.json <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# direct_readouts.json <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# direct_readouts.json <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# direct_readouts.json <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# direct_readouts.json <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# direct_readouts.json <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# direct_readouts.json <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+209fd91c0dd058386478576ed156cec93a688b4deb8a4101e72674a7fe7fb292  direct_readouts.json
+# distillation_citation.json <- 438fef91bf7fccda94beb68b9bce70868d1d1a115c4723a260c9ed5f866cb202  raw:stage4/distillation_citation.json
+# distillation_citation.json <- 688fd71d3ed5d906c216a58ce9583a4d03b21a4515e0de329c4fb7508c1b7055  raw:stage4/qwen3_report.html
+9b7b5b21b774eed450e071e16b7a8fdc8dabd64f4c660aea871ef2496d7ed46b  distillation_citation.json
+# exploratory8b_per_seed.csv <- dc78d624a9501f0f46bfdf0acd8792fbe06572966dfe1041de5398a57f31e0a4  raw:stage3/exploratory_8b/exploratory_8b.json
+# exploratory8b_per_seed.csv <- 60b780ead74b69f2878c5483870abc2a48079b2963e818a21bffcfd50c01bf7a  raw:stage3/exploratory_8b/exploratory_8b_freeze.json
+# exploratory8b_per_seed.csv <- 22f0b2cfcb332dc8ba682901fdcba3603e324bf1238c2764893a1be93bcbcdf6  raw:stage3/exploratory_8b/heldout_8b_20261201.json
+# exploratory8b_per_seed.csv <- f3a8ecd3ad0b9eae28b1181e1980ddb3e34c55b3f4efcf345e2f661a04ce20fa  raw:stage3/exploratory_8b/heldout_8b_20261202.json
+b64ede2417eade76751dfcb73124a4cc6b086ca368a787abdca1fb621dc2046a  exploratory8b_per_seed.csv
+# exploratory_8b.json <- dc78d624a9501f0f46bfdf0acd8792fbe06572966dfe1041de5398a57f31e0a4  raw:stage3/exploratory_8b/exploratory_8b.json
+# exploratory_8b.json <- 60b780ead74b69f2878c5483870abc2a48079b2963e818a21bffcfd50c01bf7a  raw:stage3/exploratory_8b/exploratory_8b_freeze.json
+# exploratory_8b.json <- 22f0b2cfcb332dc8ba682901fdcba3603e324bf1238c2764893a1be93bcbcdf6  raw:stage3/exploratory_8b/heldout_8b_20261201.json
+# exploratory_8b.json <- f3a8ecd3ad0b9eae28b1181e1980ddb3e34c55b3f4efcf345e2f661a04ce20fa  raw:stage3/exploratory_8b/heldout_8b_20261202.json
+102da149596f4aae48083afd331d6f8aa1676cf7f5a94c924e1bdfdb1b3365ac  exploratory_8b.json
+# frozen_selection.json <- 0aba120fe417c0bcafe5a344e51b46b8f78137f1df441a47061f3dd3d0195aff  raw:stage2/freeze.json
+eaca33094c91db4ac283d4f417d904c3bfff15e1537631a4dbfa4733a80477ea  frozen_selection.json
+# h10.json <- 97d5185b47c757c89fc3e28567f6da0bf0e186896d0d4eb9f408e0edbf8e1fba  raw:stage3/h10/clean_0.json
+# h10.json <- c5a4e5b1d0756333794b09ad4a6d5ca14318b78e18e3b052242709ba8923f7b0  raw:stage3/h10/clean_1.json
+# h10.json <- d4ef79938c6a8242c949f968ca64dcdd60b6e5fe75fb0d03bacccf737b23bc95  raw:stage3/h10/clean_2.json
+# h10.json <- 60e35931dde06fffb8bf766ec3b11ac743c60ff0044b7055850be3646628405c  raw:stage3/h10/clean_3.json
+# h10.json <- 6043ecc566a34e2dba8ea2e87bf4ec31606ad793533755d789e271edb3cc1951  raw:stage3/h10/format_diagnostic.json
+# h10.json <- c2b9f9317ae4282dbe94d3f3a9206f511d3c40f5a99babe111db8c352ad1a63f  raw:stage3/h10/h10_summary.json
+# h10.json <- 4b49b2aaaa4716d203880ef48a5fa8a03c9a26685d3263c1635d1bd0d3019eb3  raw:stage3/h10/manifest.json
+434dd62960c8c15b865267ff32e8960a8498f778ee80e805efeaa4a478a5c16d  h10.json
+# h10b.json <- 9c16f434d872f7440201017d97b014570502922a3ea588d14fa393f0b7bfd5fb  raw:stage4/h10b/clean_0.json
+# h10b.json <- f1e1feadd7983173569b9e32b4e5bdec3164ddbc6eef62569321aa9be2d4b54b  raw:stage4/h10b/clean_1.json
+# h10b.json <- 1308dbd632235f492b7e0cbb9ddd2d9df9af1c7693704f5a000c2b42b0e9c3da  raw:stage4/h10b/clean_2.json
+# h10b.json <- fd0dc44af28c724907221ec633a41a38040fc138147ecc3443b997f6a1825dc8  raw:stage4/h10b/clean_3.json
+# h10b.json <- 873e57fd5f9702c0258bf652d9373f3915df5b5d18f6141f47c6a7e0646acf08  raw:stage4/h10b/patch_0.json
+# h10b.json <- 58c93f8f755a467bcd1b5d6a2969d6dca63383c520b9d89e2c8185ae5b5e80b2  raw:stage4/h10b/patch_1.json
+# h10b.json <- f31520d794f984f730341a8f7a5f310d4e154464d75a33d0cc1d1e816b049aed  raw:stage4/h10b/patch_2.json
+# h10b.json <- 7b1f78c20a58f653778ce35113086afd469fd357c99117b024301d8cc9f6c4b7  raw:stage4/h10b/patch_3.json
+# h10b.json <- fdf9145f45c9d5d341a05aa21e52007422371926a770967e57d5b3fd430bc0a4  raw:stage4/h10b_readout.json
+1234f186d4aa81cb514c5563b545ff878bd83e8bb911c5b823266739522cb7e4  h10b.json
+# h10b_all_sets.json <- 9c16f434d872f7440201017d97b014570502922a3ea588d14fa393f0b7bfd5fb  raw:stage4/h10b/clean_0.json
+# h10b_all_sets.json <- f1e1feadd7983173569b9e32b4e5bdec3164ddbc6eef62569321aa9be2d4b54b  raw:stage4/h10b/clean_1.json
+# h10b_all_sets.json <- 1308dbd632235f492b7e0cbb9ddd2d9df9af1c7693704f5a000c2b42b0e9c3da  raw:stage4/h10b/clean_2.json
+# h10b_all_sets.json <- fd0dc44af28c724907221ec633a41a38040fc138147ecc3443b997f6a1825dc8  raw:stage4/h10b/clean_3.json
+# h10b_all_sets.json <- 873e57fd5f9702c0258bf652d9373f3915df5b5d18f6141f47c6a7e0646acf08  raw:stage4/h10b/patch_0.json
+# h10b_all_sets.json <- 58c93f8f755a467bcd1b5d6a2969d6dca63383c520b9d89e2c8185ae5b5e80b2  raw:stage4/h10b/patch_1.json
+# h10b_all_sets.json <- f31520d794f984f730341a8f7a5f310d4e154464d75a33d0cc1d1e816b049aed  raw:stage4/h10b/patch_2.json
+# h10b_all_sets.json <- 7b1f78c20a58f653778ce35113086afd469fd357c99117b024301d8cc9f6c4b7  raw:stage4/h10b/patch_3.json
+# h10b_all_sets.json <- fdf9145f45c9d5d341a05aa21e52007422371926a770967e57d5b3fd430bc0a4  raw:stage4/h10b_readout.json
+330178d913a65a75a1ee6047eddb466759515b0434f7af2ded5029c36db6f4f2  h10b_all_sets.json
+# h10b_controls.csv <- 9c16f434d872f7440201017d97b014570502922a3ea588d14fa393f0b7bfd5fb  raw:stage4/h10b/clean_0.json
+# h10b_controls.csv <- f1e1feadd7983173569b9e32b4e5bdec3164ddbc6eef62569321aa9be2d4b54b  raw:stage4/h10b/clean_1.json
+# h10b_controls.csv <- 1308dbd632235f492b7e0cbb9ddd2d9df9af1c7693704f5a000c2b42b0e9c3da  raw:stage4/h10b/clean_2.json
+# h10b_controls.csv <- fd0dc44af28c724907221ec633a41a38040fc138147ecc3443b997f6a1825dc8  raw:stage4/h10b/clean_3.json
+# h10b_controls.csv <- 873e57fd5f9702c0258bf652d9373f3915df5b5d18f6141f47c6a7e0646acf08  raw:stage4/h10b/patch_0.json
+# h10b_controls.csv <- 58c93f8f755a467bcd1b5d6a2969d6dca63383c520b9d89e2c8185ae5b5e80b2  raw:stage4/h10b/patch_1.json
+# h10b_controls.csv <- f31520d794f984f730341a8f7a5f310d4e154464d75a33d0cc1d1e816b049aed  raw:stage4/h10b/patch_2.json
+# h10b_controls.csv <- 7b1f78c20a58f653778ce35113086afd469fd357c99117b024301d8cc9f6c4b7  raw:stage4/h10b/patch_3.json
+# h10b_controls.csv <- fdf9145f45c9d5d341a05aa21e52007422371926a770967e57d5b3fd430bc0a4  raw:stage4/h10b_readout.json
+d1bd0b3c8f836b3602bb4e9f8b0ae1505ca6d1beacee991997ef44056e2cc107  h10b_controls.csv
+# h10b_per_group.csv <- 9c16f434d872f7440201017d97b014570502922a3ea588d14fa393f0b7bfd5fb  raw:stage4/h10b/clean_0.json
+# h10b_per_group.csv <- f1e1feadd7983173569b9e32b4e5bdec3164ddbc6eef62569321aa9be2d4b54b  raw:stage4/h10b/clean_1.json
+# h10b_per_group.csv <- 1308dbd632235f492b7e0cbb9ddd2d9df9af1c7693704f5a000c2b42b0e9c3da  raw:stage4/h10b/clean_2.json
+# h10b_per_group.csv <- fd0dc44af28c724907221ec633a41a38040fc138147ecc3443b997f6a1825dc8  raw:stage4/h10b/clean_3.json
+# h10b_per_group.csv <- 873e57fd5f9702c0258bf652d9373f3915df5b5d18f6141f47c6a7e0646acf08  raw:stage4/h10b/patch_0.json
+# h10b_per_group.csv <- 58c93f8f755a467bcd1b5d6a2969d6dca63383c520b9d89e2c8185ae5b5e80b2  raw:stage4/h10b/patch_1.json
+# h10b_per_group.csv <- f31520d794f984f730341a8f7a5f310d4e154464d75a33d0cc1d1e816b049aed  raw:stage4/h10b/patch_2.json
+# h10b_per_group.csv <- 7b1f78c20a58f653778ce35113086afd469fd357c99117b024301d8cc9f6c4b7  raw:stage4/h10b/patch_3.json
+# h10b_per_group.csv <- fdf9145f45c9d5d341a05aa21e52007422371926a770967e57d5b3fd430bc0a4  raw:stage4/h10b_readout.json
+d688692146b9577bdc43ca689d6d5d67fdf17165c9178835c15ad9337599c551  h10b_per_group.csv
+# h11.json <- 58d1b045b2446683b27771271708417eb16398be011314f8f927b36a37a1d314  raw:stage6/h11/clean_20261201.json
+# h11.json <- 6f483e4f2ef3e81b6b1d23bd2581d5c6f7206cc3177fb9fd3af88b5d0ed3d0a5  raw:stage6/h11/clean_20261202.json
+# h11.json <- 4180279e9e72e00565063ab0c0b3056cc764f31e4fd3e4dfc930597d517b3cf8  raw:stage6/h11/clean_20261203.json
+# h11.json <- 91822b2a159d50528d7307a05c52df917f36641144349beba96738414d520358  raw:stage6/h11/clean_20261204.json
+# h11.json <- caec8584d4ca37ad9d4cdb6396102be53a5e67247d71477cbdee8989b5840c03  raw:stage6/h11/clean_20261205.json
+# h11.json <- f89f3fe56ccb88e83f478e58a97b27d09002e4d2acba52939cede14e67cba201  raw:stage6/h11/clean_20261206.json
+# h11.json <- b4145a41d2b97a7dcab090132b1fbd435d2a1c2bc355afb09e45d868e98bcd43  raw:stage6/h11/clean_20261207.json
+# h11.json <- 894609e65b680f2d77bd715fa7f2c0841b666a5f0a30a48065e87eda924dfb38  raw:stage6/h11/clean_20261208.json
+# h11.json <- c8deed529c979d151f063b654f3b50352c869b1646bea5643ac5ed82f0f5ac39  raw:stage6/h11/gate.json
+# h11.json <- 9a784583e9a6f9db581518c594087b7b10d43f3c5d3a527a2653c52faa9eec56  raw:stage6/h11/manifest.json
+# h11.json <- 4f21239700e31e1b5e5109fc773cd06f10d7b37dc0c414427fc3918f2f8e4058  raw:stage6/h11/patch_20261201.json
+# h11.json <- a2c16ba089909d4f203da6834c2402926755769aadd5fde4a7f3554623bbc1fc  raw:stage6/h11/patch_20261202.json
+# h11.json <- ba16c8408cb97c626c5c16ca59e6a732ae1f66879e5e4669a1880a70b13c1601  raw:stage6/h11/patch_20261203.json
+# h11.json <- 22d89fa0a67edd4290daad1b33bd3e75ddbbce90767e5ce6e7e4d858167e47ab  raw:stage6/h11/patch_20261204.json
+# h11.json <- 8f041938e4db48d161b43cdd9ed835a33e4c287c430ed8b279f7457ea275661b  raw:stage6/h11/patch_20261205.json
+# h11.json <- 5f88df29930ec40547d8809b31ab000d586524a1c0fc4ac70c6c04b4a131295b  raw:stage6/h11/patch_20261206.json
+# h11.json <- 131f49568a822e3fcf6438eaaced85ba086ba1d739010683da44e446e89909b6  raw:stage6/h11/patch_20261207.json
+# h11.json <- e6591069302085768e082595ed3fd7c10a3e37cad0853e326efa2c2785c9dca4  raw:stage6/h11/patch_20261208.json
+# h11.json <- 4541db9abef0e6f9d76b20ddc3fdb2aa3a24ee8d62c4f20a7dacc4fcdbdfee8e  raw:stage6/h11/stimuli_20261201.json
+# h11.json <- 059c021d4f338df2e52447cf671ce45ec8bc38f4fe75d664a1e04d510d379914  raw:stage6/h11/stimuli_20261202.json
+# h11.json <- 561e0ccbb87dc31510ae581ca150069e16f0a77b190f7219c68f7801b32a5840  raw:stage6/h11/stimuli_20261203.json
+# h11.json <- aeb9004f5f1f4b48d4d056048f7a1ea5c3b5ad8db052b3f0f1f1119c3b6082ae  raw:stage6/h11/stimuli_20261204.json
+# h11.json <- 5f8a97dd1f06fa2abc47ff061479b10e7c6d6df11b777d3bb563c561084861f8  raw:stage6/h11/stimuli_20261205.json
+# h11.json <- a9eeec2e846eb9ab0e1c51c18a15cc240d7b017d52c88fde0bc5f351d6ab7020  raw:stage6/h11/stimuli_20261206.json
+# h11.json <- 084c29c126b1554c58c6bf48daedf983729a8ad2b94d49c418f7d42ea7f8f488  raw:stage6/h11/stimuli_20261207.json
+# h11.json <- 04661e36ca255d131369b2a435dfe97aa953bd9ab83a9ebbc8f348dcbd7c955d  raw:stage6/h11/stimuli_20261208.json
+14cc0ec2c9f35f707293099e68d798c70cb6119c499ed08843c519ed832043d6  h11.json
+# h11_per_seed.csv <- 58d1b045b2446683b27771271708417eb16398be011314f8f927b36a37a1d314  raw:stage6/h11/clean_20261201.json
+# h11_per_seed.csv <- 6f483e4f2ef3e81b6b1d23bd2581d5c6f7206cc3177fb9fd3af88b5d0ed3d0a5  raw:stage6/h11/clean_20261202.json
+# h11_per_seed.csv <- 4180279e9e72e00565063ab0c0b3056cc764f31e4fd3e4dfc930597d517b3cf8  raw:stage6/h11/clean_20261203.json
+# h11_per_seed.csv <- 91822b2a159d50528d7307a05c52df917f36641144349beba96738414d520358  raw:stage6/h11/clean_20261204.json
+# h11_per_seed.csv <- caec8584d4ca37ad9d4cdb6396102be53a5e67247d71477cbdee8989b5840c03  raw:stage6/h11/clean_20261205.json
+# h11_per_seed.csv <- f89f3fe56ccb88e83f478e58a97b27d09002e4d2acba52939cede14e67cba201  raw:stage6/h11/clean_20261206.json
+# h11_per_seed.csv <- b4145a41d2b97a7dcab090132b1fbd435d2a1c2bc355afb09e45d868e98bcd43  raw:stage6/h11/clean_20261207.json
+# h11_per_seed.csv <- 894609e65b680f2d77bd715fa7f2c0841b666a5f0a30a48065e87eda924dfb38  raw:stage6/h11/clean_20261208.json
+# h11_per_seed.csv <- c8deed529c979d151f063b654f3b50352c869b1646bea5643ac5ed82f0f5ac39  raw:stage6/h11/gate.json
+# h11_per_seed.csv <- 9a784583e9a6f9db581518c594087b7b10d43f3c5d3a527a2653c52faa9eec56  raw:stage6/h11/manifest.json
+# h11_per_seed.csv <- 4f21239700e31e1b5e5109fc773cd06f10d7b37dc0c414427fc3918f2f8e4058  raw:stage6/h11/patch_20261201.json
+# h11_per_seed.csv <- a2c16ba089909d4f203da6834c2402926755769aadd5fde4a7f3554623bbc1fc  raw:stage6/h11/patch_20261202.json
+# h11_per_seed.csv <- ba16c8408cb97c626c5c16ca59e6a732ae1f66879e5e4669a1880a70b13c1601  raw:stage6/h11/patch_20261203.json
+# h11_per_seed.csv <- 22d89fa0a67edd4290daad1b33bd3e75ddbbce90767e5ce6e7e4d858167e47ab  raw:stage6/h11/patch_20261204.json
+# h11_per_seed.csv <- 8f041938e4db48d161b43cdd9ed835a33e4c287c430ed8b279f7457ea275661b  raw:stage6/h11/patch_20261205.json
+# h11_per_seed.csv <- 5f88df29930ec40547d8809b31ab000d586524a1c0fc4ac70c6c04b4a131295b  raw:stage6/h11/patch_20261206.json
+# h11_per_seed.csv <- 131f49568a822e3fcf6438eaaced85ba086ba1d739010683da44e446e89909b6  raw:stage6/h11/patch_20261207.json
+# h11_per_seed.csv <- e6591069302085768e082595ed3fd7c10a3e37cad0853e326efa2c2785c9dca4  raw:stage6/h11/patch_20261208.json
+# h11_per_seed.csv <- 4541db9abef0e6f9d76b20ddc3fdb2aa3a24ee8d62c4f20a7dacc4fcdbdfee8e  raw:stage6/h11/stimuli_20261201.json
+# h11_per_seed.csv <- 059c021d4f338df2e52447cf671ce45ec8bc38f4fe75d664a1e04d510d379914  raw:stage6/h11/stimuli_20261202.json
+# h11_per_seed.csv <- 561e0ccbb87dc31510ae581ca150069e16f0a77b190f7219c68f7801b32a5840  raw:stage6/h11/stimuli_20261203.json
+# h11_per_seed.csv <- aeb9004f5f1f4b48d4d056048f7a1ea5c3b5ad8db052b3f0f1f1119c3b6082ae  raw:stage6/h11/stimuli_20261204.json
+# h11_per_seed.csv <- 5f8a97dd1f06fa2abc47ff061479b10e7c6d6df11b777d3bb563c561084861f8  raw:stage6/h11/stimuli_20261205.json
+# h11_per_seed.csv <- a9eeec2e846eb9ab0e1c51c18a15cc240d7b017d52c88fde0bc5f351d6ab7020  raw:stage6/h11/stimuli_20261206.json
+# h11_per_seed.csv <- 084c29c126b1554c58c6bf48daedf983729a8ad2b94d49c418f7d42ea7f8f488  raw:stage6/h11/stimuli_20261207.json
+# h11_per_seed.csv <- 04661e36ca255d131369b2a435dfe97aa953bd9ab83a9ebbc8f348dcbd7c955d  raw:stage6/h11/stimuli_20261208.json
+0f3baab6f4f6a6838f54f4509b5d61d69b2be66c05cf9fab31abad8f8469485f  h11_per_seed.csv
+# h11_raw_clean_20261201.json.gz <- 58d1b045b2446683b27771271708417eb16398be011314f8f927b36a37a1d314  raw:stage6/h11/clean_20261201.json
+35ade3f845a0a0691ef700b44c634790cddf3afcc5920639e9981060a7778ec6  h11_raw_clean_20261201.json.gz
+# h11_raw_clean_20261202.json.gz <- 6f483e4f2ef3e81b6b1d23bd2581d5c6f7206cc3177fb9fd3af88b5d0ed3d0a5  raw:stage6/h11/clean_20261202.json
+84c56fa35da52f2407ffac5a291a9ed0de84e2c7f3c9f251947f071af317afad  h11_raw_clean_20261202.json.gz
+# h11_raw_clean_20261203.json.gz <- 4180279e9e72e00565063ab0c0b3056cc764f31e4fd3e4dfc930597d517b3cf8  raw:stage6/h11/clean_20261203.json
+6ea93181ab7649652858e1038154227ede29320a29abdb4d347749f393fc1ceb  h11_raw_clean_20261203.json.gz
+# h11_raw_clean_20261204.json.gz <- 91822b2a159d50528d7307a05c52df917f36641144349beba96738414d520358  raw:stage6/h11/clean_20261204.json
+b746cdb41ad75fdc6dff7c5253fd0f50d86a57285ac84bf8848a05f57c515317  h11_raw_clean_20261204.json.gz
+# h11_raw_clean_20261205.json.gz <- caec8584d4ca37ad9d4cdb6396102be53a5e67247d71477cbdee8989b5840c03  raw:stage6/h11/clean_20261205.json
+15e713d5c072b44e22eee19be2ae1e1c108aa1387fce2b4584b078863c76b471  h11_raw_clean_20261205.json.gz
+# h11_raw_clean_20261206.json.gz <- f89f3fe56ccb88e83f478e58a97b27d09002e4d2acba52939cede14e67cba201  raw:stage6/h11/clean_20261206.json
+69cf7af70cae2b86b54ca33dbbcc4788a0b33df7899e25703e95b84e1c0a8f67  h11_raw_clean_20261206.json.gz
+# h11_raw_clean_20261207.json.gz <- b4145a41d2b97a7dcab090132b1fbd435d2a1c2bc355afb09e45d868e98bcd43  raw:stage6/h11/clean_20261207.json
+bde713aabf30a83beaa68393e2e8d02c3c683f140ad9f59a3f48d81a5565c4fc  h11_raw_clean_20261207.json.gz
+# h11_raw_clean_20261208.json.gz <- 894609e65b680f2d77bd715fa7f2c0841b666a5f0a30a48065e87eda924dfb38  raw:stage6/h11/clean_20261208.json
+6feac7f2d7243b570b0571af62f6f2deef8eb0f2413671a209f91df02df3bc83  h11_raw_clean_20261208.json.gz
+# h11_raw_gate.json.gz <- c8deed529c979d151f063b654f3b50352c869b1646bea5643ac5ed82f0f5ac39  raw:stage6/h11/gate.json
+f36c754586f35509db4c28e273368167dba6af45a9d01f44a5589e4419ad1694  h11_raw_gate.json.gz
+# h11_raw_manifest.json.gz <- 9a784583e9a6f9db581518c594087b7b10d43f3c5d3a527a2653c52faa9eec56  raw:stage6/h11/manifest.json
+a193d369ec9138b6846beecc505353cfc899130e6c2295da154c1513ac47375d  h11_raw_manifest.json.gz
+# h11_raw_patch_20261201.json.gz <- 4f21239700e31e1b5e5109fc773cd06f10d7b37dc0c414427fc3918f2f8e4058  raw:stage6/h11/patch_20261201.json
+83040a1b8adbeff82708031178961b0b472747726256c5f5a3d8c54e97857df1  h11_raw_patch_20261201.json.gz
+# h11_raw_patch_20261202.json.gz <- a2c16ba089909d4f203da6834c2402926755769aadd5fde4a7f3554623bbc1fc  raw:stage6/h11/patch_20261202.json
+022149bdae4ee5e11604c32ea1dfa7ee9b0af9b42735c5300e991405dc61bf37  h11_raw_patch_20261202.json.gz
+# h11_raw_patch_20261203.json.gz <- ba16c8408cb97c626c5c16ca59e6a732ae1f66879e5e4669a1880a70b13c1601  raw:stage6/h11/patch_20261203.json
+1c05713023ce74e0a3e6c8bad654fde03e1e94afe0eb56748993e3a9f2239bdd  h11_raw_patch_20261203.json.gz
+# h11_raw_patch_20261204.json.gz <- 22d89fa0a67edd4290daad1b33bd3e75ddbbce90767e5ce6e7e4d858167e47ab  raw:stage6/h11/patch_20261204.json
+690e6a1902e7d42b17a37cdf6a030b8db3e24db671a32c0d256f38bd39aa9bdc  h11_raw_patch_20261204.json.gz
+# h11_raw_patch_20261205.json.gz <- 8f041938e4db48d161b43cdd9ed835a33e4c287c430ed8b279f7457ea275661b  raw:stage6/h11/patch_20261205.json
+bd947d0e79189493c91d832f93a7f2410c54d211635b75a2efb143187250d08a  h11_raw_patch_20261205.json.gz
+# h11_raw_patch_20261206.json.gz <- 5f88df29930ec40547d8809b31ab000d586524a1c0fc4ac70c6c04b4a131295b  raw:stage6/h11/patch_20261206.json
+6ab0be215d78e7b03eb5c04ce724cd24a597ad354dc54ae9464011b0e74dd867  h11_raw_patch_20261206.json.gz
+# h11_raw_patch_20261207.json.gz <- 131f49568a822e3fcf6438eaaced85ba086ba1d739010683da44e446e89909b6  raw:stage6/h11/patch_20261207.json
+b429ffd9d178ab2f210e3019521649a78833655fcee0a10a3b1121bdf6d24003  h11_raw_patch_20261207.json.gz
+# h11_raw_patch_20261208.json.gz <- e6591069302085768e082595ed3fd7c10a3e37cad0853e326efa2c2785c9dca4  raw:stage6/h11/patch_20261208.json
+61343bad0da3e3adbc0fedd0cc7f9ed4d35564a94335ae6404795f722744642d  h11_raw_patch_20261208.json.gz
+# h11_raw_stimuli_20261201.json.gz <- 4541db9abef0e6f9d76b20ddc3fdb2aa3a24ee8d62c4f20a7dacc4fcdbdfee8e  raw:stage6/h11/stimuli_20261201.json
+3efc2cc137be93cdebfbfbf46d7e2372634b8aa6e46912f24a82def86e16c9d3  h11_raw_stimuli_20261201.json.gz
+# h11_raw_stimuli_20261202.json.gz <- 059c021d4f338df2e52447cf671ce45ec8bc38f4fe75d664a1e04d510d379914  raw:stage6/h11/stimuli_20261202.json
+ff805e2210bfaa23e446d042a5a5b7aac12d71bd51ca3e8d65bcf29974402625  h11_raw_stimuli_20261202.json.gz
+# h11_raw_stimuli_20261203.json.gz <- 561e0ccbb87dc31510ae581ca150069e16f0a77b190f7219c68f7801b32a5840  raw:stage6/h11/stimuli_20261203.json
+933ca38e66a50807d4286e70a4885ecb67dbf1cc355af58864993bb56a41340a  h11_raw_stimuli_20261203.json.gz
+# h11_raw_stimuli_20261204.json.gz <- aeb9004f5f1f4b48d4d056048f7a1ea5c3b5ad8db052b3f0f1f1119c3b6082ae  raw:stage6/h11/stimuli_20261204.json
+a980dab7ef39157156fe2ae62c28d450908a5c6f1a149c8e54ed4e422ecdaf69  h11_raw_stimuli_20261204.json.gz
+# h11_raw_stimuli_20261205.json.gz <- 5f8a97dd1f06fa2abc47ff061479b10e7c6d6df11b777d3bb563c561084861f8  raw:stage6/h11/stimuli_20261205.json
+ff1a5300d554353690bd2144818607885abad180b70099866f1b21c54e62fe26  h11_raw_stimuli_20261205.json.gz
+# h11_raw_stimuli_20261206.json.gz <- a9eeec2e846eb9ab0e1c51c18a15cc240d7b017d52c88fde0bc5f351d6ab7020  raw:stage6/h11/stimuli_20261206.json
+afdb427bc197f58c76f2977965d2035478404b5ec568f647356131cf756072ae  h11_raw_stimuli_20261206.json.gz
+# h11_raw_stimuli_20261207.json.gz <- 084c29c126b1554c58c6bf48daedf983729a8ad2b94d49c418f7d42ea7f8f488  raw:stage6/h11/stimuli_20261207.json
+78295f6162e0c6c74c9bec0002c3f134e23d1c1134ec14c87030f7ef57708407  h11_raw_stimuli_20261207.json.gz
+# h11_raw_stimuli_20261208.json.gz <- 04661e36ca255d131369b2a435dfe97aa953bd9ab83a9ebbc8f348dcbd7c955d  raw:stage6/h11/stimuli_20261208.json
+fb8c2028b0ba309ced5a9526210e4b12c9f53858f50197ed2188fd64b80938d7  h11_raw_stimuli_20261208.json.gz
+# h11_sets_20261201.json <- 4f21239700e31e1b5e5109fc773cd06f10d7b37dc0c414427fc3918f2f8e4058  raw:stage6/h11/patch_20261201.json
+95adbfd486fc47a0fb266feeeb9af2fde9a983a1b430c0f01de34358ea2f3d82  h11_sets_20261201.json
+# h11_sets_20261202.json <- a2c16ba089909d4f203da6834c2402926755769aadd5fde4a7f3554623bbc1fc  raw:stage6/h11/patch_20261202.json
+ad6f0a88d48948a3af565ba12a22224a088f463b9031b9d07d2985061304ee8b  h11_sets_20261202.json
+# h11_sets_20261203.json <- ba16c8408cb97c626c5c16ca59e6a732ae1f66879e5e4669a1880a70b13c1601  raw:stage6/h11/patch_20261203.json
+85efe02adbb8f5801250de5e019213c88698761004688d5488d69943ca6e7684  h11_sets_20261203.json
+# h11_sets_20261204.json <- 22d89fa0a67edd4290daad1b33bd3e75ddbbce90767e5ce6e7e4d858167e47ab  raw:stage6/h11/patch_20261204.json
+ff37da797bf6fd6a72d46e724fd8953b41a4dbe3834269254613b01cbd19c846  h11_sets_20261204.json
+# h11_sets_20261205.json <- 8f041938e4db48d161b43cdd9ed835a33e4c287c430ed8b279f7457ea275661b  raw:stage6/h11/patch_20261205.json
+ab8dc0645ed1aa801edfcfbee80fc572b844cac3397d6b8df690e6705285fbad  h11_sets_20261205.json
+# h11_sets_20261206.json <- 5f88df29930ec40547d8809b31ab000d586524a1c0fc4ac70c6c04b4a131295b  raw:stage6/h11/patch_20261206.json
+514f9e654b799eb5af3449dd820af997b70213c76b1b8db5549dfd70b59f49c3  h11_sets_20261206.json
+# h11_sets_20261207.json <- 131f49568a822e3fcf6438eaaced85ba086ba1d739010683da44e446e89909b6  raw:stage6/h11/patch_20261207.json
+9fbdf00e93a70f3606cfd6a2c8247b39c759b597713705a7f19b6877c5ca80c2  h11_sets_20261207.json
+# h11_sets_20261208.json <- e6591069302085768e082595ed3fd7c10a3e37cad0853e326efa2c2785c9dca4  raw:stage6/h11/patch_20261208.json
+4c4eba63aff50649d4234e70e8e42969303c17b3e60880654ac7a2cb1817abb6  h11_sets_20261208.json
+# h5.json <- 24db753444d5c1960ad460540dad9f73bad6d34c609c95dd28495eb34b0bbba3  raw:stage2/dev_20261101.json
+# h5.json <- a8ea52dd6073904e8c645691a8c562784b5d30633da8ea494eacaeccdf9fb633  raw:stage2/dev_20261102.json
+# h5.json <- 24b427e15ae75551a8992f1b1ddc553156cac8881118d5f1fb0ffccb4f5b0217  raw:stage2/dev_20261103.json
+# h5.json <- f457e281523b5097aa8b6656dd9c7683e27e111854cb93ba80d703ad64e28469  raw:stage2/dev_20261104.json
+# h5.json <- 56da3b82ec1210e806cf07cef400af95c0e36fc80d9850ae63618e5ff0c68aaa  raw:stage2/task_gate.json
+6eb05c4611e3ed20135b0a2b6da03284af08db8d691a177a08e91a685d189735  h5.json
+# h5_per_seed.csv <- 24db753444d5c1960ad460540dad9f73bad6d34c609c95dd28495eb34b0bbba3  raw:stage2/dev_20261101.json
+# h5_per_seed.csv <- a8ea52dd6073904e8c645691a8c562784b5d30633da8ea494eacaeccdf9fb633  raw:stage2/dev_20261102.json
+# h5_per_seed.csv <- 24b427e15ae75551a8992f1b1ddc553156cac8881118d5f1fb0ffccb4f5b0217  raw:stage2/dev_20261103.json
+# h5_per_seed.csv <- f457e281523b5097aa8b6656dd9c7683e27e111854cb93ba80d703ad64e28469  raw:stage2/dev_20261104.json
+# h5_per_seed.csv <- 56da3b82ec1210e806cf07cef400af95c0e36fc80d9850ae63618e5ff0c68aaa  raw:stage2/task_gate.json
+a4f20822bb561dd2e31f461c90352bbb8cb0b188ab5b4795ad7dfa7de1dd733f  h5_per_seed.csv
+# h7.json <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# h7.json <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# h7.json <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# h7.json <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# h7.json <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# h7.json <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# h7.json <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# h7.json <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# h7.json <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# h7.json <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+02ed90df6aab4be70e3f7eaff0d22aa3a2fca97b21839803fa6f65127677d541  h7.json
+# h7_invalid.json <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# h7_invalid.json <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# h7_invalid.json <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# h7_invalid.json <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# h7_invalid.json <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# h7_invalid.json <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# h7_invalid.json <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# h7_invalid.json <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# h7_invalid.json <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# h7_invalid.json <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+# h7_invalid.json <- 59819bacb29fcc4c91ee8eba45e8ec82668821cab39adfa15dc361e84c5f3325  raw:stage2b_invalid_selected.json
+cef9dcf41ca8d653f0db34085fae9b00f11adde506f7c185d2b0f08013e98398  h7_invalid.json
+# h7_per_seed.csv <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# h7_per_seed.csv <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# h7_per_seed.csv <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# h7_per_seed.csv <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# h7_per_seed.csv <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# h7_per_seed.csv <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# h7_per_seed.csv <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# h7_per_seed.csv <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# h7_per_seed.csv <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# h7_per_seed.csv <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+2f72c5af2310b93828c2718bd21a65a60df6a093b7082e1277ec0c4795a69bca  h7_per_seed.csv
+# h7_sets_20261201.json <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+ee1c30ed03bdf6100f9420eacae2ea5043c46b40dcc253e679197ff3181e1f64  h7_sets_20261201.json
+# h7_sets_20261202.json <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+50896c8540262b78bdfa21066126c4e568a1bb52fd44a5ec6d2c03163c0560b0  h7_sets_20261202.json
+# h7_sets_20261203.json <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+8291f44a27be6b7b7be1368c95cb60a62d5b6213c6fc2622051c5bae77336393  h7_sets_20261203.json
+# h7_sets_20261204.json <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+bf2b888796d04f3d862fd42ad16225d3b91fdd0e0bd9560480f2a83cec842c7e  h7_sets_20261204.json
+# h7_sets_20261205.json <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+b9ed4fe4401a07513e3f667b97b497071f292d153dfe5046c05586e3574a0f39  h7_sets_20261205.json
+# h7_sets_20261206.json <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+75954faef3915daa954108d165f83d6a44e3b4a51e0862ebbe8b97b75de93f02  h7_sets_20261206.json
+# h7_sets_20261207.json <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+ca5747ed68bb2f00e60e6aca19d8915c175e8c4f2fe236cb4ff5964dd3a1d387  h7_sets_20261207.json
+# h7_sets_20261208.json <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+27ade0562ad9fe312f48f86469248239c30f1594b77a8c7db6607eedd76abd85  h7_sets_20261208.json
+# h9.json <- 47e863a35d10b2d3ae8d8d843b88d9c9806e46311f8d50f0f57b15ff4c1c3edd  raw:qf_transfer/qf_20261201.json
+# h9.json <- 91b8584bc2c3124f5591193c42feeda81d762b5202186db43180a0622ea2fac4  raw:qf_transfer/qf_20261202.json
+# h9.json <- 2ba9f5e839d2e18f2fa8c48b6f7033b842e11f2dbcaad9c36b4c21956a849898  raw:qf_transfer/qf_20261203.json
+# h9.json <- c2d674655444a4a56c7fd0009a03bcaa2273ee71fbe9659951488a9cd318ab08  raw:qf_transfer/qf_20261204.json
+# h9.json <- 7f1ac1205d11e1e2b4cd5ab76052ab375192122209766200ff7753f24a63428c  raw:qf_transfer/qf_20261205.json
+# h9.json <- 512d07de3e59b68e83c8a58622916bb0b29dc211ae4d1936aaa2997442dcfdf6  raw:qf_transfer/qf_20261206.json
+# h9.json <- 5033e2c16708b6f2f6b1e1b4d3dcc9210aeace3a0b9946cbfec7a6f90dd8cf04  raw:qf_transfer/qf_20261207.json
+# h9.json <- eee13c1f9546bb91690d1b185afd09b00e1633e53ce8dff3d58d3b5079013dfb  raw:qf_transfer/qf_20261208.json
+# h9.json <- 6a88ad8d1dc556045ecc966c59ef6e10df81279b83a758f5583271348fa94d2c  raw:qf_transfer/qf_summary.json
+bdd53643900f62277b36bee4311072256a924ddae05d137da6b12337437821bb  h9.json
+# h9_per_seed.csv <- 47e863a35d10b2d3ae8d8d843b88d9c9806e46311f8d50f0f57b15ff4c1c3edd  raw:qf_transfer/qf_20261201.json
+# h9_per_seed.csv <- 91b8584bc2c3124f5591193c42feeda81d762b5202186db43180a0622ea2fac4  raw:qf_transfer/qf_20261202.json
+# h9_per_seed.csv <- 2ba9f5e839d2e18f2fa8c48b6f7033b842e11f2dbcaad9c36b4c21956a849898  raw:qf_transfer/qf_20261203.json
+# h9_per_seed.csv <- c2d674655444a4a56c7fd0009a03bcaa2273ee71fbe9659951488a9cd318ab08  raw:qf_transfer/qf_20261204.json
+# h9_per_seed.csv <- 7f1ac1205d11e1e2b4cd5ab76052ab375192122209766200ff7753f24a63428c  raw:qf_transfer/qf_20261205.json
+# h9_per_seed.csv <- 512d07de3e59b68e83c8a58622916bb0b29dc211ae4d1936aaa2997442dcfdf6  raw:qf_transfer/qf_20261206.json
+# h9_per_seed.csv <- 5033e2c16708b6f2f6b1e1b4d3dcc9210aeace3a0b9946cbfec7a6f90dd8cf04  raw:qf_transfer/qf_20261207.json
+# h9_per_seed.csv <- eee13c1f9546bb91690d1b185afd09b00e1633e53ce8dff3d58d3b5079013dfb  raw:qf_transfer/qf_20261208.json
+# h9_per_seed.csv <- 6a88ad8d1dc556045ecc966c59ef6e10df81279b83a758f5583271348fa94d2c  raw:qf_transfer/qf_summary.json
+4985b4323e853b8014fdf298e2b9d21ea436416a5c60e5506ab7b9dbe6da48b7  h9_per_seed.csv
+# h9_secondary.json <- 47e863a35d10b2d3ae8d8d843b88d9c9806e46311f8d50f0f57b15ff4c1c3edd  raw:qf_transfer/qf_20261201.json
+# h9_secondary.json <- 91b8584bc2c3124f5591193c42feeda81d762b5202186db43180a0622ea2fac4  raw:qf_transfer/qf_20261202.json
+# h9_secondary.json <- 2ba9f5e839d2e18f2fa8c48b6f7033b842e11f2dbcaad9c36b4c21956a849898  raw:qf_transfer/qf_20261203.json
+# h9_secondary.json <- c2d674655444a4a56c7fd0009a03bcaa2273ee71fbe9659951488a9cd318ab08  raw:qf_transfer/qf_20261204.json
+# h9_secondary.json <- 7f1ac1205d11e1e2b4cd5ab76052ab375192122209766200ff7753f24a63428c  raw:qf_transfer/qf_20261205.json
+# h9_secondary.json <- 512d07de3e59b68e83c8a58622916bb0b29dc211ae4d1936aaa2997442dcfdf6  raw:qf_transfer/qf_20261206.json
+# h9_secondary.json <- 5033e2c16708b6f2f6b1e1b4d3dcc9210aeace3a0b9946cbfec7a6f90dd8cf04  raw:qf_transfer/qf_20261207.json
+# h9_secondary.json <- eee13c1f9546bb91690d1b185afd09b00e1633e53ce8dff3d58d3b5079013dfb  raw:qf_transfer/qf_20261208.json
+# h9_secondary.json <- e9b578b09869efbbcab317d7b939df976a748fdd0823bf37dcc89d926c1c7e6d  raw:stage3/secondary_parse.json
+a2326635bf7388a98a0100087a0387807455f04a237e4a2c4299a6c5af332242  h9_secondary.json
+# h9_sets_20261201.json <- 47e863a35d10b2d3ae8d8d843b88d9c9806e46311f8d50f0f57b15ff4c1c3edd  raw:qf_transfer/qf_20261201.json
+b2a2fcc57ae6e77d308f313d64735634c80e05eeec3b9425eb765072a6408077  h9_sets_20261201.json
+# h9_sets_20261202.json <- 91b8584bc2c3124f5591193c42feeda81d762b5202186db43180a0622ea2fac4  raw:qf_transfer/qf_20261202.json
+1379d28640882bc0feccd7bd010c89240a38ef148fed000b0db46671c6ae49d4  h9_sets_20261202.json
+# h9_sets_20261203.json <- 2ba9f5e839d2e18f2fa8c48b6f7033b842e11f2dbcaad9c36b4c21956a849898  raw:qf_transfer/qf_20261203.json
+5f3ea539f640b3ea2cea88d215eef431064e15507087098642a601cba64e60c6  h9_sets_20261203.json
+# h9_sets_20261204.json <- c2d674655444a4a56c7fd0009a03bcaa2273ee71fbe9659951488a9cd318ab08  raw:qf_transfer/qf_20261204.json
+2cf24995cbe202588f7e092aa52d0bd3d3227511f93d77830aab574c08f2194d  h9_sets_20261204.json
+# h9_sets_20261205.json <- 7f1ac1205d11e1e2b4cd5ab76052ab375192122209766200ff7753f24a63428c  raw:qf_transfer/qf_20261205.json
+365c19c3fcf5c2346960efcfef3f808cd8ac25cabe6e5879967451d6dcee0f3b  h9_sets_20261205.json
+# h9_sets_20261206.json <- 512d07de3e59b68e83c8a58622916bb0b29dc211ae4d1936aaa2997442dcfdf6  raw:qf_transfer/qf_20261206.json
+a818af81d7df29ade17653dd63ddfb1d9acb96a0ad743a2707109d73a19f8f1b  h9_sets_20261206.json
+# h9_sets_20261207.json <- 5033e2c16708b6f2f6b1e1b4d3dcc9210aeace3a0b9946cbfec7a6f90dd8cf04  raw:qf_transfer/qf_20261207.json
+c33f02c8837ede41122e4ff830aed7d822c1425a7cba69510870e5d0905f7c5f  h9_sets_20261207.json
+# h9_sets_20261208.json <- eee13c1f9546bb91690d1b185afd09b00e1633e53ce8dff3d58d3b5079013dfb  raw:qf_transfer/qf_20261208.json
+b8530c9383de3e565522dc3e4404771028688aa5641fcc954104fac3cda9c8fd  h9_sets_20261208.json
+# head_ranking.json <- adcea03316902d9b3c2d2b26fe85bcd4b46f23760c4bfc3858f13a8769739fef  raw:stage2/scan_20261101.json
+# head_ranking.json <- 3ff4a550f26a56c189c4499c62942c187b70ff756ae06315172714efa0bc79de  raw:stage2/scan_20261102.json
+# head_ranking.json <- 2bf6f10b5b9b23ffc94efaca1d504a5c3cfc70a3e75886db299dcafdc39075a5  raw:stage2/scan_20261103.json
+# head_ranking.json <- 6e78c703f8a72a0d2f1317e3ad09cba46849894516e4cff3ec63429f8cff783e  raw:stage2/scan_20261104.json
+# head_ranking.json <- 1433363c4595bf7dd5ce971fb95aaf20446bc5479e7a5e5cf2b7e29d2697feb0  raw:stage2a_summary.json
+21846e70b972c7ccb33fda023da9e68e6fd3c0105eb367e795266cb7b8c9e1b9  head_ranking.json
+# head_scan.json <- adcea03316902d9b3c2d2b26fe85bcd4b46f23760c4bfc3858f13a8769739fef  raw:stage2/scan_20261101.json
+# head_scan.json <- 3ff4a550f26a56c189c4499c62942c187b70ff756ae06315172714efa0bc79de  raw:stage2/scan_20261102.json
+# head_scan.json <- 2bf6f10b5b9b23ffc94efaca1d504a5c3cfc70a3e75886db299dcafdc39075a5  raw:stage2/scan_20261103.json
+# head_scan.json <- 6e78c703f8a72a0d2f1317e3ad09cba46849894516e4cff3ec63429f8cff783e  raw:stage2/scan_20261104.json
+1100b9927aa7d44640863e42a12e89c13dd03c98d965c1ccc43ce93fdfb28efd  head_scan.json
+# heads_top20.csv <- adcea03316902d9b3c2d2b26fe85bcd4b46f23760c4bfc3858f13a8769739fef  raw:stage2/scan_20261101.json
+# heads_top20.csv <- 3ff4a550f26a56c189c4499c62942c187b70ff756ae06315172714efa0bc79de  raw:stage2/scan_20261102.json
+# heads_top20.csv <- 2bf6f10b5b9b23ffc94efaca1d504a5c3cfc70a3e75886db299dcafdc39075a5  raw:stage2/scan_20261103.json
+# heads_top20.csv <- 6e78c703f8a72a0d2f1317e3ad09cba46849894516e4cff3ec63429f8cff783e  raw:stage2/scan_20261104.json
+# heads_top20.csv <- 1433363c4595bf7dd5ce971fb95aaf20446bc5479e7a5e5cf2b7e29d2697feb0  raw:stage2a_summary.json
+8fe18570ddb3bc819c52a98df14ce3436704af39a029427a3b5380d368052cdf  heads_top20.csv
+# joint_k.json <- a28a1f19e112d7fa7dd0cac9c03e044894c0e3b5e34c039ae92136e569518637  raw:stage2/joint_selection.json
+b88b98bf5d38e8d61a88e8df2bcfcc65aab868951386a754e4cf95a81cd23620  joint_k.json
+# joint_k_per_seed.csv <- a28a1f19e112d7fa7dd0cac9c03e044894c0e3b5e34c039ae92136e569518637  raw:stage2/joint_selection.json
+2f198c3024db98748fe6ceb7bff20b13dda913cac6c5c3cf141e9655494067e6  joint_k_per_seed.csv
+# necessity.json <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# necessity.json <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# necessity.json <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# necessity.json <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# necessity.json <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# necessity.json <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# necessity.json <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# necessity.json <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# necessity.json <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# necessity.json <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+7cbc252873ce9ca1200c4d1f1c6fb6640fde8ffb2a08d02ef8513d368a5d04f9  necessity.json
+# necessity_per_seed.csv <- 7e21a37734e99b7ffc39c4b04be6ee1494615b571cc1e2a73be5e2235e8ecc69  raw:stage2/heldout_20261201.json
+# necessity_per_seed.csv <- 34b55cfea8ba530b7740e7ae0f276ebf8becd185b589bac07e98171ba110990e  raw:stage2/heldout_20261202.json
+# necessity_per_seed.csv <- 07e5b2c2b9b0296adcc94813e0e06eee5322c0b6a5f56780faceb1b6e05241cc  raw:stage2/heldout_20261203.json
+# necessity_per_seed.csv <- f7beddbf991f9d0801db644db26026ba8f12ad7ab286f0843d5d84b4557a6222  raw:stage2/heldout_20261204.json
+# necessity_per_seed.csv <- 82b0339cc3bc0774d4814c67707dbdfda57dd15bf89a2bf9995ff6c6f2daefa2  raw:stage2/heldout_20261205.json
+# necessity_per_seed.csv <- 71324f3b615723ca4304283b652c305c12ba6c8508ba3df46e2ae34011e4ae6f  raw:stage2/heldout_20261206.json
+# necessity_per_seed.csv <- e5950bd291aef756aef488a62d9d08a4bca4dd3550df9bf6f957511026d2bce9  raw:stage2/heldout_20261207.json
+# necessity_per_seed.csv <- 0f085370568025c66f8b3774152a6e1912a23d39d3d3d60082aa108595219eaf  raw:stage2/heldout_20261208.json
+# necessity_per_seed.csv <- 0daa883527aebec06558369c5a2ef42f97863f43b5e3e5d673c76371052a64e2  raw:stage2/heldout_summary.json
+# necessity_per_seed.csv <- 308e872a810ad5bc14d7cf0210d23c036a3f85aa05b894cffd172c18c62f2d79  raw:stage2b_h7_analysis.json
+313cd049a57fdac435e4dbb57893886009e01eec27faa423b88e418ff19157e9  necessity_per_seed.csv
+# overlap_4b_8b.json <- f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30  raw:sibling/cache/huggingface/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/config.json
+# overlap_4b_8b.json <- 267d4df39dc6cddf6971299200d26352458159e50858e883b81cb6f46c991dc8  raw:sibling/mech-interp-lab/experiments/07_numeric_selection/post/exploratory_8b.py
+# overlap_4b_8b.json <- cecbef8920200b4b5dd7a3aaf00e688968c3e5e3c45692cc7068d8eeeb903feb  raw:sibling/mech-interp-lab/experiments/07_numeric_selection/post/exploratory_8b_resume.py
+# overlap_4b_8b.json <- 73a9e14f33486b8363a23f1c6f257695102338c3ef241ebfb5ebc2b659524ff0  raw:sibling/prep_models.json
+# overlap_4b_8b.json <- 0aba120fe417c0bcafe5a344e51b46b8f78137f1df441a47061f3dd3d0195aff  raw:stage2/freeze.json
+# overlap_4b_8b.json <- adcea03316902d9b3c2d2b26fe85bcd4b46f23760c4bfc3858f13a8769739fef  raw:stage2/scan_20261101.json
+# overlap_4b_8b.json <- 3ff4a550f26a56c189c4499c62942c187b70ff756ae06315172714efa0bc79de  raw:stage2/scan_20261102.json
+# overlap_4b_8b.json <- 2bf6f10b5b9b23ffc94efaca1d504a5c3cfc70a3e75886db299dcafdc39075a5  raw:stage2/scan_20261103.json
+# overlap_4b_8b.json <- 6e78c703f8a72a0d2f1317e3ad09cba46849894516e4cff3ec63429f8cff783e  raw:stage2/scan_20261104.json
+# overlap_4b_8b.json <- dc78d624a9501f0f46bfdf0acd8792fbe06572966dfe1041de5398a57f31e0a4  raw:stage3/exploratory_8b/exploratory_8b.json
+# overlap_4b_8b.json <- 60b780ead74b69f2878c5483870abc2a48079b2963e818a21bffcfd50c01bf7a  raw:stage3/exploratory_8b/exploratory_8b_freeze.json
+# overlap_4b_8b.json <- 1273e0b3fbe4fb88d43d201cdd9b3ba14d0c0bcc7168e1821474532f1e6a1fc4  raw:stage4/verification_8b.json
+98060fd24d3d20e1212427437a87aad3ce34658d4858ace0b52e213aa714c1d0  overlap_4b_8b.json
+# overlap_per_head.csv <- f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30  raw:sibling/cache/huggingface/hub/models--Qwen--Qwen3-8B/snapshots/b968826d9c46dd6066d109eabc6255188de91218/config.json
+# overlap_per_head.csv <- 267d4df39dc6cddf6971299200d26352458159e50858e883b81cb6f46c991dc8  raw:sibling/mech-interp-lab/experiments/07_numeric_selection/post/exploratory_8b.py
+# overlap_per_head.csv <- cecbef8920200b4b5dd7a3aaf00e688968c3e5e3c45692cc7068d8eeeb903feb  raw:sibling/mech-interp-lab/experiments/07_numeric_selection/post/exploratory_8b_resume.py
+# overlap_per_head.csv <- 73a9e14f33486b8363a23f1c6f257695102338c3ef241ebfb5ebc2b659524ff0  raw:sibling/prep_models.json
+# overlap_per_head.csv <- 0aba120fe417c0bcafe5a344e51b46b8f78137f1df441a47061f3dd3d0195aff  raw:stage2/freeze.json
+# overlap_per_head.csv <- adcea03316902d9b3c2d2b26fe85bcd4b46f23760c4bfc3858f13a8769739fef  raw:stage2/scan_20261101.json
+# overlap_per_head.csv <- 3ff4a550f26a56c189c4499c62942c187b70ff756ae06315172714efa0bc79de  raw:stage2/scan_20261102.json
+# overlap_per_head.csv <- 2bf6f10b5b9b23ffc94efaca1d504a5c3cfc70a3e75886db299dcafdc39075a5  raw:stage2/scan_20261103.json
+# overlap_per_head.csv <- 6e78c703f8a72a0d2f1317e3ad09cba46849894516e4cff3ec63429f8cff783e  raw:stage2/scan_20261104.json
+# overlap_per_head.csv <- dc78d624a9501f0f46bfdf0acd8792fbe06572966dfe1041de5398a57f31e0a4  raw:stage3/exploratory_8b/exploratory_8b.json
+# overlap_per_head.csv <- 60b780ead74b69f2878c5483870abc2a48079b2963e818a21bffcfd50c01bf7a  raw:stage3/exploratory_8b/exploratory_8b_freeze.json
+# overlap_per_head.csv <- 1273e0b3fbe4fb88d43d201cdd9b3ba14d0c0bcc7168e1821474532f1e6a1fc4  raw:stage4/verification_8b.json
+bc6d319c0d0d6617b8b39ed944849a9291ecd0f28100e36e69402e582442c92c  overlap_per_head.csv
+df6b237172afe56ba8dc160b53c15b8c78f04c7e48a801c3f4f4ddef330b3dea  provenance.json
+# residual_per_seed.csv <- c307d8f6af53ecefdbe300648638bf4208dcb90d96844a2d08e1f2f39736281f  raw:stage2/bounds.json
+# residual_per_seed.csv <- c90bbba8e1f57f24f4d7988d0955b723007fad2f25c392a2baf19966718e0647  raw:stage2/residual_20261101.json
+# residual_per_seed.csv <- 81ff7435a7ed65f95c6b25a6a7dccf47d60295462a2e9fa163a6385b4ab14022  raw:stage2/residual_20261102.json
+# residual_per_seed.csv <- 289942b43ab0ad82e49eff863379126b2dc21c52386707b300663d1e1181c093  raw:stage2/residual_20261103.json
+# residual_per_seed.csv <- 2fdc92c7004705e48991d22acad97208afe7b2a84c85f7bdc81b53a49a5f27c2  raw:stage2/residual_20261104.json
+2edae36e5a6e1479a5197e2476be836d5d653f227f7a9928c55ef8cbb9dd2434  residual_per_seed.csv
+# residual_scan.json <- c307d8f6af53ecefdbe300648638bf4208dcb90d96844a2d08e1f2f39736281f  raw:stage2/bounds.json
+# residual_scan.json <- c90bbba8e1f57f24f4d7988d0955b723007fad2f25c392a2baf19966718e0647  raw:stage2/residual_20261101.json
+# residual_scan.json <- 81ff7435a7ed65f95c6b25a6a7dccf47d60295462a2e9fa163a6385b4ab14022  raw:stage2/residual_20261102.json
+# residual_scan.json <- 289942b43ab0ad82e49eff863379126b2dc21c52386707b300663d1e1181c093  raw:stage2/residual_20261103.json
+# residual_scan.json <- 2fdc92c7004705e48991d22acad97208afe7b2a84c85f7bdc81b53a49a5f27c2  raw:stage2/residual_20261104.json
+4d65abfe0cf99bb10c10521f8219c579307ff2daf091bbfaeb2f2294ff61954e  residual_scan.json
+# top20_heads.json <- adcea03316902d9b3c2d2b26fe85bcd4b46f23760c4bfc3858f13a8769739fef  raw:stage2/scan_20261101.json
+# top20_heads.json <- 3ff4a550f26a56c189c4499c62942c187b70ff756ae06315172714efa0bc79de  raw:stage2/scan_20261102.json
+# top20_heads.json <- 2bf6f10b5b9b23ffc94efaca1d504a5c3cfc70a3e75886db299dcafdc39075a5  raw:stage2/scan_20261103.json
+# top20_heads.json <- 6e78c703f8a72a0d2f1317e3ad09cba46849894516e4cff3ec63429f8cff783e  raw:stage2/scan_20261104.json
+# top20_heads.json <- 1433363c4595bf7dd5ce971fb95aaf20446bc5479e7a5e5cf2b7e29d2697feb0  raw:stage2a_summary.json
+bf382747c2435c3f053f175c91b6cd11545f6dbb43762a0f3d09fe2f32de2cf8  top20_heads.json
+e29ecf727e13365d0fd87356dbad245aff2e81591662094889fd1a7bcc02b9a0  ../figures/a_residual_scan.png
+61df5d3dcea2431f635ee83fd5a9c1d16c983a2720baa635b7ead2e0120901e9  ../figures/a_residual_scan.svg
+7798b289c62b9fcd08e0f2dd847367051a63ded6b92281dca43ee27328e98419  ../figures/b_single_heads.png
+457ce0b3d86d4c368286a9ce918be9758968d1735703b1e4663b11db3a134b86  ../figures/b_single_heads.svg
+513ac65021b857ce50258dfda5f540ae8a586d5981c5265061314d6949471f20  ../figures/c_heldout_transfer.png
+65506df75d0faa5dade1ee1e336f9d3502c3835c62525c2b5a547baf70ed7a48  ../figures/c_heldout_transfer.svg
+a17f3054b9291a5822917ad8e0a37dd5beb287e69c67296b175638dcd672905b  ../figures/d_mismatched_donor.png
+497ca1c5d78e1f175dfc52df3b40efcfcad512b506f665b6e9c4fd76055bde50  ../figures/d_mismatched_donor.svg
+919d3874c141f8d9ea9bfdb5be485cd2fb323fa3df830f0617a37d656c683a54  ../figures/e_attention_split.png
+155c4331357edd171e763b06c53355f66f6e02ede5204a49fb679f775f067b54  ../figures/e_attention_split.svg
+0604b575810adc81fea0f549965ed9d2fc440cf5901a321bffb5ca517e68da2a  ../figures/f_4b_8b_overlap.png
+a5b3be25324c5fde7c7711b0eb79a5a32eb9328a099302d5fb4bc37d75c519ef  ../figures/f_4b_8b_overlap.svg
+b66ae760e87088e0a60ddaa58fe0187ee8a9fefe7ce054931b06e8eb9107e0f1  ../figures/g_role_position.png
+f33f05fd74a4549d7dd17705d5f5f3fcfe425acaab8ccd4eca142e431135a04c  ../figures/g_role_position.svg

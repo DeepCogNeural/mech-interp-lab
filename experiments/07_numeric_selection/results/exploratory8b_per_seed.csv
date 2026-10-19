@@ -1,0 +1,5 @@
+seed,clean_correct_count,direction,flip_count,flip_rate,n,random_max,random_sets,valid_count,validity
+20261201,64,Q_T->N,64,1.0,64,0.0,20,64,1.0
+20261201,64,Q_N->T,64,1.0,64,0.0,20,64,1.0
+20261202,64,Q_T->N,64,1.0,64,0.0,20,64,1.0
+20261202,64,Q_N->T,64,1.0,64,0.0,20,64,1.0

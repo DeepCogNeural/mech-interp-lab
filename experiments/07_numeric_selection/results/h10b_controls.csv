@@ -1,0 +1,17 @@
+group,all_item_validity,denominator,direction,donor_number_injection_count,donor_number_injection_rate,flip_count,flip_rate,kind,mean_delta_d,valid_count,validity
+0,1.0,64,Q_T->N,0,0.0,63,0.984375,mismatched donor,-42.47607421875,64,1.0
+0,1.0,64,Q_T->N,,,0,0.0,matched-norm random delta,-0.30126953125,64,1.0
+0,1.0,64,Q_N->T,0,0.0,55,0.859375,mismatched donor,38.08056640625,64,1.0
+0,1.0,64,Q_N->T,,,0,0.0,matched-norm random delta,0.200927734375,64,1.0
+1,1.0,64,Q_T->N,0,0.0,62,0.96875,mismatched donor,-43.35693359375,64,1.0
+1,1.0,64,Q_T->N,,,0,0.0,matched-norm random delta,-0.385009765625,64,1.0
+1,1.0,64,Q_N->T,0,0.0,59,0.921875,mismatched donor,38.953125,64,1.0
+1,1.0,64,Q_N->T,,,0,0.0,matched-norm random delta,0.26416015625,64,1.0
+2,1.0,64,Q_T->N,0,0.0,64,1.0,mismatched donor,-43.8525390625,64,1.0
+2,1.0,64,Q_T->N,,,0,0.0,matched-norm random delta,-0.339111328125,64,1.0
+2,0.953125,64,Q_N->T,0,0.0,53,0.828125,mismatched donor,37.650634765625,61,0.953125
+2,1.0,64,Q_N->T,,,0,0.0,matched-norm random delta,0.205078125,64,1.0
+3,1.0,64,Q_T->N,0,0.0,62,0.96875,mismatched donor,-42.447265625,64,1.0
+3,1.0,64,Q_T->N,,,0,0.0,matched-norm random delta,-0.306884765625,64,1.0
+3,1.0,64,Q_N->T,0,0.0,54,0.84375,mismatched donor,37.418701171875,64,1.0
+3,1.0,64,Q_N->T,,,0,0.0,matched-norm random delta,0.321533203125,64,1.0

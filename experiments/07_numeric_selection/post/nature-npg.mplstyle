@@ -1,0 +1,40 @@
+# Layout after SciencePlots nature.mplstyle (github.com/garrettj403/SciencePlots); colors: ggsci NPG palette. No LaTeX.
+axes.prop_cycle : cycler('color', ['E64B35', '3C5488', '4DBBD5', 'F39B7F', '8491B4', '7E6148', 'B09C85', '91D1C2', 'DC0000', '00A087'])
+figure.figsize : 7.2, 4.5
+figure.facecolor : white
+savefig.dpi : 300
+savefig.facecolor : white
+savefig.bbox : tight
+savefig.pad_inches : 0.05
+font.family : sans-serif
+font.sans-serif : Arial, Helvetica, DejaVu Sans
+font.size : 8
+axes.titlesize : 8
+axes.labelsize : 8
+xtick.labelsize : 8
+ytick.labelsize : 8
+legend.fontsize : 8
+mathtext.fontset : dejavusans
+text.usetex : False
+axes.unicode_minus : True
+axes.linewidth : 0.5
+axes.edgecolor : black
+axes.grid : False
+axes.titlelocation : left
+xtick.direction : in
+ytick.direction : in
+xtick.top : True
+ytick.right : True
+xtick.major.size : 3
+xtick.major.width : 0.5
+ytick.major.size : 3
+ytick.major.width : 0.5
+xtick.minor.size : 1.5
+xtick.minor.width : 0.5
+ytick.minor.size : 1.5
+ytick.minor.width : 0.5
+xtick.minor.visible : False
+ytick.minor.visible : True
+lines.linewidth : 1.0
+lines.markersize : 3
+legend.frameon : False

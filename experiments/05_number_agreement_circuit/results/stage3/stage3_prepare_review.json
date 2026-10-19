@@ -1,0 +1,11 @@
+{
+  "evidence_scope": "Internal binding/check record; not independently verified.",
+  "gate_cache_sha256": "ac15bb0872083ab4e7f944d543c16be0b6bb72482c363db329d04004d0c1ed7e",
+  "independent": false,
+  "prepare_manifest_sha256": "4991bd07522a9a4c52599ca7b2ce4ae6f2ad0bfc7826b14d5f36d41dd6ddd33b",
+  "schema": "exp05-number-agreement-stage3-prepare-review-v1",
+  "self_sha256": "304d255fedd1d58ee8466aad4f14773862dcea1bc0bd3c54af7993973fd88100",
+  "source_commit": "6c2fd04e92d16be2ce67504f7caf3193e774cc54",
+  "split_manifest_sha256": "2bca5fc5755156b276ba3dcf3a8353f6f46ff99dbd292d040dbab3ca68067fac",
+  "status": "REPORTED"
+}

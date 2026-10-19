@@ -1,0 +1,230 @@
+# Experiment 05 — the number-agreement circuit
+
+**Status: design frozen 2026-08-02 and amended through 2026-08-08 (Amendments 1–9);
+calibration, Stage 1, fresh same-snapshot selection, Stage 2, and Stage 3/Q4 are complete. Q1–Q4 are
+positive in 8/8 registered seeds, and one exploratory bridge follow-up is complete on eight fresh
+held-out seeds.**
+[`DESIGN.md`](DESIGN.md) is the pre-registration, including [Pre-freeze correction 1](DESIGN.md#pre-freeze-correction-1--2026-08-02)
+and nine dated amendments. [Amendment 2](DESIGN.md#amendment-2--2026-08-02--corrections-and-rule-repairs-forced-by-adversarial-review)
+corrects three factual errors and repairs five rules that adversarial review found unexecutable;
+[Amendment 3](DESIGN.md#amendment-3--2026-08-08--pre-stage-2-executability-and-claim-boundaries)
+finishes the missing candidate/bootstrap/Q3/Q4 conventions and narrows the claim labels before
+Stages 2–3. [Amendment 4](DESIGN.md#amendment-4--2026-08-08--q4-matched-pool-data-role-separation)
+separates Q4 rank-training and evaluation items; [Amendment 5](DESIGN.md#amendment-5--2026-08-08--clamped-z-q3-kernel-q2-item-intersection-q4-denominator-and-reporting-boundary)
+freezes the clamped-`z` Q3 kernel, Q2 pair intersection, Q4 denominator guard, and seed accounting.
+[`Amendment 6`](DESIGN.md#amendment-6--2026-08-08--fail-closed-denominators-seed-slots-and-gate-a-boundaries)
+withdraws Q3's across-seed direct-recovery interval, fixes the eight-slot descriptive summary,
+freezes diagnostic-only source-C Gate-A handling, adds the float64 Q1 `E_all` guard, and separates
+scientific unresolved states from execution incompleteness. A complete base global Gate-A failure
+skips Q1-specific cells without suppressing independent Q2/Q3 caches; Q3's zero-retained-item case
+and Q1's deterministic tested-set fallback are recorded with explicit status codes. [Amendment 7](DESIGN.md#amendment-7--2026-08-08--same-snapshot-selection-provenance)
+requires same-invocation fresh true/source-A sweeps for `C`, demotes shipped Stage 1 to a
+non-blocking cross-check, and freezes the fresh selection cost at 291 logical FE (historical
+cross-check: 0 FE).
+[Amendment 8](DESIGN.md#amendment-8--2026-08-08--stage-2-single-invocation-provenance)
+makes Stage 2 a single-invocation eight-seed experiment: interrupted checkpoints are diagnostic
+only, never resumable scientific inputs, and a later attempt must restart from zero.
+[Amendment 9](DESIGN.md#amendment-9--2026-08-08--stage-3-q4-single-invocation-runtime-provenance)
+applies the same rule to the Q4 runtime while preserving hash-bound preparation inputs;
+accepted draws must bind exactly across attempts, CSV, checkpoint, and final manifest.
+[`protocol_v1.json`](protocol_v1.json) is the result-free machine-readable transcription.
+The completed calibration pilot ([`calibrate.py`](calibrate.py) →
+[`calibration_results.json`](calibration_results.json),
+[`CALIBRATION_NOTES.md`](CALIBRATION_NOTES.md)) measured the two specificity constants and produced a
+**lower-bound** runtime projection — 34.7 CPU-minutes, with three cost terms it could not price before
+the freeze. Stage 1 then completed ([`stage1.py`](stage1.py) →
+[`stage1_results.json`](stage1_results.json), [`STAGE1_NOTES.md`](STAGE1_NOTES.md)): it ran the true
+single-flip `z@final` head sweep, the required all-head `E_all`, residual `E_ref`, and top-24 `v@subject`
+sweep. Stage 1 itself adjudicates none of Q1–Q4. The later fresh selection chose eight candidates;
+the completed Stage-2 run selected `[L7H4, L8H5]` as the minimum tested qualifying set and returned
+positive Q1, Q2, and Q3 decisions in all eight seeds. The completed Stage-3/Q4 run returned positive
+matched-span decisions in all eight seeds. See the [public result](writeup.md) and [compact evidence
+packet](results/RESULTS.md).
+
+The Stage-1-informed **incomplete proxy/projection** of about 137 CPU-minutes was based on the measured
+head-sweep, joint-patch, and per-seed fixed-overhead costs. It does not price Stage 3's per-seed PCA
+fitting or latent-candidate preparation, and it predates Amendment 7's fresh same-snapshot
+true/source-A selection. It is not a verified total runtime. Stage 1 touched no latent span, by construction, so the
+design was frozen on evidence about the stimuli, not about the answer. The actual fresh selection used
+291 logical forward-equivalents and 966 seconds; the completed Stage-2 invocation used 2,528 logical
+forward-equivalents and 6,272 seconds. The Stage-3/Q4 invocation used 353,120 logical
+forward-equivalents and 1,265.99 seconds; its raw result remains outside Git and its compact evidence is
+under `results/`. The original raw-dependent post-Q4 bridge packet reported clean source `0d7c4db`,
+seeds `20260814–20260821`, 150 pairs per seed, and 800 frozen matched spans. The current compact
+reaggregation attributes those fields through a hash-pinned historical receipt but did not revalidate
+the missing raw input. Its raw result is outside Git (SHA-256 prefix `9d8446…`); the public packet
+contains no bridge-specific independent review receipt.
+
+Reproducibility has three distinct levels. The checked-in CSV/JSON packet supports static
+reaggregation of the reported summaries. Regenerating the packet requires the hash-bound Stage-2/Q4/
+bridge raw inputs outside Git. Repeating the model-backed experiment additionally requires the cached
+GPT-2 and SAE assets and execution environment; the repository alone does not provide an end-to-end
+rerun.
+
+| lifecycle gate | current state |
+|---|---|
+| frozen design and machine protocol | present; no result fields or protocol hash |
+| calibration | complete |
+| shipped Stage 1 scope | complete; descriptive only |
+| fresh same-snapshot selection | complete; eight-head candidate set frozen |
+| Stage 2 | complete; Q1/Q2/Q3 each 8/8 positive; internally recomputed; not independently verified |
+| Stage 3 preparation | complete; all eight Gate-A cells pass and have 40 rank-training / 150 evaluation pairs |
+| Stage 3 / Q4 | complete; Q4 above matched-span chance in 8/8; mean `R_span=0.8935`, `R_comp=0.0848` |
+| exploratory bridge | complete; target span beats 100 matched spans in 8/8; `R_target=0.6786`, clamped `0.6740` |
+| offline contract tests | model-free suites cover protocol, splits, selection fingerprints, the TransformerLens joint-patch hook contract, candidate/Q4/bridge helpers, portable preparation binding, target-excluded matched pools, artifact guards, and the empty-`C` terminal path; execution evidence is reported separately from this static description |
+
+The implementation files are [`selection_source_a.py`](selection_source_a.py),
+[`freeze_candidate.py`](freeze_candidate.py), [`exp05_core.py`](exp05_core.py),
+[`stage2.py`](stage2.py), and [`stage3.py`](stage3.py). The single post-Q4 exploratory follow-up is
+isolated in [`bridge_rescue.py`](bridge_rescue.py). Stage 2 consumed the completed, self-hashed selection artifact as an explicit input
+(`--selection selection_source_a.json`) together with the protocol, calibration, and candidate
+artifacts; it no longer takes `--stage1`, because shipped Stage 1 is only a descriptive cross-check
+inside selection. The raw Stage-2 JSON is 1.4 GB and stays outside Git; its SHA-256 and the compact
+claim inputs are recorded under [`results/`](results/). Stage 3 consumed only the separately prepared
+cache, split, artifact-binding record, and harness check record—not the head candidate or Stage-2 result; its compact
+seed-level metrics and matched-span draws are now shipped under `results/`. The offline suite is
+model-free and can be reproduced from the repository root with:
+
+```bash
+./.venv/bin/python -m unittest discover \
+  -s experiments/05_number_agreement_circuit/tests -p 'test_*.py'
+```
+
+## What it asks
+
+Experiment 04 measured *where* a causal handle on subject–verb number agreement lives at each layer:
+almost entirely on the subject at layer 4, largely at the readout position by layer 10. It measured
+no attention pattern, head, or path, so it cannot say what relocates the signal. This experiment
+asks that, and one question experiment 04 opened and could not close.
+
+Four axes each retain a pre-declared positive and negative scientific verdict. Amendments 5–6 also
+register fail-closed non-verdict states: execution failure blocks the axis, while scientifically
+unresolved seeds can force `INCONCLUSIVE_UNRESOLVED_SEEDS` under the frozen lower/upper-bound rule;
+Q3's direct-recovery summary is descriptive only and has no across-seed inferential interval.
+
+| axis | question | verdicts |
+|---|---|---|
+| Q1 | do few heads carry the signal at the final position? | Qualifying ≤8-head set / No qualifying ≤8-head set |
+| Q2 | is what they carry *number*, or any perturbation? | Number-specific under registered controls / Specificity bound not met |
+| Q3 | does it arrive *from the subject position*? | Subject-value transport shown / Subject-value transport not shown |
+| Q4 | do experiment 04's twelve recurring SAE latents span the delta? | Above matched-span chance / Not above matched-span chance |
+
+These labels do not prove necessity, mediation, or a native attention path. Q4 is only the layer-8,
+`both`-position decoder-row span compared with matched-dimension empirical chance. Stage 1 is a coarse
+historical ranking and adjudicates none of these four axes; the completed Stage-2 artifact adjudicates
+Q1–Q3 and the completed Stage-3/Q4 artifact adjudicates Q4.
+
+**Q4 result (8/8 positive).** Across eight seeds, projecting the registered layer-8 intervention delta
+into the frozen 12-row SAE span retained about `0.89` of its causal effect, exceeded the frozen
+matched-span edge in every seed, and left about `0.085` in the complementary subspace, without implying
+equivalent geometric energy capture or full mediation. The exact mean `R_span` is `0.893525` (t(7) CI
+`[0.890486, 0.896565]`) and `R_comp` is `0.084783` (CI `[0.082268, 0.087299]`). The geometric
+squared-norm fraction is only about `0.525–0.544`, and the generic-text PCA span/both comparator is a
+raw logit effect of `0.027400`, not 2.74% recovery.
+
+Q4 does not establish natural or monosemantic latent activations, individual-latent causality,
+necessity or sufficiency, a natural head→span path or mediation, a complete circuit, or
+generalisation across models or tasks.
+
+**Exploratory bridge (post-Q4, no preregistered verdict).** On eight fresh held-out seeds, the fixed
+12-row layer-8 decoder span recovered `R_target=0.678639` (95% t(7) CI `[0.673841, 0.683437]`) of the
+directed L7H4→`resid_pre8` effect and exceeded the actual maximum of 100 target-excluded matched
+rank-12 spans on every seed (8/8). The complementary ratio was `R_comp=0.305339` (CI
+`[0.301260, 0.309418]`), while the aggregate matched-span mean was `0.065910` (CI
+`[0.049408, 0.082411]`). With L8H5's complete `hook_z` output at the final query position overwritten
+by the natural source-A baseline, the target remained `R_target=0.674047` (CI
+`[0.669586, 0.678508]`); the natural reader projection coefficient was only descriptive
+(`0.027–0.124` across seeds). `hook_z` is the per-head output after the attention pattern aggregates
+values, so this is not a value-only clamp. It does not support dominant dependence on the tested
+final-position L8H5 output or establish mediation. It also does not show that L8H5 is irrelevant:
+parallel downstream routes and other L8H5 query positions remain outside the tested intervention. The
+near-closure of target plus complement is a separate nonlinear arm and is not a linear attribution.
+
+The compact packet is [`bridge_result_summary.json`](results/bridge_result_summary.json), with the
+matched rows in [`bridge_matched_ratios.csv`](results/bridge_matched_ratios.csv) and the overview in
+[`figure_bridge_rescue.svg`](results/figure_bridge_rescue.svg) ([PNG](results/figure_bridge_rescue.png)).
+The executable follow-up is [`bridge_rescue.py`](bridge_rescue.py); it is exploratory evidence, not a
+new preregistered axis.
+
+An all-position-clamp factorial would not identify that distinction here. The L7H4 intervention is
+final-position-only and produces zero non-final `resid_pre8` delta; causal masking means earlier L8H5
+query outputs cannot depend on that final-position edit. The next experiment therefore keeps GPT-2,
+the SAE, L7H4, the frozen 12-row span, and the 100 matched spans fixed, then evaluates them on the relative-clause
+family already used as calibration/source-C control under a globally fixed cyclic source-A map. Because
+the earlier bridge used seed-drawn source-A nouns, this is not a one-factor template-only contrast. The
+result-blind [Experiment 06 protocol](../06_cross_template_bridge/DESIGN.md), not independently verified, first tests whether the L7H4 causal
+handle meets its within-family gate and only then whether the target span exceeds the second-largest raw-effect edge among
+the 100 frozen Q4 matched latent sets. This reuses Q4's sets and tail-order statistic, not its normalized
+`R` estimand.
+It is a mechanism-held-out evaluation on a calibration-exposed template family, not a completely
+unseen-template claim. It is implemented but has not run.
+
+Q1 alone is close to tautological — eight late heads can push a logit they sit one step away from —
+which is exactly why Q2 and Q3 are separate adjudicated axes and why the writeup may not present Q1
+as a mechanism on its own.
+
+## Three design decisions worth reading
+
+**Nulls and method boundaries.** Experiment 04's `inconclusive` came from a binary certification gate
+on a continuous quality measure its own primary statistic had already normalised away. Here,
+bootstrap intervals and the source-A noise floor are quantities that can be refined as the sample grows.
+Q2 instead applies fixed calibration-derived specificity ratios, while Q4 compares against an empirical
+matched-span chance band. Continuous diagnostics are reported covariates. Boundary language for
+near-threshold outcomes is written into the design *before* the numbers exist.
+
+**No encoder in the latent question.** Q4 projects the *true* activation delta `x_src − x_base` onto
+the twelve latents' decoder span. Nothing is encoded and nothing is reconstructed, so the
+reconstruction-error term that experiment 04 had to publish a correction about does not exist here
+at all.
+
+**Selection-clean seeds, on both axes where selection happens.** The twelve latents were selected
+post hoc in experiment 04, so Q4 is adjudicated on eight seeds none of which is an experiment 04
+seed. The same problem turned up again in Q1 — the head candidate pool is chosen on seed `20260801`,
+which was also in the adjudication set, making one of the eight seeds pass by construction — and
+Amendment 2 removes it from adjudication. Selection contamination is closed by construction in both
+places rather than argued about.
+
+## What calibration already established
+
+Measured on seed `20260899`, which is not one of the adjudication seeds:
+
+| source | what it changes | mean readout shift | as fraction of the true flip |
+|---|---|---:|---:|
+| true flip | subject number | `4.46` | `1.000` |
+| A — same number, different noun | subject lexical item | `−0.0078` | `0.00174` |
+| B — attractor flip | the attractor's number | `+0.0071` | `0.00158` |
+| C — cross-template, number-matched | the whole frame | `−0.60` | `0.13492` |
+
+Source A is the reassuring one: changing which noun, without changing its number, does essentially
+nothing to the readout. Source C is the demanding one — a number-matched sentence from a different
+syntactic frame moves the readout by 13.5% of a full flip, in the direction that *reinforces* the
+number both sentences already share. It is a systematic same-number push rather than noise around
+zero, and it is why the specificity bound for C ends up at `0.270` rather than the `0.20` floor.
+
+Source B is the one to watch. Flipping the attractor's number leaves the average readout essentially
+where it was, while carrying the largest per-item spread of the three sources. Note what that can and
+cannot say: every source is aligned to the *subject*-flip axis, which forces a mean near zero for any
+effect locked to the attractor no matter how consistent it is. So items move, and **whether their
+movement points consistently toward the flipped attractor's number was not measured here.** All of it
+is recorded before any head has been measured.
+
+## Prior work
+
+No peer-reviewed head-level causal baseline exists for number agreement in GPT-2-small. Finlayson
+et al. (ACL 2021) is neuron-level; the authors themselves describe their appendix's head-level
+readings as possibly noise. Lepori et al. (COLM 2024) localise to layer 6's attention block —
+layer-level, and the strongest citable prior. The design records a pre-registered layer-range
+prediction against it. The full source-verified check, with quotes and URLs, is
+[`LITERATURE.md`](LITERATURE.md).
+
+## Public artifact copies
+
+Public copies redact machine-specific paths; scientific values, thresholds, and conclusions are unchanged.
+Internal review metadata has also been removed; the two required preparation/harness records now
+contain only source bindings and reported checks, explicitly not independently verified.
+Cache, split, preparation, record self-hashes, indexes, and checksums bind the public copies.
+The historical protocol hash was `a3b68a4104a8f654f5982b78bfd9ba8746db0323a0ca5ea1e626b307953d7dee`.
+Historical raw-source hashes and the Q4-declared original preparation hash remain historical references,
+not hashes of the redacted copies. The absent raw Q4 artifact has not been regenerated or revalidated.
+The current runner and packager require records with the public schema's `REPORTED` status and explicit
+`independent: false`; old raw artifacts cannot be combined with changed public inputs as if byte-identical.
