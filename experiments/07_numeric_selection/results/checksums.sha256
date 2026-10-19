@@ -1,7 +1,7 @@
 # Local packet hashes. Run shasum -a 256 -c checksums.sha256 here.
 # Raw labels are relative to exp07/; sibling/ is relative to its parent.
 # Raw files are not bundled. Each summary is bound to its source bytes below.
-d51aa93e99409189860fa257a40b4df9af12999086f5e91ddaf77d2cdc85a671  README.md
+c53cd5a63ca27f4caa012bb74f8b3c6bc861607107bebb21b800fe8a1e6664a7  README.md
 # attention_per_seed.csv <- fc360cbe0e6676677ac58fe1dd99d9ef6f3f3394907de92eca36196ce8228267  raw:stage3/circuit_summary.json
 # attention_per_seed.csv <- f4c2e738f0b2db032f7856052c66ec1afbdd6467f999afac9de8b6ad24ca4502  raw:stage3/readouts/readout_20261201.json
 # attention_per_seed.csv <- 7ba582f4fc01209704f079471a68dfc822a1d20f93b0eeafd2d9ff6be67af141  raw:stage3/readouts/readout_20261202.json
@@ -420,6 +420,7 @@ b88b98bf5d38e8d61a88e8df2bcfcc65aab868951386a754e4cf95a81cd23620  joint_k.json
 # overlap_per_head.csv <- 1273e0b3fbe4fb88d43d201cdd9b3ba14d0c0bcc7168e1821474532f1e6a1fc4  raw:stage4/verification_8b.json
 bc6d319c0d0d6617b8b39ed944849a9291ecd0f28100e36e69402e582442c92c  overlap_per_head.csv
 df6b237172afe56ba8dc160b53c15b8c78f04c7e48a801c3f4f4ddef330b3dea  provenance.json
+6a2c913b869d24bf1a08283e3ebbd00e6c03483ae06e8e196a6f9add6941b187  replication.json
 # residual_per_seed.csv <- c307d8f6af53ecefdbe300648638bf4208dcb90d96844a2d08e1f2f39736281f  raw:stage2/bounds.json
 # residual_per_seed.csv <- c90bbba8e1f57f24f4d7988d0955b723007fad2f25c392a2baf19966718e0647  raw:stage2/residual_20261101.json
 # residual_per_seed.csv <- 81ff7435a7ed65f95c6b25a6a7dccf47d60295462a2e9fa163a6385b4ab14022  raw:stage2/residual_20261102.json

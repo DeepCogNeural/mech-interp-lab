@@ -16,6 +16,7 @@ Rates are fractions in the data and percentages in figures. Counts and denominat
 | H9 forecast transfer | [h9_per_seed.csv](h9_per_seed.csv) | [controls / validity / rule](h9.json), [post-hoc first-integer counts](h9_secondary.json), `h9_sets_<seed>.json` (101 sets each) |
 | Original H10 gate | — | [gate, formats and group manifest](h10.json) |
 | (c,d) Real 10-K H10b | [h10b_per_group.csv](h10b_per_group.csv), [controls](h10b_controls.csv) | [new/old parsers](h10b.json), [all 101 sets × 4 groups](h10b_all_sets.json) |
+| Fresh-seed replication of H7 and necessity | — | [counts, intervals, invalid outputs and raw hashes](replication.json) |
 | (g) H11 role versus position | [both parsers and controls](h11_per_seed.csv) | [gate and decision](h11.json), `h11_sets_<seed>.json`, `h11_raw_*.json.gz` |
 | (e) Attention and head read-outs | [attention_per_seed.csv](attention_per_seed.csv) | [question/number attention and single-head effects](attention_readouts.json), [direct logit attribution](direct_readouts.json) |
 | Exploratory 8B | [exploratory8b_per_seed.csv](exploratory8b_per_seed.csv) | [dev scans and all 21 held-out sets](exploratory_8b.json) |

@@ -1,6 +1,6 @@
 # Experiment 07 — Which number does the model choose?
 
-**Replacing eight frozen Qwen3-4B attention-head outputs switches which of two supplied numbers it reports, in both directions: 1,008/1,024 original-order held-out answers and 497/512 answers on real 10-K sentences flip.** Across 100 layer-matched random head sets, the highest seed/group rates stay below 8% and 10%, respectively. Different-number donors switch 1,007/1,024 answers to the recipient passage's own alternative; no scored answer matched a donor value. Two pre-registered bars were missed: one held-out seed had 59/64 valid outputs against a 95% bar, and removing the heads cost 29.4 of the required 30 accuracy points.
+**Replacing eight frozen Qwen3-4B attention-head outputs switches which of two supplied numbers it reports, in both directions: 1,008/1,024 original-order held-out answers and 497/512 answers on real 10-K sentences flip.** Across 100 layer-matched random head sets, the highest seed/group rates stay below 8% and 10%, respectively. Different-number donors switch 1,007/1,024 answers to the recipient passage's own alternative; no scored answer matched a donor value. Two pre-registered bars were missed: one held-out seed had 59/64 valid outputs against a 95% bar, and removing the heads cost 29.4 of the required 30 accuracy points. A pre-registered replication on eight fresh seeds then met the necessity bar (30.96 points) but again missed validity on one seed (60/64), so it fails as registered.
 
 **Illustrative example:** a passage gives $931 million in past revenue and $237 million in guidance; replacing eight head outputs can make the model report the passage's other figure.
 
@@ -49,6 +49,14 @@ H11 reverses sentence order while retaining the same values and questions. Red: 
 - **H10:** a scorer bug for this task rejected decimals and commas, yielding **121/256** correct per query. H10 stopped before intervention. H10b registered its decimal-aware, first-number parser after that failure and before any intervention; it does not revise H10 or H7.
 - **Anchoring:** none observed here. Clean forecasts select guidance in **256/256** 4B dev cases and **128/128** 27B pilot cases. The 27B result is behaviour only; the anchoring-rescue trigger never activates.
 
+## Pre-registered replication
+
+The two missed bars were retested on eight fresh seeds, 20261301–20261308, with every frozen element and rule unchanged. The [addendum](ADDENDUM_REPLICATION.md) was committed before any call on those seeds. Before it, a rerun of held-out seed 20261201 reproduced all 101 saved sets exactly. The original verdicts stand; this is a separate test.
+
+- **Sufficiency (H7): failed again, on validity only.** T→N flips **494/512 (96.5%)**; N→T flips **512/512**. Every seed and direction beats its 100 random sets; the t(7) lower bounds are 0.951 and 1.0. Seed 20261302 has **60/64** valid T→N outputs, one short of the 61/64 bar. Pooled T→N validity is 494/512 (96.5%; Wilson 95%: 94.5–97.8%); over both directions it is 1,006/1,024 (98.2%). Of 18 invalid outputs, 16 give the correct N and then begin a second `$` figure; the other two are `35000000` and `192 million × 5 =`.
+- **Necessity: passed.** Dev-mean ablation loses **317/1,024** correct answers, a **30.96-point** mean drop (seed-level bootstrap 95%: 29.98–31.93). Q_N loses 28–33/64 per seed; Q_T loses 6–12/64. All 100 random sets lose 0 points.
+- **Replication verdict: failed**, because its registered pass rule requires both. Across all 16 held-out seeds, the necessity drop averages 30.2 points and T→N validity is 990/1,024; both sit close to their bars. The addendum stated this in advance: under the original estimates, both bars pass together in under one run in ten. [Numbers](results/replication.json).
+
 ## Limitations
 
 Scope is two supplied numbers with different leading digits, short answers, and a fixed prefill. Real-text candidates were filtered before model calls. Role and position are confounded in original-order H7 and real-text H10b. H11 is mixed, so the transferred signal may depend on number position and cannot be described as role-only. Strong flips do not establish sufficiency under the failed gate, necessity, mediation, or a full circuit. The exploratory 8B run lacks a runtime weight/configuration hash binding; overlap is not independent replication.
@@ -67,7 +75,7 @@ The [packet guide](results/README.md) maps figures to tables and raw hashes. Reg
 
 ## Pre-registration timeline
 
-The checkpoints below precede the calls they govern; H10/H10b/H11 were added after earlier results were known. Order is attested by local commit times and server file times on 2026-10-18; there is no third-party timestamp.
+The checkpoints below precede the calls they govern; H10/H10b/H11 were added after earlier results were known. Order is attested by local commit times and server file times on 2026-10-18 and 2026-10-19; there is no third-party timestamp.
 
 1. **DESIGN** — `17896752056a6b01375db23b1d6dd5e44e88b794`, before discovery.
 2. **FREEZE** — `ef30672576004dbc511bf05e4b89f3067d0ebcf2`, before held-out calls.
@@ -76,3 +84,4 @@ The checkpoints below precede the calls they govern; H10/H10b/H11 were added aft
 5. **H10 grouping construction** — `5cddda2`: hash-mod-4 → deterministic subset-sum in hash order, before any H10 model call; this balances four document-disjoint groups of 64.
 6. **H10b addendum** — `6375fe246a4984af0412086b42d55e8ee9675584`, after H10's gate failure, before any H10/H10b intervention.
 7. **H11 addendum** — `796a89e`, after H7, H9 and H10b were seen, before any H11 model call; implementation `3696312`. [Registered rule](ADDENDUM_H11.md).
+8. **Replication addendum** — `f73c6f2ed06db98bb06aaa94f6e546e368d3636c`, after all earlier results, before any call on seeds 20261301–20261308; runner `ab86ab5`. [Registered rule](ADDENDUM_REPLICATION.md).

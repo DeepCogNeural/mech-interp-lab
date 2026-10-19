@@ -1,0 +1,739 @@
+{
+  "addendum_sha256": "c1e083de84a60e850e74f7f84fa1ee49ce8aa6781d978a7330afdbe0c7f1dbf5",
+  "bootstrap": {
+    "draws": 10000,
+    "interval": "percentile 2.5/97.5",
+    "seed": 20261300,
+    "unit": "seed"
+  },
+  "computed_utc": "2026-10-19T22:24:05.916711+00:00",
+  "freeze_sha256": "7bf5698fcd4b501c1f130c7f860e04b99a8c093dc631f1556a37671c72698ee5",
+  "necessity": {
+    "bootstrap95_seed_level": [
+      0.2998046875,
+      0.3193359375
+    ],
+    "denominator": 1024,
+    "drop_bar_passes": true,
+    "lost_correct": 317,
+    "mean_drop": 0.3095703125,
+    "per_seed": [
+      {
+        "mean_drop": 0.296875,
+        "queries": [
+          {
+            "ablated_correct": 54,
+            "clean_correct": 64,
+            "drop": 0.15625,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 1.0
+          },
+          {
+            "ablated_correct": 36,
+            "clean_correct": 64,
+            "drop": 0.4375,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261301
+      },
+      {
+        "mean_drop": 0.3125,
+        "queries": [
+          {
+            "ablated_correct": 56,
+            "clean_correct": 64,
+            "drop": 0.125,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 0.96875
+          },
+          {
+            "ablated_correct": 32,
+            "clean_correct": 64,
+            "drop": 0.5,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261302
+      },
+      {
+        "mean_drop": 0.3359375,
+        "queries": [
+          {
+            "ablated_correct": 52,
+            "clean_correct": 64,
+            "drop": 0.1875,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 1.0
+          },
+          {
+            "ablated_correct": 33,
+            "clean_correct": 64,
+            "drop": 0.484375,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261303
+      },
+      {
+        "mean_drop": 0.3125,
+        "queries": [
+          {
+            "ablated_correct": 54,
+            "clean_correct": 64,
+            "drop": 0.15625,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 1.0
+          },
+          {
+            "ablated_correct": 34,
+            "clean_correct": 64,
+            "drop": 0.46875,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261304
+      },
+      {
+        "mean_drop": 0.296875,
+        "queries": [
+          {
+            "ablated_correct": 58,
+            "clean_correct": 64,
+            "drop": 0.09375,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 1.0
+          },
+          {
+            "ablated_correct": 32,
+            "clean_correct": 64,
+            "drop": 0.5,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261305
+      },
+      {
+        "mean_drop": 0.2890625,
+        "queries": [
+          {
+            "ablated_correct": 56,
+            "clean_correct": 64,
+            "drop": 0.125,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 1.0
+          },
+          {
+            "ablated_correct": 35,
+            "clean_correct": 64,
+            "drop": 0.453125,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261306
+      },
+      {
+        "mean_drop": 0.3125,
+        "queries": [
+          {
+            "ablated_correct": 54,
+            "clean_correct": 64,
+            "drop": 0.15625,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 0.984375
+          },
+          {
+            "ablated_correct": 34,
+            "clean_correct": 64,
+            "drop": 0.46875,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261307
+      },
+      {
+        "mean_drop": 0.3203125,
+        "queries": [
+          {
+            "ablated_correct": 56,
+            "clean_correct": 64,
+            "drop": 0.125,
+            "n": 64,
+            "query_type": "Q_T",
+            "validity": 1.0
+          },
+          {
+            "ablated_correct": 31,
+            "clean_correct": 64,
+            "drop": 0.515625,
+            "n": 64,
+            "query_type": "Q_N",
+            "validity": 1.0
+          }
+        ],
+        "seed": 20261308
+      }
+    ],
+    "random_max_mean_drop": 0.0,
+    "random_set_mean_drops": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "rule_passes": true
+  },
+  "prereg_commit": "f73c6f2ed06db98bb06aaa94f6e546e368d3636c",
+  "raw_sha256": {
+    "replication/heldout_20261301.json": "86fc4925318f6a5093e7dccf78c182132c36ab7e70f46b6efd9b5b0ed0d5b783",
+    "replication/heldout_20261302.json": "d33b2a65a89b3025180120d0b5f4f67690aace7520dcfa51a8798049958fcb92",
+    "replication/heldout_20261303.json": "81bc9452e49e403d664a38b9aa17c6f0d0063f709b8f248737c694972bd52a7e",
+    "replication/heldout_20261304.json": "aedf20b88d707af6c9b7c21ff6e982e85b2a93cb101e7231ee7ba275967d782c",
+    "replication/heldout_20261305.json": "121e223201136e643b762b0a5ad6200924a1f10c4504e874a97a7ba8c752dfe5",
+    "replication/heldout_20261306.json": "a0193c88a424e114b9fa229f0a7734b8152eefcd56e9f9528cc670600cf5d5f8",
+    "replication/heldout_20261307.json": "1e31c74637db787826690d65c488097af5e8a411f60d524f7624296d1921b7c5",
+    "replication/heldout_20261308.json": "118a7b12433ba98ff9c6b89e7fadbca0ef0cd689b448ebe8a07a639bf84e7d82"
+  },
+  "replication_passes": false,
+  "seeds": [
+    20261301,
+    20261302,
+    20261303,
+    20261304,
+    20261305,
+    20261306,
+    20261307,
+    20261308
+  ],
+  "source_commit": "f73c6f2ed06db98bb06aaa94f6e546e368d3636c",
+  "sufficiency": {
+    "directions": {
+      "Q_N->T": {
+        "every_seed_above_random": true,
+        "flips": {
+          "count": 512,
+          "rate": 1.0,
+          "total": 512,
+          "wilson95": [
+            0.9925530242771171,
+            0.9999999999999999
+          ]
+        },
+        "mean_flip": 1.0,
+        "min_seed_validity": 1.0,
+        "pooled_validity": {
+          "count": 512,
+          "rate": 1.0,
+          "total": 512,
+          "wilson95": [
+            0.9925530242771171,
+            0.9999999999999999
+          ]
+        },
+        "rule_passes": true,
+        "seeds_below_validity_bar": [],
+        "t7_lower95": 1.0,
+        "validity_bar_passes": true
+      },
+      "Q_T->N": {
+        "every_seed_above_random": true,
+        "flips": {
+          "count": 494,
+          "rate": 0.96484375,
+          "total": 512,
+          "wilson95": [
+            0.9451159458429383,
+            0.9776481939146942
+          ]
+        },
+        "mean_flip": 0.96484375,
+        "min_seed_validity": 0.9375,
+        "pooled_validity": {
+          "count": 494,
+          "rate": 0.96484375,
+          "total": 512,
+          "wilson95": [
+            0.9451159458429383,
+            0.9776481939146942
+          ]
+        },
+        "rule_passes": false,
+        "seeds_below_validity_bar": [
+          20261302
+        ],
+        "t7_lower95": 0.9513224395758978,
+        "validity_bar_passes": false
+      }
+    },
+    "invalid_selected_outputs": [
+      {
+        "N": 196,
+        "T": 558,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 21,
+        "seed": 20261301,
+        "text": "196 million  \n$55"
+      },
+      {
+        "N": 170,
+        "T": 763,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 43,
+        "seed": 20261301,
+        "text": "170 million  \n$76"
+      },
+      {
+        "N": 350,
+        "T": 868,
+        "answer": 35000000,
+        "direction": "Q_T->N",
+        "item": 46,
+        "seed": 20261301,
+        "text": "35000000"
+      },
+      {
+        "N": 167,
+        "T": 455,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 28,
+        "seed": 20261302,
+        "text": "167 million  \n$45"
+      },
+      {
+        "N": 192,
+        "T": 960,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 39,
+        "seed": 20261302,
+        "text": "192 million \u00d7 5 ="
+      },
+      {
+        "N": 194,
+        "T": 665,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 54,
+        "seed": 20261302,
+        "text": "194 million  \n$66"
+      },
+      {
+        "N": 467,
+        "T": 793,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 57,
+        "seed": 20261302,
+        "text": "467 million  \n$79"
+      },
+      {
+        "N": 156,
+        "T": 787,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 52,
+        "seed": 20261303,
+        "text": "156 million  \n$78"
+      },
+      {
+        "N": 186,
+        "T": 771,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 25,
+        "seed": 20261304,
+        "text": "186 million  \n$77"
+      },
+      {
+        "N": 161,
+        "T": 494,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 63,
+        "seed": 20261304,
+        "text": "161 million  \n$49"
+      },
+      {
+        "N": 190,
+        "T": 653,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 6,
+        "seed": 20261305,
+        "text": "190 million  \n$65"
+      },
+      {
+        "N": 462,
+        "T": 789,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 25,
+        "seed": 20261305,
+        "text": "462 million  \n$78"
+      },
+      {
+        "N": 160,
+        "T": 560,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 31,
+        "seed": 20261306,
+        "text": "160 million  \n$56"
+      },
+      {
+        "N": 173,
+        "T": 964,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 53,
+        "seed": 20261306,
+        "text": "173 million  \n$96"
+      },
+      {
+        "N": 186,
+        "T": 587,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 13,
+        "seed": 20261307,
+        "text": "186 million  \n$58"
+      },
+      {
+        "N": 184,
+        "T": 650,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 10,
+        "seed": 20261308,
+        "text": "184 million  \n$65"
+      },
+      {
+        "N": 198,
+        "T": 996,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 28,
+        "seed": 20261308,
+        "text": "198 million  \n$99"
+      },
+      {
+        "N": 197,
+        "T": 899,
+        "answer": null,
+        "direction": "Q_T->N",
+        "item": 55,
+        "seed": 20261308,
+        "text": "197 million  \n$89"
+      }
+    ],
+    "per_seed": [
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 61,
+        "flip_rate": 0.953125,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261301,
+        "valid_count": 61,
+        "validity": 0.953125
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 60,
+        "flip_rate": 0.9375,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261302,
+        "valid_count": 60,
+        "validity": 0.9375
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 63,
+        "flip_rate": 0.984375,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261303,
+        "valid_count": 63,
+        "validity": 0.984375
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 62,
+        "flip_rate": 0.96875,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261304,
+        "valid_count": 62,
+        "validity": 0.96875
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 62,
+        "flip_rate": 0.96875,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261305,
+        "valid_count": 62,
+        "validity": 0.96875
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 62,
+        "flip_rate": 0.96875,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261306,
+        "valid_count": 62,
+        "validity": 0.96875
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 63,
+        "flip_rate": 0.984375,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261307,
+        "valid_count": 63,
+        "validity": 0.984375
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_T->N",
+        "flip_count": 61,
+        "flip_rate": 0.953125,
+        "n": 64,
+        "random_max": 0.0,
+        "seed": 20261308,
+        "valid_count": 61,
+        "validity": 0.953125
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.046875,
+        "seed": 20261301,
+        "valid_count": 64,
+        "validity": 1.0
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.03125,
+        "seed": 20261302,
+        "valid_count": 64,
+        "validity": 1.0
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.03125,
+        "seed": 20261303,
+        "valid_count": 64,
+        "validity": 1.0
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.015625,
+        "seed": 20261304,
+        "valid_count": 64,
+        "validity": 1.0
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.03125,
+        "seed": 20261305,
+        "valid_count": 64,
+        "validity": 1.0
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.046875,
+        "seed": 20261306,
+        "valid_count": 64,
+        "validity": 1.0
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.0625,
+        "seed": 20261307,
+        "valid_count": 64,
+        "validity": 1.0
+      },
+      {
+        "above_all_random": true,
+        "direction": "Q_N->T",
+        "flip_count": 64,
+        "flip_rate": 1.0,
+        "n": 64,
+        "random_max": 0.078125,
+        "seed": 20261308,
+        "valid_count": 64,
+        "validity": 1.0
+      }
+    ],
+    "pooled_validity_both": {
+      "count": 1006,
+      "rate": 0.982421875,
+      "total": 1024,
+      "wilson95": [
+        0.972385245677466,
+        0.9888524933932983
+      ]
+    },
+    "rule_passes": false,
+    "validity_bar_passes": false
+  }
+}
